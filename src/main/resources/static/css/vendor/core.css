@@ -16643,8 +16643,14 @@ html:not(.layout-footer-fixed) .content-wrapper {
 
 
 
+.logo-nav{
+  width: 50%;
+  height: 0%;
+}
 
-
+.logo-top{
+  width: 14%;
+}
 
 .margin-top-5{
   margin-top: 5%;
