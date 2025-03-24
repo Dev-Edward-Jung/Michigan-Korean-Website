@@ -5,21 +5,20 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:oracle:thin:@localhost:1521:XE
+#    jdbc:mysql://localhost:3306/DB name?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/restaurant-project?serverTimezone=America/New_York
     username: root
     password:
 
 
   #jpa
   jpa:
-    database-platform: org.hibernate.dialect.Oracle10gDialect
     hibernate:
-      #jpa ddl-auto
-      #create: DROP ? CREATE
-      #create-drop: DROP ? CREATE ? DROP, DML? ???? ?? ?? DROP?? ??
-      #update: Entity? DB ??? ?? ? ?? ?? ??(?? ??)
-      #validate: Entity? DB ??? ??(??? ?? ??)
-      ddl-auto: update
+      ddl-auto: create-drop   # 처음엔 update, 나중엔 validate 추천
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
 
 
   #log
