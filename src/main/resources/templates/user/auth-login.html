@@ -12,14 +12,8 @@
 =========================================================
  -->
 <!-- beautify ignore:start -->
-<html
-  lang="en"
-  class="light-style customizer-hide"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="../assets/"
-  data-template="vertical-menu-template-free"
->
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="light-style layout-menu-fixed"
+      dir="ltr" data-theme="theme-default" data-template="vertical-menu-template-free" data-assets-path="/">
 <head>
   <meta charset="utf-8" />
   <meta
@@ -76,7 +70,7 @@
             <div class="card-body">
               <!-- Logo -->
               <div class="app-brand justify-content-center ">
-                <a href="index.html" class="app-brand-link gap-2">
+                <a href="auth-login.html" class="app-brand-link gap-2">
                   <img src="/img/logo/logo-gray.png" class="logo-auth" alt="">
                 </a>
               </div>
@@ -84,7 +78,7 @@
               <h4 class="mb-2">Welcome to KR! 👋</h4>
               <p class="mb-4">Please sign-in to your account and start the adventure</p>
 
-              <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
+              <form id="formAuthentication" class="mb-3" action="auth-login.html" method="POST">
                 <div class="mb-3">
                   <label for="email" class="form-label">Email or Username</label>
                   <input
@@ -99,7 +93,7 @@
                 <div class="mb-3 form-password-toggle">
                   <div class="d-flex justify-content-between">
                     <label class="form-label" for="password">Password</label>
-                    <a href="auth-forgot-password-basic.html">
+                    <a href="/page/member/forgot/password">
                       <small>Forgot Password?</small>
                     </a>
                   </div>
@@ -128,7 +122,7 @@
 
               <p class="text-center">
                 <span>New on our platform?</span>
-                <a href="auth-register-basic.html">
+                <a href="/page/member/register">
                   <span>Create an account</span>
                 </a>
               </p>

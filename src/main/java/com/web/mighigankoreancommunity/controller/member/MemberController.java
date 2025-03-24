@@ -3,10 +3,8 @@ package com.web.mighigankoreancommunity.controller.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RequestMapping("/page/member")
@@ -16,4 +14,10 @@ public class MemberController {
     public String loginPage() {
         return "user/auth-login";
     }
+
+    @GetMapping("/register")
+    public String RegisterPage() {return "user/auth-register";}
+
+    @GetMapping("/forgot/password")
+    public String forgotPasswordPage() {return "user/auth-forgot-password";}
 }

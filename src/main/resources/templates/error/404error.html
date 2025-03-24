@@ -12,14 +12,8 @@
 =========================================================
  -->
 <!-- beautify ignore:start -->
-<html
-  lang="en"
-  class="light-style"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="../assets/"
-  data-template="vertical-menu-template-free"
->
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="light-style layout-menu-fixed"
+      dir="ltr" data-theme="theme-default" data-template="vertical-menu-template-free" data-assets-path="/">
 <head>
   <meta charset="utf-8" />
   <meta
@@ -67,13 +61,13 @@
 
   <body>
     <!-- Content -->
-
+    <div th:insert="~{header-footer/header:: header}"></div>
     <!--Under Maintenance -->
     <div class="container-xxl container-p-y">
       <div class="misc-wrapper text-center">
         <h2 class="mb-2 mx-2">Under Maintenance!</h2>
         <p class="mb-4 mx-2">Sorry for the inconvenience but we're performing some maintenance at the moment</p>
-        <a href="index.html" class="btn btn-primary">Back to home</a>
+        <a href="/page/member/login" class="btn btn-primary">Back to home</a>
         <div class="mt-4">
           <img
             src="/img/illustrations/page-misc-error-light.png"
@@ -89,15 +83,6 @@
     <!-- /Under Maintenance -->
 
     <!-- / Content -->
-
-    <div class="buy-now">
-      <a
-        href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-        target="_blank"
-        class="btn btn-danger btn-buy-now"
-        >Upgrade to Pro</a
-      >
-    </div>
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
