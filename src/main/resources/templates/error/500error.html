@@ -12,15 +12,10 @@
 =========================================================
  -->
 <!-- beautify ignore:start -->
-<html
-  lang="en"
-  class="light-style"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="../assets/"
-  data-template="vertical-menu-template-free"
->
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="light-style layout-menu-fixed"
+      dir="ltr" data-theme="theme-default" data-template="vertical-menu-template-free" data-assets-path="/">
 <head>
+
   <meta charset="utf-8" />
   <meta
     name="viewport"
@@ -67,7 +62,7 @@
 
   <body>
     <!-- Content -->
-
+    <div th:insert="~{header-footer/header:: header}"></div>
     <!-- Error -->
     <div class="container-xxl container-p-y text-center">
       <div class="misc-wrapper">

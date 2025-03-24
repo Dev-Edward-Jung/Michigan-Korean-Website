@@ -8,8 +8,9 @@
 * Copyright ThemeSelection (https://themeselection.com)
 ========================================================= -->
 <!-- beautify ignore:start -->
-<html class="light-style layout-menu-fixed" data-assets-path="/" data-template="vertical-menu-template-free" data-theme="theme-default" dir="ltr" lang="en">
- <head>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="light-style layout-menu-fixed"
+      dir="ltr" data-theme="theme-default" data-template="vertical-menu-template-free" data-assets-path="/">
+<head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" name="viewport"/>
   <title>
@@ -31,6 +32,7 @@
   </script>
  </head>
  <body>
+ <div th:insert="~{header-footer/header:: header}"></div>
   <div class="layout-wrapper layout-content-navbar">
    <div class="layout-container">
     <div class="layout-page">
