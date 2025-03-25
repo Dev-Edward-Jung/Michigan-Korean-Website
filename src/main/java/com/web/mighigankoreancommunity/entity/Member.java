@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 public class Member {
 
     @Id
@@ -39,9 +38,12 @@ public class Member {
     @JsonManagedReference
     private List<Restaurant> restaurantList = new ArrayList<>();
 
-    //== 연관관계 편의 메서드 ==//
     public void addRestaurant(Restaurant restaurant) {
         restaurantList.add(restaurant);
         restaurant.setOwner(this);
     }
+
+
+
+
 }
