@@ -37,7 +37,6 @@
   />
 
   <!-- Icons. Uncomment required icon fonts -->
-  <link rel="stylesheet" href="/fonts/vendor/boxicons.css" />
 
   <!-- Core CSS -->
   <link rel="stylesheet" href="/css/vendor/core.css" class="template-customizer-core-css" />
@@ -50,7 +49,6 @@
   <link rel="stylesheet" href="/css/libs/apex-charts/apex-charts.css" />
 
   <!-- Page CSS -->
-
   <!-- Helpers -->
   <script src="/js/vendor/helpers.js"></script>
 
@@ -70,29 +68,31 @@
             <div class="card-body">
  <!-- Logo -->
  <div class="app-brand justify-content-center ">
-  <a href="index.html" class="app-brand-link gap-2">
+  <a href="page/member/login" class="app-brand-link gap-2">
     <img src="/img/logo/logo-gray.png" class="logo-auth" alt="">
   </a>
 </div>
 <!-- /Logo -->
-              <h4 class="mb-2">Adventure starts here 🚀</h4>
-              <p class="mb-4">Make your app management easy and fun!</p>
+              <h4 class="mb-2">Welcome to our website</h4>
+              <p class="mb-4">Login and manage your business</p>
 
-              <form id="formAuthentication" class="mb-3" action="index.html" method="POST">
+              <form id="registerForm" class="mb-3" th:action="@{/page/member/register}" th:method="@{POST}">
                 <div class="mb-3">
                   <label for="username" class="form-label">Username</label>
                   <input
                     type="text"
                     class="form-control"
                     id="username"
-                    name="username"
+                    name="memberName"
                     placeholder="Enter your username"
                     autofocus
                   />
                 </div>
                 <div class="mb-3">
                   <label for="email" class="form-label">Email</label>
-                  <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
+                  <input type="text" class="form-control" id="email" name="memberEmail" placeholder="Enter your email" onblur="checkEmail()" />
+                    <!-- Email Message is -->
+                    <span id="emailMessage" class="form-text"></span>
                 </div>
                 <div class="mb-3 form-password-toggle">
                   <label class="form-label" for="password">Password</label>
@@ -101,15 +101,30 @@
                       type="password"
                       id="password"
                       class="form-control"
-                      name="password"
+                      name="memberPassword"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
                     />
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                   </div>
                 </div>
+                  <div class="mb-3 form-password-toggle">
+                      <label class="form-label" for="password">Password Confirm</label>
+                      <div class="input-group input-group-merge">
+                          <input
+                                  type="password"
+                                  id="passwordConfirm"
+                                  class="form-control"
+                                  name="password"
+                                  placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                  aria-describedby="password"
+                          />
+                          <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                      </div>
+                  </div>
 
                 <div class="mb-3">
+                    <div id="errorMsg"></div>
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
                     <label class="form-check-label" for="terms-conditions">
@@ -118,7 +133,7 @@
                     </label>
                   </div>
                 </div>
-                <button class="btn btn-primary d-grid w-100">Sign up</button>
+                <button class="btn btn-primary d-grid w-100" id="submitBtn">Sign up</button>
               </form>
 
               <p class="text-center">
@@ -135,7 +150,7 @@
     </div>
 
     <!-- / Content -->
-
+    <script src="/js/user/register.js"></script>
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="/js/libs/jquery/jquery.js"></script>
@@ -144,7 +159,6 @@
     <script src="/js/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
 
     <script src="/js/vendor/menu.js"></script>
-    <!-- endbuild -->
 
     <!-- Vendors JS -->
     <script src="/js/libs/apex-charts/apexcharts.js"></script>
@@ -154,8 +168,5 @@
 
     <!-- Page JS -->
     <script src="/js/dashboards-analytics.js"></script>
-
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
 </html>

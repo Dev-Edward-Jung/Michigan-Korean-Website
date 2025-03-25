@@ -14,7 +14,7 @@ spring:
   #jpa
   jpa:
     hibernate:
-      ddl-auto: create-drop   # 처음엔 update, 나중엔 validate 추천
+      ddl-auto: update   # 처음엔 update, 나중엔 validate 추천
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
