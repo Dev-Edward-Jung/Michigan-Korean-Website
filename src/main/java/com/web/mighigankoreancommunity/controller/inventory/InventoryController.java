@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/page/inventory")
 @Controller
 public class InventoryController {
-    @GetMapping("/goinventory")
+    @GetMapping("/goInventory")
     public String goInventory() {
         return "restaurant/inventory-list";
     }

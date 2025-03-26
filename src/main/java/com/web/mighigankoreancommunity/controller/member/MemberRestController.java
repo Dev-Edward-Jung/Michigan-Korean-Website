@@ -14,9 +14,11 @@ public class MemberRestController {
 
     @PostMapping("/checkEmail")
     public boolean checkEmail(@RequestBody String email) {
-
+        System.out.println(email);
         boolean result = memberRepository.existsByMemberEmail(email);
+        System.out.println(result);
         return result;
     }
+
 
 }

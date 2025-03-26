@@ -31,3 +31,7 @@ spring:
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
+logging:
+  level:
+    root: info
+    org.springframework.security : debug
