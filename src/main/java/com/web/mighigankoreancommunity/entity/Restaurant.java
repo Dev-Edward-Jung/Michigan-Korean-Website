@@ -25,6 +25,8 @@ public class Restaurant {
 
     private String address;
 
+    private String city;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @JsonBackReference
