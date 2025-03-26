@@ -24,6 +24,9 @@
   <title>Register to KR</title>
 
   <meta name="description" content="" />
+<!--  csrf token  -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
   <!-- Favicon -->
   <!-- <link rel="icon" type="image/x-icon" href="/img/favicon/favicon.ico" /> -->
@@ -76,7 +79,8 @@
               <h4 class="mb-2">Welcome to our website</h4>
               <p class="mb-4">Login and manage your business</p>
 
-              <form id="registerForm" class="mb-3" th:action="@{/page/member/register}" th:method="@{POST}">
+              <form id="registerForm" class="mb-3" th:action="@{/page/member/register}" method="post">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="mb-3">
                   <label for="username" class="form-label">Username</label>
                   <input

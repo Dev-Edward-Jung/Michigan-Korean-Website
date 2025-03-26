@@ -20,6 +20,9 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
   />
+  <!--  csrf token  -->
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
   <title>Login To KR</title>
 
@@ -77,14 +80,15 @@
               <h4 class="mb-2">Welcome to KR! 👋</h4>
               <p class="mb-4">Please sign in to your account</p>
 
-              <form id="formAuthentication" class="mb-3" th:action="@{/page/member/login}" th:method="@{POST}">
+              <form id="formAuthentication" class="mb-3" th:action="@{/page/member/login}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="mb-3">
                   <label for="email" class="form-label">Email</label>
                   <input
                     type="text"
                     class="form-control"
                     id="email"
-                    name="email-username"
+                    name="memberEmail"
                     placeholder="Enter your email"
                     autofocus
                   />
@@ -101,7 +105,7 @@
                       type="password"
                       id="password"
                       class="form-control"
-                      name="password"
+                      name="memberPassword"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
                     />
@@ -156,6 +160,5 @@
     <script src="/js/dashboards-analytics.js"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
 </html>
