@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.service.member;
 
 
+import com.web.mighigankoreancommunity.dto.MemberDTO;
 import com.web.mighigankoreancommunity.entity.Member;
 import com.web.mighigankoreancommunity.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,27 +23,24 @@ public class MemberService {
         return member.getId();
     }
 
-
-//    Login Method
-    public boolean login(Member member) {
-        boolean result = false;
-        String inputEmail = member.getMemberEmail();
-        String inputPassword = member.getMemberPassword();
-
-
-        Member loginMember = memberRepository.findMemberByMemberEmail(inputEmail);
-        String passwordFromDB = loginMember.getMemberPassword();
-
-        System.out.println(loginMember.getMemberEmail());
-
-        if (loginMember != null) {
-            if (passwordEncoder.matches(inputPassword, passwordFromDB)) {
-                result = true;
-            }
-        }
-
-        return result;
+//    check Email
+    public boolean getMemberByEmail(String email) {
+        return memberRepository.existsByMemberEmail(email);
     }
+
+
+    public MemberDTO memberToDTO(Member member) {
+        MemberDTO dto = new MemberDTO(
+                member.getId(),
+                member.getMemberName(),
+                member.getMemberEmail()
+        );
+        return dto;
+    }
+
+
+
+
 
 
 }

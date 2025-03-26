@@ -30,8 +30,11 @@ public class SecurityConfig {
                 .csrf(Customizer.withDefaults()) // csrf activate
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/page/member/login").permitAll()
-                        .requestMatchers("/api/member/checkEmail","/page/member/login", "/page/member/register", "/page/inventory/goInventory", "/css/**", "/js/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/member/checkEmail","/page/member/login", "/page/member/register", "/page/member/me"
+                                ,"/page/inventory/goInventory"
+                                ,"/page/restaurant/list", "/api/restaurant/save"
+                                ,"/css/**", "/js/**").
+                        permitAll().anyRequest().authenticated()
                 )
 
 
