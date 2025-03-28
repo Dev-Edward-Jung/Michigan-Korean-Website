@@ -27,6 +27,7 @@ public class Restaurant {
 
     private String city;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @JsonBackReference
@@ -43,4 +44,16 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Announcement> announcements = new ArrayList<>();
+
+
+
+
+
+    public static Restaurant create( String name, String city, Member owner) {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(name);
+        restaurant.setCity(city);
+        restaurant.setOwner(owner);
+        return restaurant;
+    }
 }

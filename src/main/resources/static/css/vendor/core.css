@@ -317,6 +317,7 @@ th {
   border-color: inherit;
   border-style: solid;
   border-width: 0;
+  cursor:pointer;
 }
 
 label {
@@ -4713,6 +4714,7 @@ textarea.form-control-lg {
   border-top: 0px solid #d9dee3;
   border-bottom-right-radius: calc(0.5rem - 0px);
   border-bottom-left-radius: calc(0.5rem - 0px);
+  justify-content: space-around;
 }
 .modal-footer > * {
   margin: 0.25rem;
@@ -16656,10 +16658,6 @@ html:not(.layout-footer-fixed) .content-wrapper {
   margin-top: 5%;
 }
 
-.btn-danger{
-  margin-left: 1%;
-  font-size: 0.8rem;
-}
 
 .second-input{
   margin-left: 1%;
@@ -16675,6 +16673,15 @@ html:not(.layout-footer-fixed) .content-wrapper {
 
 .logo-auth{
   width: 40%;
+}
+
+input.number-input::-webkit-outer-spin-button,
+input.number-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input.number-input[type=number] {
+  -moz-appearance: textfield;
 }
 
 

@@ -20,7 +20,7 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String itemName;
+    private String name;
 
     private Integer quantity;
 
@@ -30,4 +30,11 @@ public class Inventory {
     @JoinColumn(name = "restaurant_id")
     @JsonBackReference
     private Restaurant restaurant;
+
+    public Inventory(String name, Integer quantity, String unit, Restaurant restaurant) {
+        this.name = name;
+        this.quantity = quantity;
+        this.unit = unit;
+        this.restaurant = restaurant;
+    }
 }
