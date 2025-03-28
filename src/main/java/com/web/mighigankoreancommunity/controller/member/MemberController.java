@@ -20,15 +20,6 @@ public class MemberController {
         return "user/auth-login";
     }
 
-//    @PostMapping("/login")
-//    public String login(Member member) {
-//        System.out.println(member.getMemberEmail());
-//
-////        login service logic
-//        memberService.login(member);
-//
-//        return "restaurant/inventory-list";
-//    }
 //    Page Move
     @GetMapping("/register")
     public String RegisterPage() {return "user/auth-register";}

@@ -116,3 +116,12 @@ let menu, animate;
   // Auto update menu collapsed/expanded based on the themeConfig
   window.Helpers.setCollapsed(true, false);
 })();
+
+// input number only number allowed
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('input[type="number"].number-input').forEach(input => {
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/[^0-9]/g, "");
+    });
+  });
+});

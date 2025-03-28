@@ -1,47 +1,21 @@
 
 
-
-
-// getting member login information
 document.addEventListener("DOMContentLoaded", async () => {
-    let memberId = 0;
-    // Get Now User Info
-    try {
-        const userRes = await fetch("/api/member/me", {
-            method: "GET",
-            credentials: "include" //
-        });
-        if (!userRes.ok) throw new Error("Not logged in");
+    // ✅ CSRF 정보
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-        const user = await userRes.json();
-        memberId = user.id;
-        console.log("현재 로그인한 사용자:", user);
+    initRestaurantSave(csrfToken, csrfHeader);
+    loadRestaurantList(csrfToken, csrfHeader);
+});
 
-
-        // 이 다음부터 user.id 를 이용해 레스토랑/인벤토리 API 호출 가능
-    } catch (err) {
-        console.error("fail to login:", err);
-        alert("fil to login.");
-        window.location.href = "/page/member/login";
-    }
-
-
-
-
-
-
-
-
-    // Save Restaurant
+// function for restaurantSave
+function initRestaurantSave(csrfToken, csrfHeader) {
     const nameInput = document.querySelector(".inputName");
     const cityInput = document.querySelector(".inputCity");
     const saveBtn = document.querySelector(".saveBtn");
 
-    // ✅ CSRF 정보 가져오기
-    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
-    // 버튼 처음엔 비활성화
+    // 초기 비활성화
     saveBtn.disabled = true;
 
     // 실시간 유효성 검사
@@ -53,11 +27,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-
-    // Save 버튼 클릭 시 POST 요청
+    // 저장 버튼 클릭 시
     saveBtn.addEventListener("click", async () => {
-        const name = nameInput.value.trim();
-        const city = cityInput.value.trim();
+        const restaurantName = nameInput.value.trim();
+        const restaurantCity = cityInput.value.trim();
+
 
         try {
             const res = await fetch("/api/restaurant/save", {
@@ -65,13 +39,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
-                    [csrfHeader]: csrfToken, // ✅ CSRF 토큰 추가!
+                    [csrfHeader]: csrfToken,
                 },
-                body: JSON.stringify({ name, city, memberId }),
+                body: JSON.stringify({ restaurantName, restaurantCity}) // 🔥 memberId 제거됨
             });
 
             if (res.ok) {
-                alert("Restaurant saved!");
                 window.location.reload();
             } else {
                 alert("Failed to save restaurant");
@@ -81,22 +54,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             alert("Error occurred");
         }
     });
+}
 
-
-
-
-
-
-    // get list of restaurant
+// get Restaurant List
+async function loadRestaurantList(csrfToken, csrfHeader) {
     try {
         const res = await fetch("/api/restaurant/list", {
-            method: "POST",
+            method: "GET", // 🔥 POST → GET으로 변경
             credentials: "include",
             headers: {
-                "Content-Type": "application/json",
                 [csrfHeader]: csrfToken
-            },
-            body: JSON.stringify({ memberId }) // ✅ JSON body에 memberId 포함
+            }
         });
 
         if (!res.ok) throw new Error("getting list error");
@@ -108,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const tr = document.createElement("tr");
             tr.classList.add("restaurant-row");
             tr.dataset.id = restaurant.id;
+            tr.setAttribute("onclick", `location.href='/page/inventory/list?restaurantId=${restaurant.id}'`);
 
             tr.innerHTML = `
                 <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>${restaurant.name}</strong></td>
@@ -121,7 +90,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error fetching restaurants:", err);
         alert("Fail to get your restaurant");
     }
-
-});
-
-
+}

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
-@RequestMapping("/page/employeeList")
+@RequestMapping("/page/employee")
 @Controller
 public class EmployeeController {
     @GetMapping("/list")

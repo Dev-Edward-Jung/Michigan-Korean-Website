@@ -33,7 +33,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/member/checkEmail","/page/member/login", "/page/member/register", "/page/member/me"
                                 ,"/page/inventory/goInventory"
                                 ,"/page/restaurant/list", "/api/restaurant/save"
-                                ,"/css/**", "/js/**").
+                                ,"/page/inventory/**", "/api/inventory/**"
+                                ,"/api/employee/**", "/page/employee/**"
+                                ,"/css/**", "/js/**"
+                        ,"/page/error/**").
                         permitAll().anyRequest().authenticated()
                 )
 

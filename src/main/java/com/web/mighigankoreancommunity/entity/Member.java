@@ -45,12 +45,6 @@ public class Member implements UserDetails {
     @JsonManagedReference
     private List<Restaurant> restaurantList = new ArrayList<>();
 
-    public void addRestaurant(Restaurant restaurant) {
-        restaurantList.add(restaurant);
-        restaurant.setOwner(this);
-    }
-
-
 
 
     // memberEmail
