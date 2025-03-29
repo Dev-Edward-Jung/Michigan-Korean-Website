@@ -18,6 +18,7 @@ public class InventoryDTO {
 
     private String unit;
 
+
     private Long restaurantId;
 
 

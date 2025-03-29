@@ -40,7 +40,8 @@ public class InventoryRestController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Inventory>> inventoryList(@RequestParam("restaurantId") Long restaurantId, @AuthenticationPrincipal Member member) {
+    public ResponseEntity<List<Inventory>> inventoryList(@RequestParam("restaurantId") Long restaurantId,
+                                                         @AuthenticationPrincipal Member member) {
         List<Inventory> inventoryList = inventoryService.getInventoriesByRestaurant(restaurantId, member);
         return ResponseEntity.ok(inventoryList);
     }

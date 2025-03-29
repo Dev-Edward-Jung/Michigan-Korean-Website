@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -19,6 +22,13 @@ public class RestaurantDTO {
     private String restaurantName;
     private String restaurantCity;
     private Long ownerId;
+    // Save create created time automatically
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    // Save create update time automatically
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
 
 

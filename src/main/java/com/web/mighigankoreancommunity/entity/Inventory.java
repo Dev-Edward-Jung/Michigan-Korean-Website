@@ -2,8 +2,12 @@ package com.web.mighigankoreancommunity.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -25,6 +29,16 @@ public class Inventory {
     private Integer quantity;
 
     private String unit; // ex: "boxes", "bags"
+
+    private String category;
+
+    // Save create created time automatically
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    // Save create update time automatically
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
