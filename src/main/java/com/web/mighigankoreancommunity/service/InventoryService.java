@@ -20,7 +20,7 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final RestaurantRepository restaurantRepository;
 
-    // ✅ 인벤토리 리스트 가져오기
+    // Get Inventory List
     public List<Inventory> getInventoriesByRestaurant(Long restaurantId, Member loginUser) {
         Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, loginUser);
         System.out.println("In Service, restaurantName is : " + restaurant.getName());
@@ -30,7 +30,7 @@ public class InventoryService {
         return inventoryRepository.findByRestaurantsId(restaurantId);
     }
 
-    // ✅ 인벤토리 추가
+    // Add Inventory
     public boolean saveInventory(InventoryDTO dto, Member loginUser) {
         try {
             Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(dto.getRestaurantId(), loginUser);
@@ -44,7 +44,7 @@ public class InventoryService {
         }
     }
 
-    // ✅ 인벤토리 수정
+    // Update Inventory
     public boolean updateInventory(InventoryDTO dto, Member loginUser) {
         try {
             Inventory inventory = inventoryRepository.findById(dto.getId()).orElse(null);

@@ -4,12 +4,15 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.web.mighigankoreancommunity.domain.MemberType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,9 +38,13 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private String memberPassword;
 
-    private String memberAddress;
 
-    private String memberPhone;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    // Save create update time automatically
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     private MemberType memberType;
 
