@@ -49,6 +49,7 @@ public class InventoryRestController {
     public ResponseEntity<List<Inventory>> inventoryList(@RequestParam Long restaurantId,
                                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         System.out.println(customUserDetails.toString());
+
         List<Inventory> inventoryList = inventoryService.getInventoriesByRestaurant(restaurantId, customUserDetails.getOwner());
         return ResponseEntity.ok(inventoryList);
     }
