@@ -1,9 +1,6 @@
 package com.web.mighigankoreancommunity.dto;
 
 
-import com.web.mighigankoreancommunity.entity.Member;
-import com.web.mighigankoreancommunity.entity.Restaurant;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

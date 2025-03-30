@@ -13,4 +13,5 @@ public class RestaurantController {
     public String list() {
         return "restaurant/restaurant-list";
     }
+
 }

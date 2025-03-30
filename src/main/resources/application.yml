@@ -14,24 +14,24 @@ spring:
   #jpa
   jpa:
     hibernate:
-      ddl-auto: update   # 처음엔 update, 나중엔 validate 추천
+      ddl-auto: update  # 처음엔 update, 나중엔 validate 추천
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
 
 
-  #log
-  output:
-    ansi:
-      enabled: always
+#  #log
+#  output:
+#    ansi:
+#      enabled: always
 
 
   servlet:
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
-logging:
-  level:
-    root: info
-    org.springframework.security : debug
+#logging:
+#  level:
+#    root: info
+#    org.springframework.security : debug

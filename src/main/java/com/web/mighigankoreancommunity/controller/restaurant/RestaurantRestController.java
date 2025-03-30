@@ -2,12 +2,10 @@ package com.web.mighigankoreancommunity.controller.restaurant;
 
 
 
-import com.web.mighigankoreancommunity.dto.MemberDTO;
 import com.web.mighigankoreancommunity.dto.RestaurantDTO;
-import com.web.mighigankoreancommunity.entity.Member;
+import com.web.mighigankoreancommunity.entity.CustomUserDetails;
+import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
-import com.web.mighigankoreancommunity.repository.RestaurantRepository;
-import com.web.mighigankoreancommunity.repository.member.MemberRepository;
 import com.web.mighigankoreancommunity.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,13 +21,13 @@ public class RestaurantRestController {
 
     @PostMapping("/save")
     public void saveRestaurant(@RequestBody RestaurantDTO dto,
-                               @AuthenticationPrincipal Member member) {
-        restaurantService.saveService(dto, member);
+                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+        restaurantService.saveService(dto, userDetails.getOwner());
     }
 
 
     @GetMapping("/list")
-    public List<Restaurant> restaurantList(@AuthenticationPrincipal Member member) {
-        return restaurantService.restaurantListService(member);
+    public List<Restaurant> restaurantList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return restaurantService.restaurantListService(userDetails.getOwner());
     }
 }

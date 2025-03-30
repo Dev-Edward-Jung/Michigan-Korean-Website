@@ -3,8 +3,10 @@ package com.web.mighigankoreancommunity.domain;
 
 
 
-public enum MemberType {
+public enum MemberRole {
     OWNER,
     MANAGER,
-    GENERAL
+    KITCHEN,
+    SERVER,
+    EMPLOYEE,
 }

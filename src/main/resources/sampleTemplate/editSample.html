@@ -16,7 +16,7 @@
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>
-    Employee List
+    Category Change
   </title>
   <meta content="" name="description"/>
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -45,11 +45,10 @@
        <div class="col-md-6">
         <div class="card mb-4">
          <h5 class="card-header">
-          Employee List
+          Category List
          </h5>
          <div class="card-body">
           <div class="mt-2 list-view">
-<!--      one input     -->
            <input class="form-control form-control-lg large-input" disabled="" type="text" value="Kyle Kim"/>
            <input class="form-control form-control-lg large-input second-input" disabled="" placeholder="Address" type="text" value="2600 Livernois Road"/>
            <!-- Edit Button -->
@@ -62,7 +61,7 @@
              <div class="modal-content">
               <div class="modal-header">
                <h5 class="modal-title">
-                Kyle, Kim
+                Please put your category name
                </h5>
                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
                </button>
@@ -71,32 +70,26 @@
                <div class="row">
                 <div class="col mb-3">
                  <label class="form-label">
-                  Name
+                  Category Name
                  </label>
-                 <input class="form-control" placeholder="Enter Name" type="text"/>
-                </div>
-               </div>
-               <div class="row g-2">
-                <div class="col mb-0">
-                 <label class="form-label">
-                  address
-                 </label>
-                 <input class="form-control" placeholder="City" type="text"/>
+                 <input class="form-control" placeholder="Meat" type="text"/>
                 </div>
                </div>
               </div>
               <div class="modal-footer">
-               <button class="btn btn-primary" type="button">
-                Save Changes
-               </button>
                <button class="btn btn-danger" type="button">
                 Remove
+               </button>
+               <button class="btn btn-primary" type="button">
+                Save Changes
                </button>
               </div>
              </div>
             </div>
            </div>
            <!-- /Modal Area -->
+
+
           </div>
 
          </div>
@@ -177,8 +170,6 @@
           </div>
          </div>
          <!--       Add   Modal End            -->
-
-
         </div>
        </div>
       </div>

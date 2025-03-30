@@ -101,7 +101,7 @@ async function checkEmail() {
     }
 
     try {
-        const res = await fetch("/api/member/checkEmail", {
+        const res = await fetch("/api/owner/checkEmail", {
             method: "POST",
             headers: {
                 "Content-Type": "text/plain",

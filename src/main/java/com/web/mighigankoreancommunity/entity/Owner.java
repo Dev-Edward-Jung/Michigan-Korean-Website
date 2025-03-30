@@ -1,42 +1,44 @@
 package com.web.mighigankoreancommunity.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.web.mighigankoreancommunity.domain.MemberType;
+import com.web.mighigankoreancommunity.domain.MemberRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.management.relation.Role;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "member")
+@Table(name = "owner")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Member implements UserDetails {
+public class Owner implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String memberName;
+    private String ownerName;
 
     @Column(nullable = false, unique = true)
-    private String memberEmail;
+    private String ownerEmail;
 
     @Column(nullable = false)
-    private String memberPassword;
+    private String ownerPassword;
+
+    @Enumerated(EnumType.STRING)
+    private MemberRole memberRole = MemberRole.OWNER;
 
 
     @CreationTimestamp
@@ -45,8 +47,6 @@ public class Member implements UserDetails {
     // Save create update time automatically
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    private MemberType memberType;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
@@ -57,13 +57,13 @@ public class Member implements UserDetails {
     // memberEmail
     @Override
     public String getUsername() {
-        return memberEmail;
+        return ownerName;
     }
 
     // Password
     @Override
     public String getPassword() {
-        return memberPassword;
+        return ownerPassword;
     }
 
     // Authentification

@@ -20,11 +20,10 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
   />
-    <meta name="_csrf" th:content="${_csrf.token}" />
-    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
-  <title>Register to KR</title>
-
+  <title>Login To KR</title>
   <meta name="description" content="" />
 
   <!-- Favicon -->
@@ -51,6 +50,7 @@
   <link rel="stylesheet" href="/css/libs/apex-charts/apex-charts.css" />
 
   <!-- Page CSS -->
+
   <!-- Helpers -->
   <script src="/js/vendor/helpers.js"></script>
 
@@ -65,95 +65,79 @@
     <div class="container-xxl">
       <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner">
-          <!-- Register Card -->
+          <!-- Register -->
           <div class="card">
             <div class="card-body">
- <!-- Logo -->
- <div class="app-brand justify-content-center ">
-  <a href="page/member/login" class="app-brand-link gap-2">
-    <img src="/img/logo/logo-gray.png" class="logo-auth" alt="">
-  </a>
-</div>
-<!-- /Logo -->
-              <h4 class="mb-2">Welcome to our website</h4>
-              <p class="mb-4">Login and manage your business</p>
+              <!-- Logo -->
+              <div class="app-brand justify-content-center ">
+                <a href="owner-login.html" class="app-brand-link gap-2">
+                  <img src="/img/logo/logo-gray.png" class="logo-auth" alt="">
+                </a>
+              </div>
+              <!-- /Logo -->
+              <h4 class="mb-2">Welcome to KR! 👋</h4>
+              <p class="mb-4">Please sign in to your account</p>
 
-              <form id="registerForm" class="mb-3" th:action="@{/page/member/register}" method="post">
-                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <form id="formAuthentication" class="mb-3" th:action="@{/page/owner/login}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="mb-3">
-                  <label for="username" class="form-label">Username</label>
+                  <label for="email" class="form-label">Email</label>
                   <input
                     type="text"
                     class="form-control"
-                    id="username"
-                    name="memberName"
-                    placeholder="Enter your username"
+                    id="email"
+                    name="ownerEmail"
+                    placeholder="Enter your email"
                     autofocus
                   />
                 </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="text" class="form-control" id="email" name="memberEmail" placeholder="Enter your email" onblur="checkEmail()" />
-                    <!-- Email Message is -->
-                    <span id="emailMessage" class="form-text"></span>
-                </div>
                 <div class="mb-3 form-password-toggle">
-                  <label class="form-label" for="password">Password</label>
+                  <div class="d-flex justify-content-between">
+                    <label class="form-label" for="password">Password</label>
+                    <a href="/page/owner/forgot/password">
+                      <small>Forgot Password?</small>
+                    </a>
+                  </div>
                   <div class="input-group input-group-merge">
                     <input
                       type="password"
                       id="password"
                       class="form-control"
-                      name="memberPassword"
+                      name="ownerPassword"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
                     />
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                   </div>
                 </div>
-                  <div class="mb-3 form-password-toggle">
-                      <label class="form-label" for="password">Password Confirm</label>
-                      <div class="input-group input-group-merge">
-                          <input
-                                  type="password"
-                                  id="passwordConfirm"
-                                  class="form-control"
-                                  name="password"
-                                  placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                  aria-describedby="password"
-                          />
-                          <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                      </div>
-                  </div>
-
                 <div class="mb-3">
-                    <div id="errorMsg"></div>
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
-                    <label class="form-check-label" for="terms-conditions">
-                      I agree to
-                      <a href="javascript:void(0);">privacy policy & terms</a>
-                    </label>
+                    <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me"/>
+                    <label class="form-check-label" for="remember-me"> Remember Me </label>
                   </div>
                 </div>
-                <button class="btn btn-primary d-grid w-100" id="submitBtn">Sign up</button>
+                <div class="mb-3">
+                  <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                </div>
               </form>
 
               <p class="text-center">
-                <span>Already have an account?</span>
-                <a href="/page/member/login">
-                  <span>Login Instead</span>
+                <span>New on our platform?</span>
+                <a href="/page/owner/register">
+                  <span>Create an account</span>
                 </a>
               </p>
             </div>
           </div>
-          <!-- Register Card -->
+          <!-- /Register -->
         </div>
       </div>
     </div>
 
     <!-- / Content -->
-    <script src="/js/user/register.js"></script>
+
+
+
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="/js/libs/jquery/jquery.js"></script>
@@ -162,6 +146,7 @@
     <script src="/js/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
 
     <script src="/js/vendor/menu.js"></script>
+    <!-- endbuild -->
 
     <!-- Vendors JS -->
     <script src="/js/libs/apex-charts/apexcharts.js"></script>
@@ -171,5 +156,7 @@
 
     <!-- Page JS -->
     <script src="/js/dashboards-analytics.js"></script>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
   </body>
 </html>
