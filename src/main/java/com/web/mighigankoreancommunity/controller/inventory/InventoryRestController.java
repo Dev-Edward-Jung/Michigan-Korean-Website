@@ -4,8 +4,7 @@ package com.web.mighigankoreancommunity.controller.inventory;
 import com.web.mighigankoreancommunity.dto.InventoryDTO;
 import com.web.mighigankoreancommunity.entity.CustomUserDetails;
 import com.web.mighigankoreancommunity.entity.Inventory;
-import com.web.mighigankoreancommunity.entity.Owner;
-import com.web.mighigankoreancommunity.service.InventoryService;
+import com.web.mighigankoreancommunity.service.inventory.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +24,7 @@ public class InventoryRestController {
                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
         Inventory savedInventory = inventoryService.saveInventory(dto, userDetails.getOwner());
         InventoryDTO responseDto = InventoryDTO.fromEntity(savedInventory); // <- DTO 변환 메서드 필요
+        System.out.println("response DTO : " + responseDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -48,6 +48,7 @@ public class InventoryRestController {
     @GetMapping("/list")
     public ResponseEntity<List<Inventory>> inventoryList(@RequestParam Long restaurantId,
                                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        System.out.println(customUserDetails.toString());
         List<Inventory> inventoryList = inventoryService.getInventoriesByRestaurant(restaurantId, customUserDetails.getOwner());
         return ResponseEntity.ok(inventoryList);
     }

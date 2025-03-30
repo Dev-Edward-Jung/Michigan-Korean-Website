@@ -1,5 +1,6 @@
 package com.web.mighigankoreancommunity.dto;
 
+import com.web.mighigankoreancommunity.entity.Category;
 import com.web.mighigankoreancommunity.entity.Inventory;
 import com.web.mighigankoreancommunity.entity.Owner;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class InventoryDTO {
 
     private String unit;
 
-    private String category;
+    private Category category;
 
 
     private Long restaurantId;

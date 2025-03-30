@@ -30,8 +30,6 @@ public class Inventory {
 
     private String unit; // ex: "boxes", "bags"
 
-    private String category;
-
     // Save create created time automatically
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -42,8 +40,11 @@ public class Inventory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
-    @JsonBackReference
     private Restaurant restaurant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public Inventory(String name, Integer quantity, String unit, Restaurant restaurant) {
         this.name = name;

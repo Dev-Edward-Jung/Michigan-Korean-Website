@@ -153,7 +153,7 @@ async function addInventory(csrf, restaurantId) {
         alert("Please fill all fields correctly.");
         return;
     }
-    // p---------- Category Type changed. Need to fix it
+
     const data = { name, quantity, unit, category, restaurantId };
 
     const res = await fetch("/api/inventory/save", {

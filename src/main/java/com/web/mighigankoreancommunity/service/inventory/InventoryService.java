@@ -1,11 +1,11 @@
-package com.web.mighigankoreancommunity.service;
+package com.web.mighigankoreancommunity.service.inventory;
 
 
 import com.web.mighigankoreancommunity.dto.InventoryDTO;
 import com.web.mighigankoreancommunity.entity.Inventory;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
-import com.web.mighigankoreancommunity.repository.InventoryRepository;
+import com.web.mighigankoreancommunity.repository.inevntory.InventoryRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
