@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final OwnerRepository ownerRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String ownerEmail) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String ownerEmail) throws UsernameNotFoundException {
         Owner owner = ownerRepository.findOwnerByOwnerEmail(ownerEmail);
         if (owner == null) {
             throw new UsernameNotFoundException("Owner not found with email: " + ownerEmail);

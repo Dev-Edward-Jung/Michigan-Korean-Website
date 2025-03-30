@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()   // 모든 GET 허용 (선택 사항)
                         .requestMatchers(HttpMethod.POST, "/**").permitAll()  // ✅ 모든 POST 허용
                         .requestMatchers(HttpMethod.PUT, "/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
                         .requestMatchers(
                                 "/css/**",
                                 "/js/**",

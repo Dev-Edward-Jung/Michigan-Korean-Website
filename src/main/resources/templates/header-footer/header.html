@@ -81,7 +81,7 @@
         <!-- Nav Bar -->
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
             <div class="app-brand demo">
-              <a href="index.html" class="app-brand-link">
+              <a href="/page/restaurant/list" class="app-brand-link">
                   <img src="/img/logo/logo-gray.png" class = "logo-nav"alt="">
               </a>
   
@@ -108,26 +108,23 @@
                 <span class="menu-header-text">Pages</span>
               </li>
               <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <a href="javascript:void(0);" class="menu-link menu-toggle restaurant_link">
                   <i class="menu-icon tf-icons bx bx-dock-top"></i>
                   <div data-i18n="Account Settings">Restaurant</div>
                 </a>
                 <ul class="menu-sub">
-                  <li class="menu-item">
-                    <a href="/page/inventory/list" class="menu-link">
-                      <div data-i18n="Account">Inventory</div>
+                    <a href="/page/inventory/list" class="menu-link inventory_link">
+                        <div data-i18n="Account">Inventory</div>
                     </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="pages-account-settings-notifications.html" class="menu-link">
-                      <div data-i18n="Notifications">Employee</div>
+                    <a href="/page/employee/list" class="menu-link employee_link">
+                        <div data-i18n="Notifications">Employee</div>
                     </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="pages-account-settings-connections.html" class="menu-link">
-                      <div data-i18n="Connections">Payroll</div>
+                    <a href="/page/payroll/list" class="menu-link payroll_link">
+                        <div data-i18n="Connections">Payroll</div>
                     </a>
-                  </li>
+                    <a href="/page/category/list" class="menu-link category_link">
+                        <div data-i18n="Connections">Category</div>
+                    </a>
                 </ul>
 
               <!-- Components -->
@@ -169,6 +166,19 @@
     <!-- Page JS -->
     <script src="/js/dashboards-analytics.js"></script>
 
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <script>
+      window.addEventListener("DOMContentLoaded", () => {
+          let restaurantId = new URLSearchParams(window.location.search).get("restaurantId");
+          if (!restaurantId) {
+              restaurantId = localStorage.getItem("restaurantId");
+              if (restaurantId) {
+                  const newUrl = `${window.location.pathname}?restaurantId=${restaurantId}`;
+                  window.location.replace(newUrl);
+              }
+          } else {
+              localStorage.setItem("restaurantId", restaurantId);
+          }
+      });
+  </script>
+
 </html>

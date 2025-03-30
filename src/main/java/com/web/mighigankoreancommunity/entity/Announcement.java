@@ -42,6 +42,5 @@ public class Announcement {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
-    @JsonBackReference
     private Restaurant restaurant;
 }

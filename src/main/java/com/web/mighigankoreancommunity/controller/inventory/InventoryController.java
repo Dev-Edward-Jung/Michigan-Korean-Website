@@ -1,7 +1,7 @@
 package com.web.mighigankoreancommunity.controller.inventory;
 
 import ch.qos.logback.core.model.Model;
-import com.web.mighigankoreancommunity.service.InventoryService;
+import com.web.mighigankoreancommunity.service.inventory.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
