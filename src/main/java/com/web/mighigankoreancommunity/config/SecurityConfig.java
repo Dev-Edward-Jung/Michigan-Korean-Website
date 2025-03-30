@@ -1,13 +1,12 @@
 package com.web.mighigankoreancommunity.config;
 
 
+import com.web.mighigankoreancommunity.service.owner.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CustomUserDetailsService customUserDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -29,29 +30,40 @@ public class SecurityConfig {
         http
                 .csrf(Customizer.withDefaults()) // csrf activate
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/page/member/login").permitAll()
-                        .requestMatchers("/api/member/checkEmail","/page/member/login", "/page/member/register", "/page/member/me"
-                                ,"/page/inventory/goInventory"
-                                ,"/page/restaurant/list", "/api/restaurant/save"
-                                ,"/page/inventory/**", "/api/inventory/**"
-                                ,"/api/employee/**", "/page/employee/**"
-                                ,"/css/**", "/js/**"
-                        ,"/page/error/**").
-                        permitAll().anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()   // 모든 GET 허용 (선택 사항)
+                        .requestMatchers(HttpMethod.POST, "/**").permitAll()  // ✅ 모든 POST 허용
+                        .requestMatchers(HttpMethod.PUT, "/**").permitAll()
+                        .requestMatchers(
+                                "/css/**",
+                                "/js/**",
+                                "/img/**",
+                                "/fonts/**",
+                                "/vendor/**",
+                                "/favicon.ico",
+                                "/page/error/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+
+                .rememberMe(rememberMe -> rememberMe
+                        .key("secure-remember-me-key")
+                        .rememberMeParameter("remember-me")
+                        .tokenValiditySeconds(60 * 60 * 24 * 14)
+                        .userDetailsService(customUserDetailsService)
                 )
 
 
 
                 .formLogin(form -> form
 //                       login page url
-                        .loginPage("/page/member/login")
+                        .loginPage("/page/owner/login")
 //                        after login success
-                        .loginProcessingUrl("/page/member/login")
+                        .loginProcessingUrl("/page/owner/login")
 //                        input name "memberEmail, memberPassword" automatically
-                        .usernameParameter("memberEmail")
-                        .passwordParameter("memberPassword")
+                        .usernameParameter("ownerEmail")
+                        .passwordParameter("ownerPassword")
                         .defaultSuccessUrl("/page/restaurant/list", true)
-                                .failureUrl("/page/member/login?error=true")
+                                .failureUrl("/page/owner/login?error=true")
                         .permitAll()
                 );
 

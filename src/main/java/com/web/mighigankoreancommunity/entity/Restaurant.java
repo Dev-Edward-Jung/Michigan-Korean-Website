@@ -41,14 +41,14 @@ public class Restaurant {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "owner_id")
     @JsonBackReference
-    private Member owner;
+    private Owner owner;
 
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Employee> employees = new ArrayList<>();
+    private List<RestaurantEmployee> restaurantEmployeeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -63,7 +63,7 @@ public class Restaurant {
 
 
 
-    public static Restaurant create( String name, String city, Member owner) {
+    public static Restaurant create( String name, String city, Owner owner) {
         Restaurant restaurant = new Restaurant();
         restaurant.setName(name);
         restaurant.setCity(city);

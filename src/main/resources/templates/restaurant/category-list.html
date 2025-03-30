@@ -16,7 +16,7 @@
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <title>
-    Employee List
+    Category Change
   </title>
   <meta content="" name="description"/>
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -45,13 +45,11 @@
        <div class="col-md-6">
         <div class="card mb-4">
          <h5 class="card-header">
-          Employee List
+          Category List
          </h5>
          <div class="card-body">
           <div class="mt-2 list-view">
-<!--      one input     -->
-           <input class="form-control form-control-lg large-input" disabled="" type="text" value="Kyle Kim"/>
-           <input class="form-control form-control-lg large-input second-input" disabled="" placeholder="Address" type="text" value="2600 Livernois Road"/>
+           <input class="form-control form-control-lg large-input" disabled="" type="text" value="Meat"/>
            <!-- Edit Button -->
            <button class="btn btn-primary small-button btn-danger" data-bs-target="#modalCenter1" data-bs-toggle="modal" type="button">
             Edit
@@ -62,7 +60,7 @@
              <div class="modal-content">
               <div class="modal-header">
                <h5 class="modal-title">
-                Kyle, Kim
+                Please put your category name
                </h5>
                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
                </button>
@@ -71,32 +69,26 @@
                <div class="row">
                 <div class="col mb-3">
                  <label class="form-label">
-                  Name
+                  Category Name
                  </label>
-                 <input class="form-control" placeholder="Enter Name" type="text"/>
-                </div>
-               </div>
-               <div class="row g-2">
-                <div class="col mb-0">
-                 <label class="form-label">
-                  address
-                 </label>
-                 <input class="form-control" placeholder="City" type="text"/>
+                 <input class="form-control" placeholder="Meat" type="text"/>
                 </div>
                </div>
               </div>
               <div class="modal-footer">
-               <button class="btn btn-primary" type="button">
-                Save Changes
-               </button>
                <button class="btn btn-danger" type="button">
                 Remove
+               </button>
+               <button class="btn btn-primary" type="button">
+                Save Changes
                </button>
               </div>
              </div>
             </div>
            </div>
            <!-- /Modal Area -->
+
+
           </div>
 
          </div>
@@ -141,28 +133,6 @@
                <input class="form-control name-input" name = "name" placeholder="ex)Tofu" type="text"/>
               </div>
              </div>
-             <div class="row mb-3">
-              <div class="col mb-0">
-               <label class="form-label">
-                Product Quantity
-               </label>
-               <input class="form-control numberInput" name="quantity" placeholder="24" pattern="\d*" type="number"/>
-              </div>
-             </div>
-             <div class="row mb-3">
-              <div class="col mb-0">
-               <label class="form-label">
-                Product Unit
-               </label>
-               <select
-                       class="form-select form-select-lg unitSelect"
-               >
-                <option>unit</option>
-                <option value="bags">bags</option>
-                <option value="boxes">boxes</option>
-               </select>
-              </div>
-             </div>
             </div>
             <div class="modal-footer">
              <button
@@ -177,8 +147,6 @@
           </div>
          </div>
          <!--       Add   Modal End            -->
-
-
         </div>
        </div>
       </div>

@@ -49,7 +49,6 @@
          </h5>
          <div class="card-body">
           <div class="mt-2 list-view">
-<!--      one input     -->
            <input class="form-control form-control-lg large-input" disabled="" type="text" value="Kyle Kim"/>
            <input class="form-control form-control-lg large-input second-input" disabled="" placeholder="Address" type="text" value="2600 Livernois Road"/>
            <!-- Edit Button -->
@@ -97,86 +96,87 @@
             </div>
            </div>
            <!-- /Modal Area -->
-          </div>
 
-         </div>
-         <!-- Add Button and Modal -->
-         <button
-                 class="btn btn-primary small-button margin-top-5"
-                 type="button"
-                 data-bs-toggle="modal"
-                 data-bs-target="#modalCenterAdd"
-         >
-          Add
-         </button>
-         <!--      Add     Modal Start           -->
-         <div
-                 aria-hidden="true"
-                 class="modal fade"
-                 id="modalCenterAdd"
-                 tabindex="-1"
-         >
-          <div
-                  class="modal-dialog modal-dialog-centered"
-                  role="document"
-          >
-           <div class="modal-content">
-            <div class="modal-header">
-             <h5 class="modal-title" id="modalCenterAddTitle">
-              Add Your Product
-             </h5>
-             <button
-                     aria-label="Close"
-                     class="btn-close"
-                     data-bs-dismiss="modal"
-                     type="button"
-             ></button>
-            </div>
-            <div class="modal-body">
-             <div class="row">
-              <div class="col mb-3">
-               <label class="form-label">
-                Product Name
-               </label>
-               <input class="form-control name-input" name = "name" placeholder="ex)Tofu" type="text"/>
+           <!-- Add Button and Modal -->
+           <button
+                   class="btn btn-primary small-button margin-top-5"
+                   type="button"
+                   data-bs-toggle="modal"
+                   data-bs-target="#modalCenterAdd"
+           >
+            Add
+           </button>
+           <!--      Add     Modal Start           -->
+           <div
+                   aria-hidden="true"
+                   class="modal fade"
+                   id="modalCenterAdd"
+                   tabindex="-1"
+           >
+            <div
+                    class="modal-dialog modal-dialog-centered"
+                    role="document"
+            >
+             <div class="modal-content">
+              <div class="modal-header">
+               <h5 class="modal-title" id="modalCenterAddTitle">
+                Add Your Product
+               </h5>
+               <button
+                       aria-label="Close"
+                       class="btn-close"
+                       data-bs-dismiss="modal"
+                       type="button"
+               ></button>
               </div>
-             </div>
-             <div class="row mb-3">
-              <div class="col mb-0">
-               <label class="form-label">
-                Product Quantity
-               </label>
-               <input class="form-control numberInput" name="quantity" placeholder="24" pattern="\d*" type="number"/>
+              <div class="modal-body">
+               <div class="row">
+                <div class="col mb-3">
+                 <label class="form-label">
+                  Product Name
+                 </label>
+                 <input class="form-control name-input" name = "name" placeholder="ex)Tofu" type="text"/>
+                </div>
+               </div>
+               <div class="row mb-3">
+                <div class="col mb-0">
+                 <label class="form-label">
+                  Product Quantity
+                 </label>
+                 <input class="form-control numberInput" name="quantity" placeholder="24" pattern="\d*" type="number"/>
+                </div>
+               </div>
+               <div class="row mb-3">
+                <div class="col mb-0">
+                 <label class="form-label">
+                  Product Unit
+                 </label>
+                 <select
+                         class="form-select form-select-lg unitSelect"
+                 >
+                  <option>unit</option>
+                  <option value="bags">bags</option>
+                  <option value="boxes">boxes</option>
+                 </select>
+                </div>
+               </div>
               </div>
-             </div>
-             <div class="row mb-3">
-              <div class="col mb-0">
-               <label class="form-label">
-                Product Unit
-               </label>
-               <select
-                       class="form-select form-select-lg unitSelect"
+              <div class="modal-footer">
+               <button
+                       class="btn btn-primary addBtn"
+                       data-bs-dismiss="modal"
+                       type="button"
                >
-                <option>unit</option>
-                <option value="bags">bags</option>
-                <option value="boxes">boxes</option>
-               </select>
+                Add Product
+               </button>
               </div>
              </div>
-            </div>
-            <div class="modal-footer">
-             <button
-                     class="btn btn-primary addBtn"
-                     data-bs-dismiss="modal"
-                     type="button"
-             >
-              Add Product
-             </button>
             </div>
            </div>
+           <!--       Add   Modal End            -->
           </div>
          </div>
-         <!--       Add   Modal End            -->
+
 
 
         </div>

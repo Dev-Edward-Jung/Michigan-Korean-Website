@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -25,19 +26,24 @@ public class Employee {
 
     private String phone;
 
-    private String position; // ex: manager, chef, staff
+    private boolean approved = false; // 사장님이 승인했는지 여부
 
     // Save create created time automatically
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime joined_at;
 
     // Save create update time automatically
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
+    @OneToMany(fetch = FetchType.LAZY)
     @JsonBackReference
-    private Restaurant restaurant;
+    private List<RestaurantEmployee> restaurantEmployeeList;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Owner member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private RoleType roleType; // ex: manager, chef, staff
 
 }
