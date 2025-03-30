@@ -53,6 +53,14 @@ public class SecurityConfig {
                         .userDetailsService(customUserDetailsService)
                 )
 
+                .logout(logout -> logout
+                        .logoutUrl("/page/owner/logout")
+                        .logoutSuccessUrl("/page/owner/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID", "remember-me")
+                        .permitAll()
+                )
+
 
 
                 .formLogin(form -> form
