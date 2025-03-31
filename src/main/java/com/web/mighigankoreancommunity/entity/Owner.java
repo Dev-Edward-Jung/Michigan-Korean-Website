@@ -50,6 +50,7 @@ public class Owner implements UserDetails {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Restaurant> restaurantList = new ArrayList<>();
 
 

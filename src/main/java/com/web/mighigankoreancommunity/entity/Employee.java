@@ -1,5 +1,7 @@
 package com.web.mighigankoreancommunity.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.web.mighigankoreancommunity.domain.MemberRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,14 +38,15 @@ public class Employee {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    @JsonManagedReference
     private List<RestaurantEmployee> restaurantEmployeeList;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private Owner member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private RoleType roleType; // ex: manager, chef, staff
+    @Enumerated(EnumType.STRING)
+    private MemberRole memberRole = MemberRole.EMPLOYEE; // ex: manager, owner, kitchen, sushi
 
 }

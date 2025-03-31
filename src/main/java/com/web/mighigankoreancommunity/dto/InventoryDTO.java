@@ -1,14 +1,11 @@
 package com.web.mighigankoreancommunity.dto;
 
-import com.web.mighigankoreancommunity.entity.Category;
+import com.web.mighigankoreancommunity.domain.InventoryUnit;
 import com.web.mighigankoreancommunity.entity.Inventory;
-import com.web.mighigankoreancommunity.entity.Owner;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,19 +18,21 @@ public class InventoryDTO {
 
     private Integer quantity;
 
-    private String unit;
+    private InventoryUnit unit;
 
-    private Category category;
+    private Long categoryId;
 
+    private String categoryName;
 
     private Long restaurantId;
+
+
     public static InventoryDTO fromEntity(Inventory entity) {
         return InventoryDTO.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .quantity(entity.getQuantity())
                 .unit(entity.getUnit())
-                .category(entity.getCategory())
                 .build();
     }
 }

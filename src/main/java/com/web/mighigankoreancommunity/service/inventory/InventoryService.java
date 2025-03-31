@@ -5,11 +5,13 @@ import com.web.mighigankoreancommunity.dto.InventoryDTO;
 import com.web.mighigankoreancommunity.entity.Inventory;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.repository.inevntory.CategoryRepository;
 import com.web.mighigankoreancommunity.repository.inevntory.InventoryRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,31 +20,47 @@ import java.util.List;
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final RestaurantRepository restaurantRepository;
+    private final CategoryRepository categoryRepository;
 
     // Get Inventory List
-    public List<Inventory> getInventoriesByRestaurant(Long retaurantId, Owner loginUser) {
+    public List<InventoryDTO> getInventoriesByRestaurant(Long retaurantId, Owner loginUser) {
         System.out.println("In Service, loginUser is : " + loginUser.toString());
         Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(retaurantId, loginUser);
         System.out.println("In Service, restaurantName is : " + restaurant.toString());
         if (restaurant == null) {
             throw new IllegalArgumentException("Invalid restaurant or unauthorized access.");
         }
-        return inventoryRepository.findByRestaurantsId(retaurantId);
+        List<Inventory> inventories = inventoryRepository.findByRestaurantsId(retaurantId);
+        List<InventoryDTO> inventoryDTOList = new ArrayList<>();
+        inventories.forEach(inventory -> {
+            InventoryDTO dto = new InventoryDTO();
+            dto.setId(inventory.getId());
+            dto.setName(inventory.getName());
+            dto.setRestaurantId(inventory.getRestaurant().getId());
+            dto.setQuantity(inventory.getQuantity());
+            dto.setCategoryId(inventory.getCategory().getId());
+            dto.setCategoryName(inventory.getCategory().getName());
+            dto.setUnit(inventory.getUnit());
+            inventoryDTOList.add(dto);
+        });
+        return inventoryDTOList;
     }
 
 
     public Inventory saveInventory(InventoryDTO dto, Owner member) {
-        // 기존 저장 로직
+        // ************* 카테고리 저장 만들어야함
         Inventory inventory = Inventory.builder()
                 .name(dto.getName())
                 .quantity(dto.getQuantity())
                 .unit(dto.getUnit())
-                .category(dto.getCategory())
                 .restaurant(restaurantRepository.findById(dto.getRestaurantId()).orElseThrow())
+                .category(categoryRepository.findById(dto.getCategoryId()).orElseThrow())
                 .build();
 
         return inventoryRepository.save(inventory); // <- Entity 리턴
     }
+
+
 
     public boolean updateInventory(InventoryDTO dto, Owner loginUser) {
         Inventory inventory = inventoryRepository.findById(dto.getId()).orElse(null);
@@ -63,11 +81,10 @@ public class InventoryService {
             return false;
         }
 
-        // 필드 수정
+        // 필드 수정 ***************카테고리까지 set해줘야함
         inventory.setName(dto.getName());
         inventory.setQuantity(dto.getQuantity());
         inventory.setUnit(dto.getUnit());
-        inventory.setCategory(dto.getCategory());
 
         // 저장
         inventoryRepository.save(inventory);

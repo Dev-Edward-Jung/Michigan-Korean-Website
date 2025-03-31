@@ -1,10 +1,9 @@
 package com.web.mighigankoreancommunity.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.web.mighigankoreancommunity.domain.InventoryUnit;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -28,7 +27,8 @@ public class Inventory {
 
     private Integer quantity;
 
-    private String unit; // ex: "boxes", "bags"
+    @Enumerated(EnumType.STRING)
+    private InventoryUnit unit; // ex: "boxes", "bags"
 
     // Save create created time automatically
     @CreationTimestamp
@@ -40,16 +40,12 @@ public class Inventory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
+    @JsonBackReference
     private Restaurant restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonBackReference
     private Category category;
 
-    public Inventory(String name, Integer quantity, String unit, Restaurant restaurant) {
-        this.name = name;
-        this.quantity = quantity;
-        this.unit = unit;
-        this.restaurant = restaurant;
-    }
 }

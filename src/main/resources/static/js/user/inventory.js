@@ -30,30 +30,37 @@ async function fetchInventoryList(restaurantId, csrf) {
                 [csrf.header]: csrf.token,
             },
         });
-        if (!res.ok) throw new Error("Failed to load inventory");
-        return await res.json();
+        if (!res.ok) throw new Error("Failed to load inventory and categories");
+        const data = await res.json();
+        return {
+            inventoryList: data.inventoryList || [],
+            categoryList: data.categoryList || [],
+        };
     } catch (err) {
         console.error("Fetch Inventory Error:", err);
-        return [];
+        return { inventoryList: [], categoryList: [] };
     }
 }
 
 // ✅ 인벤토리 하나 UI로 추가 + 이벤트 바인딩
-function addInventoryToUI(inv) {
+function addInventoryToUI(inv, categoryList) {
     const container = getInventoryContainer();
+    console.log(inv)
     const html = `
     <div class="mt-2 list-view" data-id="${inv.id}">
       <input class="form-control form-control-lg name-input" disabled value="${inv.name}" />
       <input class="form-control form-control-lg numberInput" disabled type="number" value="${inv.quantity}" />
       <select class="form-select form-select-lg unitSelect" disabled>
-        <option>${inv.unit}</option>
+        <option selected value="${inv.unit || ''}">
+          ${inv.unit}
+        </option>
       </select>
       <button class="btn btn-primary editBtn"
           data-id="${inv.id}"
           data-name="${inv.name}"
           data-quantity="${inv.quantity}"
           data-unit="${inv.unit}"
-          data-category="${inv.category || ''}"
+          data-category="${inv.category && inv.category.id ? inv.category.id : ''}"
       >EDIT</button>
     </div>
   `;
@@ -65,6 +72,17 @@ function addInventoryToUI(inv) {
     lastBtn.addEventListener("click", () => {
         const modalEl = document.getElementById("modalCenter");
         const modalInstance = new bootstrap.Modal(modalEl);
+
+        // dynamically populate the category dropdown with values from categoryList
+        const categorySelect = modalEl.querySelector("select.categorySelect");
+        categorySelect.innerHTML = ""; // clear existing options
+        categoryList.forEach(category => {
+            const option = document.createElement("option");
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+        });
+
         modalInstance.show();
 
         // 모달의 DOM 요소(modalEl)를 사용해 내부 요소 접근
@@ -77,27 +95,30 @@ function addInventoryToUI(inv) {
 }
 
 // ✅ UI 렌더링: 인벤토리 목록을 카테고리별로 출력
-function renderInventory(inventoryList) {
+function renderInventory(inventoryList, categoryList) {
+    console.log(inventoryList[0])
     const container = getInventoryContainer();
-    // 인벤토리 전용 컨테이너만 초기화 (모달 등은 card-body 내에 그대로 유지)
     container.innerHTML = "";
+    // Group inventories by category name
     const groupedInventory = inventoryList.reduce((acc, inv) => {
-        const category = inv.category || "Uncategorized" || "null";
-        if (!acc[category]) acc[category] = [];
-        acc[category].push(inv);
+        console.log(inv.categoryName)
+        const categoryName = inv.categoryName || "Uncategorized";
+        if (!acc[categoryName]) acc[categoryName] = [];
+        acc[categoryName].push(inv);
         return acc;
     }, {});
 
+    // Sort category names alphabetically
+    const sortedCategoryNames = Object.keys(groupedInventory).sort((a, b) => a.localeCompare(b));
 
-    for (const [category, items] of Object.entries(groupedInventory)) {
-        console.log(category)
+    sortedCategoryNames.forEach(categoryName => {
         container.insertAdjacentHTML("beforeend", `
       <div class="divider">
-        <div class="divider-text">${category}</div>
+        <div class="divider-text">${categoryName}</div>
       </div>
     `);
-        items.forEach(addInventoryToUI);
-    }
+        groupedInventory[categoryName].forEach(inv => addInventoryToUI(inv, categoryList));
+    });
 }
 
 // ✅ 업데이트 API 호출
@@ -108,7 +129,7 @@ async function updateInventory(restaurantId, csrf) {
         name: document.querySelector("#modalCenter input.nameInput").value.trim(),
         quantity: parseInt(document.querySelector("#modalCenter input.numberInput").value),
         unit: document.querySelector("#modalCenter select.unitSelect").value,
-        category: document.querySelector("#modalCenter select.categorySelect").value,
+        categoryId : document.querySelector("#modalCenter select.categorySelect").value,
     };
     categoryListI = document.querySelector("#modalCenter select.categorySelect").value
     console.log(categoryListI)
@@ -147,14 +168,14 @@ async function addInventory(csrf, restaurantId) {
     const name = document.querySelector("#modalCenterAdd input[name='name']").value.trim();
     const quantity = parseInt(document.querySelector("#modalCenterAdd input[name='quantity']").value);
     const unit = document.querySelector("#modalCenterAdd select.unitSelect").value;
-    const category = document.querySelector("#modalCenterAdd select.categorySelect").value;
+    const categoryId = document.querySelector("#modalCenterAdd select.categorySelect").value;
 
-    if (!name || isNaN(quantity) || !unit || !category || unit === "unit") {
+    if (!name || isNaN(quantity) || !unit || !categoryId || unit === "unit") {
         alert("Please fill all fields correctly.");
         return;
     }
     // p---------- Category Type changed. Need to fix it
-    const data = { name, quantity, unit, category, restaurantId };
+    const data = { name, quantity, unit, categoryId, restaurantId };
 
     const res = await fetch("/api/inventory/save", {
         method: "POST",
@@ -177,8 +198,12 @@ async function initInventoryPage() {
         return;
     }
 
-    const inventoryList = await fetchInventoryList(restaurantId, csrf);
-    renderInventory(inventoryList);
+    const { inventoryList, categoryList } = await fetchInventoryList(restaurantId, csrf);
+    const unitList = await fetchUnitList(csrf);
+
+    populateUnitOptions(unitList);
+    renderInventory(inventoryList, categoryList);
+    populateCategoryOptions(categoryList);
 
     // 모달 내 업데이트 버튼 이벤트 (Edit Modal)
     document.querySelector("#modalCenter .updateBtn").addEventListener("click", async () => {
@@ -219,3 +244,64 @@ async function initInventoryPage() {
 
 let currentInventoryId = null;
 document.addEventListener("DOMContentLoaded", initInventoryPage);
+
+// ✅ 카테고리 셀렉트 박스를 모든 모달에서 채워줌
+
+
+function populateCategoryOptions(categoryList) {
+    const selects = document.querySelectorAll("select.categorySelect");
+    selects.forEach(select => {
+        select.innerHTML = ""; // 기존 옵션 비움
+        const defaultOption = document.createElement("option");
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = "Select Category";
+        select.appendChild(defaultOption);
+
+        categoryList.forEach(category => {
+            const option = document.createElement("option");
+            option.value = category.id;
+            option.textContent = category.name;
+            select.appendChild(option);
+        });
+    });
+}
+
+
+// ✅ 서버에서 유닛 리스트 불러오기
+async function fetchUnitList(csrf) {
+    try {
+        const res = await fetch(`/api/inventory/unit/list`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                [csrf.header]: csrf.token,
+            },
+        });
+        if (!res.ok) throw new Error("Failed to load unit list");
+        return await res.json();
+    } catch (err) {
+        console.error("Fetch Unit List Error:", err);
+        return [];
+    }
+}
+
+// ✅ 유닛 셀렉트 박스를 채우기
+function populateUnitOptions(unitList) {
+    const selects = document.querySelectorAll("select.unitSelect");
+    selects.forEach(select => {
+        select.innerHTML = "";
+        const defaultOption = document.createElement("option");
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = "Select Unit";
+        select.appendChild(defaultOption);
+
+        unitList.forEach(unit => {
+            const option = document.createElement("option");
+            option.value = unit;
+            option.textContent = unit.charAt(0) + unit.slice(1).toLowerCase();
+            select.appendChild(option);
+        });
+    });
+}

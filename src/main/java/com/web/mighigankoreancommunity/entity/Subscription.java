@@ -1,16 +1,15 @@
 package com.web.mighigankoreancommunity.entity;
 
 import com.web.mighigankoreancommunity.domain.SubscriptionStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+@Table(name = "subscription")
 @Entity
 public class Subscription {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long stripe_subscription_id;
     private SubscriptionStatus status;
