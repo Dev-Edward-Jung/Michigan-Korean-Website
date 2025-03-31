@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.controller.inventory;
 
 
+import com.web.mighigankoreancommunity.dto.CategoryDTO;
 import com.web.mighigankoreancommunity.entity.Category;
 import com.web.mighigankoreancommunity.entity.CustomUserDetails;
 import com.web.mighigankoreancommunity.entity.Restaurant;
@@ -11,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +23,37 @@ import java.util.List;
 public class CategoryRestController {
     private final CategoryService categoryService;
     @GetMapping("/list")
-    public ResponseEntity<List<Category>> findCategories(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ResponseEntity<List<CategoryDTO>> findCategories(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                          @RequestParam Long restaurantId) {
-        List<Category> categoryList = categoryService.findCategoriesByRestaurant(restaurantId, userDetails.getOwner());
-        return new ResponseEntity<>(categoryList, HttpStatus.OK);
+        List<CategoryDTO> categoryListDTOList = categoryService.findCategoriesByRestaurant(restaurantId, userDetails.getOwner());
+        System.out.println("category List : " + categoryListDTOList.toString());
+        return new ResponseEntity<>(categoryListDTOList, HttpStatus.OK);
 
     }
+
+    @PostMapping("/save")
+    public void saveCategory(@RequestBody CategoryDTO categoryDTO,
+                             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        System.out.println("Category DTO : " + categoryDTO.toString());
+        boolean categorySuccess =  categoryService.addCategory(categoryDTO, userDetails.getOwner());
+        System.out.println("category save success : " + categorySuccess);
+        System.out.println(categoryDTO.toString());
+
+    }
+
+    @PutMapping("/update")
+    public void updateCategory(@RequestBody CategoryDTO categoryDTO,
+                               @AuthenticationPrincipal CustomUserDetails userDetails){
+        categoryService.updateCategory(categoryDTO, userDetails.getOwner());
+        System.out.println(categoryDTO.toString());
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteCategory(@RequestBody CategoryDTO categoryDTO,
+                               @AuthenticationPrincipal CustomUserDetails userDetails){
+        categoryService.deleteCategory(categoryDTO, userDetails.getOwner());
+    }
+
+
 
 }

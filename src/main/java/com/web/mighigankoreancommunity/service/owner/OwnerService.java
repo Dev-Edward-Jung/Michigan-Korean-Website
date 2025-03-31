@@ -4,7 +4,6 @@ package com.web.mighigankoreancommunity.service.owner;
 import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.OwnerDTO;
 import com.web.mighigankoreancommunity.entity.Owner;
-import com.web.mighigankoreancommunity.entity.RoleType;
 import com.web.mighigankoreancommunity.repository.owner.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

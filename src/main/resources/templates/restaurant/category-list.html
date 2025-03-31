@@ -48,14 +48,9 @@
           Category List
          </h5>
          <div class="card-body">
-          <div class="mt-2 list-view">
-           <input class="form-control form-control-lg large-input" disabled="" name="name" type="text" value="Meat"/>
-           <!-- Edit Button -->
-           <button class="btn btn-primary small-button btn-danger" data-bs-target="#modalCenter1" data-bs-toggle="modal" type="button">
-            Edit
-           </button>
-           <!-- Modal Area -->
-           <div aria-hidden="true" class="modal fade" id="modalCenter1" tabindex="-1">
+          <!--     one category location       -->
+
+           <div aria-hidden="true" class="modal fade" id="modalCenter" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered" role="document">
              <div class="modal-content">
               <div class="modal-header">
@@ -71,15 +66,15 @@
                  <label class="form-label">
                   Category Name
                  </label>
-                 <input class="form-control" placeholder="Meat" type="text"/>
+                 <input class="form-control nameInput" placeholder="Meat" name="name" type="text"/>
                 </div>
                </div>
               </div>
               <div class="modal-footer">
-               <button class="btn btn-danger" type="button">
+               <button class="btn btn-danger removeBtn" type="button">
                 Remove
                </button>
-               <button class="btn btn-primary" type="button">
+               <button class="btn btn-primary updateBtn" type="button">
                 Save Changes
                </button>
               </div>
@@ -87,12 +82,7 @@
             </div>
            </div>
            <!-- /Modal Area -->
-
-
           </div>
-
-         </div>
-         <!-- Add Button and Modal -->
          <button
                  class="btn btn-primary small-button margin-top-5"
                  type="button"
@@ -101,6 +91,9 @@
          >
           Add
          </button>
+
+         </div>
+         <!-- Add Button and Modal -->
          <!--      Add     Modal Start           -->
          <div
                  aria-hidden="true"
@@ -128,9 +121,9 @@
              <div class="row">
               <div class="col mb-3">
                <label class="form-label">
-                Product Name
+                Category Name
                </label>
-               <input class="form-control name-input" name = "name" placeholder="ex)Tofu" type="text"/>
+               <input class="form-control nameInput" name = "name" placeholder="ex)Meat" type="text"/>
               </div>
              </div>
             </div>
@@ -140,7 +133,7 @@
                      data-bs-dismiss="modal"
                      type="button"
              >
-              Add Product
+              Category Name
              </button>
             </div>
            </div>
