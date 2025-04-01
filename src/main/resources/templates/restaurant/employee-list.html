@@ -50,14 +50,15 @@
          <div class="card-body">
           <div class="mt-2 list-view">
 <!--      one input     -->
-           <input class="form-control form-control-lg large-input" disabled="" type="text" value="Kyle Kim"/>
-           <input class="form-control form-control-lg large-input second-input" disabled="" placeholder="Address" type="text" value="2600 Livernois Road"/>
+           <input class="form-control form-control-lg large-input" disabled="" name="name" type="text" value="Kyle Kim"/>
+           <input class="form-control form-control-lg large-input second-input" disabled="" placeholder="Address" name="address" type="text" value="2600 Livernois Road"/>
+           <input class="form-control form-control-lg large-input second-input" disabled="" placeholder="Role" name="role" type="text" value="Kitchen"/>
            <!-- Edit Button -->
-           <button class="btn btn-primary small-button btn-danger" data-bs-target="#modalCenter1" data-bs-toggle="modal" type="button">
+           <button class="btn btn-primary small-button btn-danger" data-bs-target="#modalCenter" data-bs-toggle="modal" type="button">
             Edit
            </button>
            <!-- Modal Area -->
-           <div aria-hidden="true" class="modal fade" id="modalCenter1" tabindex="-1">
+           <div aria-hidden="true" class="modal fade" id="modalCenter" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered" role="document">
              <div class="modal-content">
               <div class="modal-header">
@@ -138,7 +139,7 @@
                <label class="form-label">
                 Employee Name
                </label>
-               <input class="form-control name-input" name = "name" placeholder="ex)Tofu" type="text"/>
+               <input class="form-control nameInput" name = "name" placeholder="ex) Kyle" type="text"/>
               </div>
              </div>
              <div class="row mb-3">
@@ -155,9 +156,9 @@
                 Product Unit
                </label>
                <select
-                       class="form-select form-select-lg unitSelect"
+                       class="form-select form-select-lg roleSelect"
                >
-                <option>unit</option>
+                <option>Role</option>
                 <option value="bags">bags</option>
                 <option value="boxes">boxes</option>
                </select>
@@ -211,6 +212,7 @@
   </script>
   <script src="/js/dashboards-analytics.js">
   </script>
+ <script src="/js/user/employee.js"></script>
  <script src="/js/header/header.js"></script>
  </body>
 </html>
