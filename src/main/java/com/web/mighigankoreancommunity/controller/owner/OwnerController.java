@@ -26,7 +26,7 @@ public class OwnerController {
             // 이미 로그인 되어 있으면 대시보드(혹은 리스트 페이지)로 리다이렉트
             return "redirect:/page/restaurant/list";
         }
-        return "/user/owner-login";
+        return "user/owner-login";
     }
 
 //    Page Move
@@ -40,7 +40,7 @@ public class OwnerController {
     public String registerMember(Owner owner) {
         System.out.println(owner.getOwnerName());
         ownerService.saveOwner(owner);
-        return "/user/owner-login";
+        return "user/owner-login";
     }
 
     @GetMapping("/forgot/password")

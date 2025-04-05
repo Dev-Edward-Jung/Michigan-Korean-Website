@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.web'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 
 java {
     toolchain {
@@ -27,8 +27,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'com.mysql:mysql-connector-j:8.0.33'
     compileOnly 'org.projectlombok:lombok'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.7'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'
@@ -44,7 +44,7 @@ sourceSets {
     main {
         resources {
             srcDirs = ['src/main/resources']
-            includes = ['**/*.properties', '**/*.yml', '**/*.xml', '**/*.html']
+            includes = ['**/*.properties', '**/*.yml', '**/*.xml', '**/*.html', '**/*.js', '**/*.css', '**/*.png']
         }
     }
 }

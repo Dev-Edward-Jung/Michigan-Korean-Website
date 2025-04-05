@@ -30,17 +30,21 @@ public class SecurityConfig {
         http
                 .csrf(Customizer.withDefaults()) // csrf activate
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/**").permitAll()   // 모든 GET 허용 (선택 사항)
-                        .requestMatchers(HttpMethod.POST, "/**").permitAll()  // ✅ 모든 POST 허용
-                        .requestMatchers(HttpMethod.PUT, "/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
                         .requestMatchers(
                                 "/css/**",
                                 "/js/**",
                                 "/img/**",
                                 "/fonts/**",
                                 "/favicon.ico",
-                                "/page/error/**"
+                                "/page/error/**",
+                                "/api/restaurant/list","/api/restaurant/save",
+                                "/page/restaurant/list",
+                                "/page/owner/register", "/page/owner/login", "/page/owner/forgot/", "/page/owner/logout", "/page/owner/forgot/password", "/api/owner/me", "/api/owner/checkEmail",
+                                "/page/inventory/list",
+                                "/api/inventory/list", "/api/inventory/save", "/api/inventory/unit/", "/api/inventory/unit/list", "/api/inventory/delete", "/api/inventory/update",
+                                "/page/category/list",
+                                "/api/category/list", "/api/category/save", "/api/category/delete", "/api/category/update",
+                                "/page/"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
