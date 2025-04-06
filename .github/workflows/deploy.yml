@@ -3,7 +3,7 @@ name: Deploy to Lightsail
 on:
   push:
     branches:
-      - main  # 또는 master
+      - main  # main 브랜치에 push될 때만 실행됨
 
 jobs:
   build-and-deploy:
@@ -42,5 +42,5 @@ jobs:
             sudo docker stop restoflowing-app || true
             sudo docker rm restoflowing-app || true
             sudo docker run -d --name restoflowing-app -p 10000:10000 \
-            -v /etc/letsencrypt:/etc/letsencrypt \
-            restoflowing-app:latest java -jar /deploy/korean-michigan-community-1.0.jar
+              -v /etc/letsencrypt:/etc/letsencrypt \
+              restoflowing-app:latest java -jar /deploy/korean-michigan-community-1.0.jar
