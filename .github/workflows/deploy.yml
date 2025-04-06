@@ -3,14 +3,14 @@ name: Deploy to Lightsail
 on:
   push:
     branches:
-      - main
+      - main  # main 브랜치에 push될 때만 실행됨
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📦 Checkout repository
+      - name: 📦 Repository Checkout
         uses: actions/checkout@v3
 
       - name: 🔧 Set up JDK
@@ -22,7 +22,7 @@ jobs:
       - name: 🏗️ Build with Gradle
         run: ./gradlew bootJar
 
-      - name: 📦 Copy JAR + config via SSH
+      - name: 📦 Copy Files via SSH
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
@@ -30,7 +30,7 @@ jobs:
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           source: |
             ./build/libs/*.jar
-            ./config/application.yml          # ✅ 이 라인 추가
+            ./config/application.yml    # ✅ 이 라인 추가
           target: "~/deploy"
 
       - name: 🚀 Remote Deploy via SSH
@@ -41,12 +41,21 @@ jobs:
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           script: |
             cd ~/deploy
-            mkdir -p config
-            mv application.yml config/       # ✅ 이동시키기
+
+            # Dockerfile 생성
+            echo 'FROM openjdk:17-jdk-alpine
+            COPY Michigan-Korean-Community-1.0.jar /app.jar
+            ENTRYPOINT ["java", "-jar", "/app.jar", "--spring.config.location=file:/config/application.yml"]' > Dockerfile
+
+            # 이미지 빌드
+            sudo docker build -t restoflowing-app .
+
+            # 이전 컨테이너 중지 및 삭제
             sudo docker stop restoflowing-app || true
             sudo docker rm restoflowing-app || true
+
+            # 새 컨테이너 실행
             sudo docker run -d --name restoflowing-app -p 10000:10000 \
               -v /etc/letsencrypt:/etc/letsencrypt \
               -v ~/deploy/config:/config \
-              restoflowing-app:latest \
-              java -jar /app.jar --spring.config.location=file:/config/application.yml
+              restoflowing-app
