@@ -39,8 +39,20 @@ jobs:
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           script: |
             cd ~/deploy
+
+            # Dockerfile 생성
+            echo 'FROM openjdk:17-jdk-alpine
+            COPY build/libs/Michigan-Korean-Community-1.0.jar /app.jar
+            ENTRYPOINT ["java", "-jar", "/app.jar"]' > Dockerfile
+
+            # Docker 이미지 빌드
+            sudo docker build -t restoflowing-app .
+
+            # 기존 컨테이너 종료 및 삭제
             sudo docker stop restoflowing-app || true
             sudo docker rm restoflowing-app || true
+
+            # 새 컨테이너 실행
             sudo docker run -d --name restoflowing-app -p 10000:10000 \
               -v /etc/letsencrypt:/etc/letsencrypt \
-              restoflowing-app:latest java -jar /deploy/korean-michigan-community-1.0.jar
+              restoflowing-app
