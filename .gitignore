@@ -39,3 +39,8 @@ out/
 
 # Ignore all .yml files
 *.yml
+
+
+Dockerfile
+docker-compose.yml
+nginx/

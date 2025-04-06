@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 "/page/error/**",
                                 "/api/restaurant/list","/api/restaurant/save",
                                 "/page/restaurant/list",
-                                "/page/owner/register", "/page/owner/login", "/page/owner/forgot/", "/page/owner/logout", "/page/owner/forgot/password", "/api/owner/me", "/api/owner/checkEmail",
+                                "/page/owner/register", "/page/owner/login", "/page/owner/logout", "/page/owner/forgot/password", "/api/owner/me", "/api/owner/checkEmail",
                                 "/page/inventory/list",
                                 "/api/inventory/list", "/api/inventory/save", "/api/inventory/unit/", "/api/inventory/unit/list", "/api/inventory/delete", "/api/inventory/update",
                                 "/page/category/list",

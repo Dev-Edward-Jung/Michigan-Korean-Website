@@ -31,7 +31,7 @@ public class OwnerController {
 
 //    Page Move
     @GetMapping("/register")
-    public String RegisterPage() {return "/user/owner-register";}
+    public String RegisterPage() {return "user/owner-register";}
 
 
 
