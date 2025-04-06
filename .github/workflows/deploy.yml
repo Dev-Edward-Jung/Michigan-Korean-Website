@@ -31,7 +31,7 @@ jobs:
           source: "./build/libs/*.jar"
           target: "~/deploy"
 
-      - name: Remote Deploy via SSH
+      - name: 🚀 Remote Deploy via SSH
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
@@ -39,8 +39,8 @@ jobs:
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           script: |
             cd ~/deploy
-            sudo docker stop ubuntu_app || true
-            sudo docker rm ubuntu_app || true
-            sudo docker run -d --name ubuntu_app_1 -p 10000:10000 \
-              -v /etc/letsencrypt:/etc/letsencrypt \
-              ubuntu-app:latest java -jar /deploy/korean-michigan-community-1.0.jar
+            sudo docker stop restoflowing-app || true
+            sudo docker rm restoflowing-app || true
+            sudo docker run -d --name restoflowing-app -p 10000:10000 \
+            -v /etc/letsencrypt:/etc/letsencrypt \
+            restoflowing-app:latest java -jar /deploy/korean-michigan-community-1.0.jar
