@@ -40,7 +40,10 @@ out/
 # Ignore all .yml files
 *.yml
 
+# BUT! 워크플로우 디렉토리 아래는 무시하지 않음
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
 
 Dockerfile
-docker-compose.yml
 nginx/
