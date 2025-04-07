@@ -1,7 +1,10 @@
-package com.web.mighigankoreancommunity.repository;
+package com.web.mighigankoreancommunity.repository.employee;
 
 import com.web.mighigankoreancommunity.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+
+@Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 }
