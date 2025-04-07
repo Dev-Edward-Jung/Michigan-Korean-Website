@@ -9,4 +9,5 @@ public enum MemberRole {
     KITCHEN,
     SERVER,
     EMPLOYEE,
+
 }

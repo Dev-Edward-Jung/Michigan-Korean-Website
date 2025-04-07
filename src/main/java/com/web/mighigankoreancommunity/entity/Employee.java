@@ -42,10 +42,6 @@ public class Employee {
     @JsonManagedReference
     private List<RestaurantEmployee> restaurantEmployeeList;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Owner member;
-
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole = MemberRole.EMPLOYEE; // ex: manager, owner, kitchen, sushi
 
