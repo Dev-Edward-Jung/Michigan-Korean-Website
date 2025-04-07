@@ -754,9 +754,9 @@ html:not(.layout-menu-collapsed) .bg-menu-theme .menu-inner .menu-item .menu-lin
 .bg-menu-theme .menu-inner > .menu-item.active:before {
   background: #566a7f;
 }
-.bg-menu-theme .menu-sub > .menu-item > .menu-link:before {
-  background-color: #b4bdc6 !important;
-}
+/*.bg-menu-theme .menu-sub > .menu-item > .menu-link:before {*/
+/*  background-color: #b4bdc6 !important;*/
+/*}*/
 .bg-menu-theme .menu-sub > .menu-item.active > .menu-link:not(.menu-toggle):before {
   background-color: #566a7f !important;
   border: 3px solid #e7e7ff !important;
