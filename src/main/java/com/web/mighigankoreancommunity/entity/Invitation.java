@@ -5,6 +5,8 @@ import com.web.mighigankoreancommunity.domain.InvitationStatus;
 import com.web.mighigankoreancommunity.domain.MemberRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -29,11 +31,15 @@ public class Invitation {
 
     private boolean used; // 이미 사용된 초대인지 확인
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @CreationTimestamp
     private LocalDateTime sentAt;
+
 
     private LocalDateTime expiresAt;
 

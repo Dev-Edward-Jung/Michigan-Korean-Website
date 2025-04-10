@@ -44,7 +44,7 @@ public class SecurityConfig {
                                 "/api/inventory/list", "/api/inventory/save", "/api/inventory/unit/", "/api/inventory/unit/list", "/api/inventory/delete", "/api/inventory/update",
                                 "/page/category/list",
                                 "/api/category/list", "/api/category/save", "/api/category/delete", "/api/category/update",
-                                "/page/"
+                                "/page/employee/invited"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
