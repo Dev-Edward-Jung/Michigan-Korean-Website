@@ -82,14 +82,6 @@
                <div class="row">
                 <div class="col">
                  <label class="form-label">
-                  address
-                 </label>
-                 <input class="form-control" name="address" placeholder="City" type="text"/>
-                </div>
-               </div>
-               <div class="row">
-                <div class="col">
-                 <label class="form-label">
                   Email
                  </label>
                  <input class="form-control" name="email" placeholder="abcd@gmail.com" type="email"/>
@@ -105,9 +97,9 @@
                  >
                   <option>Role</option>
                   <option value="MANAGER">Manager</option>
-                  <option value="MANAGER">Kitchen</option>
-                  <option value="MANAGER">Server</option>
-                  <option value="MANAGER">Employee</option>
+                  <option value="KITCHEN">Kitchen</option>
+                  <option value="SERVER">Server</option>
+                  <option value="EMPLOYEE">Employee</option>
                  </select>
                 </div>
                </div>
@@ -136,7 +128,7 @@
                  data-bs-toggle="modal"
                  data-bs-target="#modalCenterAdd"
          >
-          Add
+          Invite Employee
          </button>
          <!--      Add     Modal Start           -->
          <div
@@ -152,7 +144,7 @@
            <div class="modal-content">
             <div class="modal-header">
              <h5 class="modal-title" id="modalCenterAddTitle">
-              Add Your Employees
+              Invite Your Employees
              </h5>
              <button
                      aria-label="Close"
@@ -168,14 +160,6 @@
                 Employee Name
                </label>
                <input class="form-control nameInput" name = "name" placeholder="ex) Kyle" type="text"/>
-              </div>
-             </div>
-             <div class="row mb-3">
-              <div class="col mb-0">
-               <label class="form-label">
-                Employee Address
-               </label>
-               <input class="form-control addressInput" name="address" placeholder="Royal Oak" type="text"/>
               </div>
              </div>
              <div class="row mb-3">
@@ -197,16 +181,16 @@
              <div class="row">
               <div class="col">
                <label class="form-label margin-top-5">
-                Product Unit
+                Employee Role
                </label>
                <select
                        class="form-select form-select-lg roleSelect"
                >
                 <option>Role</option>
                 <option value="MANAGER">Manager</option>
-                <option value="MANAGER">Kitchen</option>
-                <option value="MANAGER">Server</option>
-                <option value="MANAGER">Employee</option>
+                <option value="KITCHEN">Kitchen</option>
+                <option value="SERVER">Server</option>
+                <option value="EMPLOYEE">Employee</option>
                </select>
               </div>
              </div>
@@ -217,7 +201,7 @@
                      data-bs-dismiss="modal"
                      type="button"
              >
-              Add Employee
+              Send Invitation
              </button>
             </div>
            </div>
