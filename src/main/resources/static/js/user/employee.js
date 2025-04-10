@@ -118,15 +118,18 @@ async function deleteEmployee(restaurantId, csrf) {
 // ✅ 추가 API 호출
 async function addEmployee(csrf, restaurantId) {
     const name = document.querySelector("#modalCenterAdd input[name='name']").value.trim();
+    const email = document.querySelector("#modalCenterAdd input[name='email']").value.trim();
+    const memberRole = document.querySelector("#modalCenterAdd select.roleSelect").value;
 
-    if (!name) {
+
+    if (!name || !email || !memberRole) {
         alert("Please fill all fields correctly.");
         return;
     }
 
-    const data = { name, restaurantId };
+    const data = { name, restaurantId, email, memberRole };
 
-    const res = await fetch("/api/employee/save", {
+    const res = await fetch("/api/employee/invite", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
-    Optional<Invitation> findByInviteToken(String inviteToken);
+    Invitation findByToken(String token);
 }
