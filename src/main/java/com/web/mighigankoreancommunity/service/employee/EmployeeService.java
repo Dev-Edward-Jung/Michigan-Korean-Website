@@ -2,12 +2,11 @@ package com.web.mighigankoreancommunity.service.employee;
 
 import com.web.mighigankoreancommunity.dto.EmployeeDTO;
 import com.web.mighigankoreancommunity.dto.InvitationDTO;
-import com.web.mighigankoreancommunity.entity.Invitation;
-import com.web.mighigankoreancommunity.entity.Owner;
-import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.entity.*;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.InvitationRepository;
+import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,6 +24,7 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final RestaurantRepository restaurantRepository;
     private final InvitationRepository invitationRepository;
+    private final RestaurantEmployeeRepository restaurantEmployeeRepository;
 
     private final JavaMailSender mailSender;
 
@@ -59,16 +59,31 @@ public class EmployeeService {
         invitation.setRole(employeeDTO.getMemberRole());
         invitation.setToken(inviteToken);
         invitation.setExpiresAt(LocalDateTime.now().plusHours(24));
-
-        String invitationLink = "https://restoflowing.com/page/employee/invited?token=" + inviteToken;
-
+//      invitation link need to be changed
+//        String invitationLink = "https://restoflowing.com/page/employee/invited?token=" + inviteToken;
+        String invitationLink = "https://127.0.0.1/page/employee/invited?token=" + inviteToken;
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(invitation.getEmail());
-        message.setSubject("Welcome! You are invited by " + restaurant.getName());
+        message.setSubject("Welcome!" + employeeDTO.getName() + " You are invited by " + restaurant.getName());
         message.setText("You can now join your account with link below:\n");
         message.setText("Your Invitation Link is: " + invitationLink);
         message.setFrom("restoflowing@gmail.com");
-        System.out.println(message);
+
+
+//        save employee
+        RestaurantEmployee restaurantEmployee = null;
+        Employee employee = null;
+        employee.setInvitation(invitation);
+        employee.setName(employeeDTO.getName());
+
+        restaurantEmployee.setEmployee(employee);
+        restaurantEmployee.setRestaurant(restaurant);
+        restaurantEmployee.setMemberRole(employeeDTO.getMemberRole());
+
+//        employee role save and employee save
+        employeeRepository.save(employee);
+        restaurantEmployeeRepository.save(restaurantEmployee);
+
 
 
         mailSender.send(message);

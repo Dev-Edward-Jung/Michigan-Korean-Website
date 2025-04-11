@@ -26,9 +26,6 @@ public class Invitation {
     @Enumerated(EnumType.STRING)
     private MemberRole role; // 예: MANAGER or KITCHEN
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Restaurant restaurant;
-
     private boolean used; // 이미 사용된 초대인지 확인
 
     @CreationTimestamp
@@ -48,5 +45,11 @@ public class Invitation {
 
     @Enumerated(EnumType.STRING)
     private InvitationStatus status = InvitationStatus.PENDING;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Restaurant restaurant;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Employee employee;
 
 }
