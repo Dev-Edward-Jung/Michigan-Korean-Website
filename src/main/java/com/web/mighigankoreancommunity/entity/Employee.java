@@ -42,7 +42,10 @@ public class Employee {
     @JsonManagedReference
     private List<RestaurantEmployee> restaurantEmployeeList;
 
-    @Enumerated(EnumType.STRING)
-    private MemberRole memberRole = MemberRole.EMPLOYEE; // ex: manager, owner, kitchen, sushi
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "id")
+    private Invitation invitation;
 
 }
