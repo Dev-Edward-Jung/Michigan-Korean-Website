@@ -42,33 +42,29 @@ async function fetchEmployeeList(restaurantId, csrf) {
 function addEmployeeToUI(employee) {
     const container = getEmployeeContainer();
     const html = `
-    <div class="mt-2 list-view" data-id="${employee.id}">
-      <input class="form-control form-control-lg name-input" disabled value="${employee.name}" />
-      <button class="btn btn-primary editBtn"
-          data-id="${employee.id}"
-          data-name="${employee.name}"
-      >EDIT</button>
-    </div>
+           <input class="form-control form-control-lg large-input" disabled="" name="name" type="text" value="${employee.name}"/>
+           <input class="form-control form-control-lg large-input second-input" disabled="" placeholder="Address" name="address" type="text" value="${employee.email}"/>
+           <input class="form-control form-control-lg large-input second-input" disabled="" placeholder="Role" name="role" type="text" value="${employee.memberRole}"/>
   `;
     container.insertAdjacentHTML("beforeend", html);
 
     // 이벤트 바인딩: 마지막에 추가된 edit 버튼 선택
-    const editBtns = container.querySelectorAll(".editBtn");
-    const lastBtn = editBtns[editBtns.length - 1];
-    lastBtn.addEventListener("click", () => {
-        const modalEl = document.getElementById("modalCenter");
-        const modalInstance = new bootstrap.Modal(modalEl);
-        modalInstance.show();
-
-        // 모달의 DOM 요소(modalEl)를 사용해 내부 요소 접근
-        const inputEl = modalEl.querySelector("input.nameInput");
-        if (inputEl) {
-            inputEl.value = lastBtn.dataset.name;
-        } else {
-            console.error("❌ input.nameInput not found in modal!");
-        }
-        currentEmployeeId = lastBtn.dataset.id;
-    });
+//     const editBtns = container.querySelectorAll(".editBtn");
+//     const lastBtn = editBtns[editBtns.length - 1];
+//     lastBtn.addEventListener("click", () => {
+//         const modalEl = document.getElementById("modalCenter");
+//         const modalInstance = new bootstrap.Modal(modalEl);
+//         modalInstance.show();
+//
+//         // 모달의 DOM 요소(modalEl)를 사용해 내부 요소 접근
+//         const inputEl = modalEl.querySelector("input.nameInput");
+//         if (inputEl) {
+//             inputEl.value = lastBtn.dataset.name;
+//         } else {
+//             console.error("❌ input.nameInput not found in modal!");
+//         }
+//         currentEmployeeId = lastBtn.dataset.id;
+//     });
 }
 
 // ✅ UI 렌더링: 카테고리 목록을 단순 출력
