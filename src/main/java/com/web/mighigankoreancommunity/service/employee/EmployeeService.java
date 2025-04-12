@@ -1,5 +1,7 @@
 package com.web.mighigankoreancommunity.service.employee;
 
+import com.web.mighigankoreancommunity.domain.InvitationStatus;
+import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.EmployeeDTO;
 import com.web.mighigankoreancommunity.dto.InvitationDTO;
 import com.web.mighigankoreancommunity.entity.*;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,6 +30,7 @@ public class EmployeeService {
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
 
     private final JavaMailSender mailSender;
+    private final PasswordEncoder passwordEncoder;
 
 
 //    Check Expire Date
@@ -45,6 +49,9 @@ public class EmployeeService {
 
 
     public String sendInvitationEmail(EmployeeDTO employeeDTO, Long ownerId) {
+        String name = employeeDTO.getName();
+        String email = employeeDTO.getEmail();
+        MemberRole role = employeeDTO.getMemberRole();
         // 실제 이메일 전송 로직 대신 로그 출력
         // 실제 구현 시, JavaMailSender 등을 사용하여 이메일 전송
         Restaurant restaurant = restaurantRepository.findById(employeeDTO.getRestaurantId()).get();
@@ -52,31 +59,37 @@ public class EmployeeService {
 //        Create Token
         String inviteToken = UUID.randomUUID().toString();
         Invitation invitation = new Invitation();
+        Employee employee = new Employee(name, email, null);
+        employeeRepository.save(employee);
 
-        invitation.setEmail(employeeDTO.getEmail());
         invitation.setRestaurant(restaurant);
         invitation.setInvitedBy(ownerId);
-        invitation.setRole(employeeDTO.getMemberRole());
         invitation.setToken(inviteToken);
         invitation.setExpiresAt(LocalDateTime.now().plusHours(24));
+        invitation.setEmployee(employee);
+        invitationRepository.save(invitation);
+
+        employee.setInvitation(invitation);
+        employeeRepository.save(employee);
+
+
 //      invitation link need to be changed
 //        String invitationLink = "https://restoflowing.com/page/employee/invited?token=" + inviteToken;
         String invitationLink = "http://127.0.0.1:10000/page/employee/invited?token=" + inviteToken;
+
+//        Message
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(invitation.getEmail());
-        message.setSubject("Welcome!" + employeeDTO.getName() + " You are invited by " + restaurant.getName());
-        message.setText("You can now join your account with link below:\n");
-        message.setText("Your Invitation Link is: " + invitationLink);
+        message.setTo(employee.getEmail());
+        message.setSubject("Welcome! " + employee.getName() + " You are invited by " + restaurant.getName());
+        message.setText("You can now join your account with link below! \n\n" + "Your Invitation Link is : " + invitationLink);
         message.setFrom("restoflowing@gmail.com");
 
 
 //        save employee
         RestaurantEmployee restaurantEmployee = new RestaurantEmployee();
-        Employee employee = new Employee(employeeDTO.getName(), invitation);
-        System.out.println(employee.toString());
         restaurantEmployee.setEmployee(employee);
         restaurantEmployee.setRestaurant(restaurant);
-        restaurantEmployee.setMemberRole(employeeDTO.getMemberRole());
+        restaurantEmployee.setMemberRole(role);
 
 //        employee role save and employee save
         employeeRepository.save(employee);
@@ -85,10 +98,25 @@ public class EmployeeService {
 
 
         mailSender.send(message);
-        invitationRepository.save(invitation);
 
         System.out.println("Email sent");
         return invitationLink;
+    }
+
+
+    public boolean registerEmployeeService(String token, String password){
+//        find Employee by token
+        Employee employee = employeeRepository.findEmployeeByInvitation_Token(token);
+        String encodedPassword = passwordEncoder.encode(password);
+        employee.setPassword(encodedPassword);
+        employee.setApproved(true);
+        
+//      later error define
+        Invitation invitation = invitationRepository.findByToken(token);
+        invitation.setStatus(InvitationStatus.ACCEPTED);
+        employeeRepository.save(employee);
+
+        return true;
     }
 }
 

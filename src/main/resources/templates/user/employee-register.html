@@ -80,6 +80,7 @@
 
               <form id="registerForm" class="mb-3" th:action="@{/page/employee/register}" method="post">
                   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <input type="hidden" name="token" id="tokenInput">
                 <div class="mb-3 form-password-toggle">
                   <label class="form-label" for="password">Password</label>
                   <div class="input-group input-group-merge">

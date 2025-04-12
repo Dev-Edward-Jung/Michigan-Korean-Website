@@ -68,6 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
         }
     });
+
+    // Get Token from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    // form 안에 숨겨진 input에 값 넣기
+    document.getElementById('tokenInput').value = token;
+
 });
 
 
