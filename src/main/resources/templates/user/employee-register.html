@@ -78,25 +78,8 @@
               <h4 class="mb-2">Welcome to our website</h4>
               <p class="mb-4">Login and manage your business</p>
 
-              <form id="registerForm" class="mb-3" th:action="@{/page/owner/register}" method="post">
+              <form id="registerForm" class="mb-3" th:action="@{/page/employee/register}" method="post">
                   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <div class="mb-3">
-                  <label for="username" class="form-label">Username</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="username"
-                    name="ownerName"
-                    placeholder="Enter your username"
-                    autofocus
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="text" class="form-control" id="email" name="ownerEmail" placeholder="Enter your email" onblur="checkEmail()" />
-                    <!-- Email Message is -->
-                    <span id="emailMessage" class="form-text"></span>
-                </div>
                 <div class="mb-3 form-password-toggle">
                   <label class="form-label" for="password">Password</label>
                   <div class="input-group input-group-merge">
@@ -153,7 +136,7 @@
     </div>
 
     <!-- / Content -->
-    <script src="/js/user/register.js"></script>
+    <script src="/js/user/employee-register.js"></script>
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="/js/libs/jquery/jquery.js"></script>
