@@ -7,8 +7,12 @@ import com.web.mighigankoreancommunity.entity.Employee;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/employee")
@@ -19,5 +23,14 @@ public class EmployeeRestController {
     @PostMapping("/invite")
     public void sendInvitation(@RequestBody EmployeeDTO employeeDTO, @AuthenticationPrincipal CustomUserDetails user) {
         employeeService.sendInvitationEmail(employeeDTO, user.getOwner().getId());
+    }
+
+    @GetMapping("/list")
+    public List<EmployeeDTO> getEmployees(@RequestParam Long restaurantId,
+                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<EmployeeDTO> employeeDTOList = employeeService.getAllEmployees(restaurantId, customUserDetails.getOwner());
+        return employeeDTOList;
+
+
     }
 }

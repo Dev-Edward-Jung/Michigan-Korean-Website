@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -117,6 +119,25 @@ public class EmployeeService {
         employeeRepository.save(employee);
 
         return true;
+    }
+
+
+    public List<EmployeeDTO> getAllEmployees(Long restaurantId, Owner owner) {
+//        Should check with owner
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
+        List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurant.getId());
+        List<EmployeeDTO> employeeDTOList = new ArrayList<>();
+
+        restaurantEmployeeList.forEach(restaurantEmployee -> {
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.setMemberRole(restaurantEmployee.getMemberRole());
+            employeeDTO.setEmail(restaurantEmployee.getEmployee().getEmail());
+            employeeDTO.setName(restaurantEmployee.getEmployee().getName());
+            employeeDTOList.add(employeeDTO);
+        });
+
+
+        return employeeDTOList;
     }
 }
 
