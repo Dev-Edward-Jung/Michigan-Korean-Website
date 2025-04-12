@@ -61,7 +61,7 @@ public class EmployeeService {
         invitation.setExpiresAt(LocalDateTime.now().plusHours(24));
 //      invitation link need to be changed
 //        String invitationLink = "https://restoflowing.com/page/employee/invited?token=" + inviteToken;
-        String invitationLink = "https://127.0.0.1/page/employee/invited?token=" + inviteToken;
+        String invitationLink = "http://127.0.0.1:10000/page/employee/invited?token=" + inviteToken;
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(invitation.getEmail());
         message.setSubject("Welcome!" + employeeDTO.getName() + " You are invited by " + restaurant.getName());
@@ -71,11 +71,9 @@ public class EmployeeService {
 
 
 //        save employee
-        RestaurantEmployee restaurantEmployee = null;
-        Employee employee = null;
-        employee.setInvitation(invitation);
-        employee.setName(employeeDTO.getName());
-
+        RestaurantEmployee restaurantEmployee = new RestaurantEmployee();
+        Employee employee = new Employee(employeeDTO.getName(), invitation);
+        System.out.println(employee.toString());
         restaurantEmployee.setEmployee(employee);
         restaurantEmployee.setRestaurant(restaurant);
         restaurantEmployee.setMemberRole(employeeDTO.getMemberRole());
@@ -93,3 +91,4 @@ public class EmployeeService {
         return invitationLink;
     }
 }
+

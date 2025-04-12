@@ -48,4 +48,10 @@ public class Employee {
     @JoinColumn(name = "id")
     private Invitation invitation;
 
+    public Employee(String name, Invitation invitation) {
+        this.name = name;
+        this.invitation = invitation;
+
+    }
+
 }
