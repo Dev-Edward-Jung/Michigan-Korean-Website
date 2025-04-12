@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<!-- =========================================================
+* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
+==============================================================
+
+* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
+* Created by: ThemeSelection
+* License: You must have a valid license purchased in order to legally use the theme for your project.
+* Copyright ThemeSelection (https://themeselection.com)
+
+=========================================================
+ -->
+<!-- beautify ignore:start -->
+<html
+  class="light-style layout-menu-fixed"
+  data-assets-path="/"
+  data-template="vertical-menu-template-free"
+  data-theme="theme-default"
+  dir="ltr"
+  lang="en"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+      name="viewport"
+    />
+    <title>
+      Inventory List
+    </title>
+    <meta content="" name="description" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link href="/fonts/vendor/boxicons.css" rel="stylesheet" />
+    <link
+      class="template-customizer-core-css"
+      href="/css/vendor/core.css"
+      rel="stylesheet"
+    />
+    <link
+      class="template-customizer-theme-css"
+      href="/css/vendor/theme-default.css"
+      rel="stylesheet"
+    />
+    <link href="/css/demo.css" rel="stylesheet" />
+    <link
+      href="/css/libs/perfect-scrollbar/perfect-scrollbar.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/css/libs/apex-charts/apex-charts.css"
+      rel="stylesheet"
+    />
+    <script src="/js/vendor/helpers.js"></script>
+    <script src="/js/config.js"></script>
+  </head>
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <div class="layout-page">
+                <!-- nav bar location -->
+
+                <!-- /nav bar -->
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="col-md-6">
+                <div class="card mb-4">
+                  <h5 class="card-header">Inventory List</h5>
+
+                  <!-- one input -->
+                  <div class="card-body">
+                    <div class="mt-2 list-view">
+                      <input
+                        class="form-control form-control-lg large-input"
+                        placeholder="Inventory Name"
+                        type="text"
+                      />
+                      <input
+                        class="form-control form-control-lg second-input"
+                        type="number"
+                      />
+                      <select
+                        class="form-select form-select-lg large-select"
+                        id="largeSelect"
+                      >
+                        <option>unit</option>
+                        <option value="bags">bags</option>
+                        <option value="boxes">boxes</option>
+                      </select>
+                      <button
+                        class="btn btn-danger"
+                        data-bs-target="#modalCenter"
+                        data-bs-toggle="modal"
+                        type="button"
+                      >
+                        remove
+                      </button>
+                      <div
+                        aria-hidden="true"
+                        class="modal fade"
+                        id="modalCenter"
+                        tabindex="-1"
+                      >
+                        <div
+                          class="modal-dialog modal-dialog-centered"
+                          role="document"
+                        >
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="modalCenterTitle">
+                                Warning
+                              </h5>
+                              <button
+                                aria-label="Close"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                type="button"
+                              ></button>
+                            </div>
+                            <div class="modal-body modal-text-center">
+                              Do you want to remove Items?
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal"
+                                type="button"
+                              >
+                                Close
+                              </button>
+                              <button class="btn btn-danger" type="button">
+                                Remove Item
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /one input -->
+
+                  <!-- Add Button and Modal -->
+                  <button
+                    class="btn btn-primary small-button margin-top-5"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCenterAdd"
+                  >
+                    Add
+                  </button>
+                  <div
+                    aria-hidden="true"
+                    class="modal fade"
+                    id="modalCenterAdd"
+                    tabindex="-1"
+                  >
+                    <div
+                      class="modal-dialog modal-dialog-centered"
+                      role="document"
+                    >
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="modalCenterTitleAdd">
+                            Kyle, Kim
+                          </h5>
+                          <button
+                            aria-label="Close"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            type="button"
+                          ></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="card-body">
+                            <div class="mt-2 list-view">
+                              <input
+                                class="form-control form-control-lg large-input"
+                                placeholder="Inventory Name"
+                                type="text"
+                              />
+                              <input
+                                class="form-control form-control-lg second-input"
+                                type="number"
+                              />
+                              <select
+                                class="form-select form-select-lg large-select"
+                                id="largeSelect"
+                              >
+                                <option>unit</option>
+                                <option value="bags">bags</option>
+                                <option value="boxes">boxes</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal"
+                            type="button"
+                          >
+                            Close
+                          </button>
+                          <button class="btn btn-primary" type="button">
+                            Save changes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Add Modal -->
+                </div>
+              </div>
+            </div>
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+  </body>
+
+  <script src="/js/libs/jquery/jquery.js"></script>
+  <script src="/js/libs/popper/popper.js"></script>
+  <script src="/js/vendor/bootstrap.js"></script>
+  <script src="/js/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/js/vendor/menu.js"></script>
+  <script src="/js/libs/apex-charts/apexcharts.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/dashboards-analytics.js"></script>
+  <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+</html>

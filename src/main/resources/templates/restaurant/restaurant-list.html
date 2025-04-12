@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!-- =========================================================
+* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
+==============================================================
+
+* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
+* Created by: ThemeSelection
+* License: You must have a valid license purchased in order to legally use the theme for your project.
+* Copyright ThemeSelection (https://themeselection.com)
+
+=========================================================
+ -->
+<!-- beautify ignore:start -->
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="light-style layout-menu-fixed"
+      dir="ltr" data-theme="theme-default" data-template="vertical-menu-template-free" data-assets-path="/">
+<head>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/img/favicon/favicon.png" />
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+      name="viewport"
+    />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>
+      Restaurant
+    </title>
+    <meta content="" name="description" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      class="template-customizer-core-css"
+      href="/css/vendor/core.css"
+      rel="stylesheet"
+    />
+    <link
+      class="template-customizer-theme-css"
+      href="/css/vendor/theme-default.css"
+      rel="stylesheet"
+    />
+    <link href="/css/demo.css" rel="stylesheet" />
+    <link
+      href="/css/libs/perfect-scrollbar/perfect-scrollbar.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/css/libs/apex-charts/apex-charts.css"
+      rel="stylesheet"
+    />
+    <script src="/js/vendor/helpers.js"></script>
+    <script src="/js/config.js"></script>
+  </head>
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <div class="layout-page">
+          <!-- nav bar location -->
+
+          <!-- /nav bar -->
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="col-md-6">
+                <div class="card mb-4">
+                  <h5 class="card-header">Restaurant List</h5>
+
+
+                                <!-- Bootstrap Table with Header - Light -->
+              <div class="card">
+                <div class="table-responsive text-nowrap">
+                  <table class="table">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+<!--                    where Restaurant List is-->
+
+<!--                      <tr class="restaurant-row">-->
+<!--                        <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>Sake Sushi</strong></td>-->
+<!--                        <td>Royal Oak</td>-->
+<!--                      </tr>-->
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- Bootstrap Table with Header - Light -->
+
+                         <!-- Edit Button -->
+           <button class="btn btn-primary small-button btn-danger margin-top-5" data-bs-target="#modalCenter1" data-bs-toggle="modal" type="button">
+            Add Restaurant
+           </button>
+           <!-- Modal Area -->
+           <div aria-hidden="true" class="modal fade" id="modalCenter1" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+             <div class="modal-content">
+              <div class="modal-header">
+               <h5 class="modal-title">
+                Would you like to add your restaurant?
+               </h5>
+               <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
+               </button>
+              </div>
+              <div class="modal-body">
+               <div class="row">
+                <div class="col mb-3">
+                 <label class="form-label">
+                  Restaurant Name
+                 </label>
+                 <input class="form-control inputName" name="restaurantName" placeholder="Enter Name" type="text"/>
+                </div>
+               </div>
+               <div class="row g-2">
+                <div class="col mb-0">
+                 <label class="form-label">
+                  City
+                 </label>
+                 <input class="form-control inputCity" name="restaurantCity" placeholder="City" type="text"/>
+                </div>
+               </div>
+              </div>
+              <div class="modal-footer">
+               <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">
+                Close
+               </button>
+               <button class="btn btn-primary saveBtn" type="button">
+                Save changes
+               </button>
+              </div>
+             </div>
+            </div>
+           </div>
+           <!-- /Modal Area -->
+
+                  
+                </div>
+              </div>
+            </div>
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+  </body>
+
+  <script src="/js/libs/jquery/jquery.js"></script>
+  <script src="/js/libs/popper/popper.js"></script>
+  <script src="/js/vendor/bootstrap.js"></script>
+  <script src="/js/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/js/vendor/menu.js"></script>
+  <script src="/js/libs/apex-charts/apexcharts.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/dashboards-analytics.js"></script>
+<script src="/js/user/restaurant.js"></script>
+<script src="/js/header/header.js"></script>
+</html>
