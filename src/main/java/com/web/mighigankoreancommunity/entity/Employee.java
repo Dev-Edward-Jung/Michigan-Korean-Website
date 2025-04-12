@@ -26,7 +26,11 @@ public class Employee {
     @Column(nullable = false)
     private String name;
 
+    private String email;
+
     private String phone;
+
+    private String password;
 
     private boolean approved = false; // 사장님이 승인했는지 여부
 
@@ -38,18 +42,17 @@ public class Employee {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<RestaurantEmployee> restaurantEmployeeList;
 
 
     @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "id")
     private Invitation invitation;
 
-    public Employee(String name, Invitation invitation) {
+    public Employee(String name, String email, Invitation invitation) {
         this.name = name;
+        this.email = email;
         this.invitation = invitation;
 
     }

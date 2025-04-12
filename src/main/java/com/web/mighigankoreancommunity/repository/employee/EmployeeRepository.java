@@ -8,4 +8,5 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    public Employee findEmployeeByInvitation_Token(String invitationToken);
 }

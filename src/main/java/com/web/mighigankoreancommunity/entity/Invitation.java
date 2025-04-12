@@ -19,12 +19,8 @@ public class Invitation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;
-
     private String token; // 랜덤 토큰 (UUID 등)
 
-    @Enumerated(EnumType.STRING)
-    private MemberRole role; // 예: MANAGER or KITCHEN
 
     private boolean used; // 이미 사용된 초대인지 확인
 
@@ -49,7 +45,8 @@ public class Invitation {
     @ManyToOne(fetch = FetchType.LAZY)
     private Restaurant restaurant;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Employee employee;
+
 
 }

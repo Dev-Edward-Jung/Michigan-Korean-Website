@@ -38,8 +38,15 @@ public class EmployeeController {
         return "user/employee-register";
     }
 
-    @PostMapping
-    public String registerEmployee(@RequestParam String token, String password) {
+    @PostMapping("/register")
+    public String registerEmployee(@RequestParam("token") String token, String password) {
+        System.out.println(password + " --------------------------------------- ");
+        boolean isExpired = employeeService.isInvitationExpired(token);
+        if (isExpired) {
+            return "error/expired-error";
+        }
+//        save employee password
+        employeeService.registerEmployeeService(token, password);
         return "redirect:/page/announcement/list";
     }
 }
