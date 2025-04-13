@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,4 +20,5 @@ public class EmployeeDTO {
     String phone;
     MemberRole memberRole;
     Long restaurantId;
+    List<ScheduleDTO> schedules;
 }

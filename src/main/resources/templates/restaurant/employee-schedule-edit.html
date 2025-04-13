@@ -41,9 +41,13 @@
 <div class="card p-4">
     <h5 class="card-header">Schedule Edit</h5>
     <div class="card-body">
-        <div class="table-responsive text-nowrap text-primary mb-3"> 4/12 ~ 4/18</div>
+        <div class="table-responsive text-nowrap text-primary mb-3">
+          <span>Start Date : </span><input id="startDateInput" type="date" class="input-primary"></input>
+          <p>End Date : <input id="endDateInput" type="date" class="input-primary"></input></p>
+        </div>
       <div class="table-responsive text-nowrap">
-        <table class="table table-bordered">
+          <p>Kitchen Schedule</p>
+        <table class="table table-bordered kitchen-schedule">
           <thead>
             <tr>
                 <th>Name</th>
@@ -57,76 +61,169 @@
             </tr>
           </thead>
           <tbody>
-<tr>
-  <td><strong>Kyle</strong></td>
+<!--<tr>-->
+<!--  <td><strong>Kyle</strong></td>-->
 
-  <td>
-    <select class="form-select form-select-sm form-no-border">
-      <option class="badge bg-label-primary me-1" selected>Full Time</option>
-      <option class="badge bg-label-info me-1">Dinner</option>
-      <option class="badge bg-label-success me-1">Lunch</option>
-      <option class="badge bg-label-warning me-1">Not Work</option>
-    </select>
-  </td>
+<!--  <td>-->
+<!--    <select class="form-select form-select-sm form-no-border">-->
+<!--      <option class="badge bg-label-primary me-1" selected>Full Time</option>-->
+<!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+<!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+<!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+<!--    </select>-->
+<!--  </td>-->
 
-  <td>
-    <select class="form-select form-select-sm form-no-border">
-      <option class="badge bg-label-warning me-1" selected>Not Work</option>
-      <option class="badge bg-label-primary me-1">Full Time</option>
-      <option class="badge bg-label-info me-1">Dinner</option>
-      <option class="badge bg-label-success me-1">Lunch</option>
-    </select>
-  </td>
+<!--  <td>-->
+<!--    <select class="form-select form-select-sm form-no-border">-->
+<!--      <option class="badge bg-label-warning me-1" selected>Not Work</option>-->
+<!--      <option class="badge bg-label-primary me-1">Full Time</option>-->
+<!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+<!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+<!--    </select>-->
+<!--  </td>-->
 
-  <td>
-    <select class="form-select form-select-sm form-no-border">
-      <option class="badge bg-label-info me-1" selected>Dinner</option>
-      <option class="badge bg-label-primary me-1">Full Time</option>
-      <option class="badge bg-label-success me-1">Lunch</option>
-      <option class="badge bg-label-warning me-1">Not Work</option>
-    </select>
-  </td>
+<!--  <td>-->
+<!--    <select class="form-select form-select-sm form-no-border">-->
+<!--      <option class="badge bg-label-info me-1" selected>Dinner</option>-->
+<!--      <option class="badge bg-label-primary me-1">Full Time</option>-->
+<!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+<!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+<!--    </select>-->
+<!--  </td>-->
 
-  <td>
-    <select class="form-select form-select-sm form-no-border">
-      <option class="badge bg-label-success me-1" selected>Lunch</option>
-      <option class="badge bg-label-primary me-1">Full Time</option>
-      <option class="badge bg-label-info me-1">Dinner</option>
-      <option class="badge bg-label-warning me-1">Not Work</option>
-    </select>
-  </td>
+<!--  <td>-->
+<!--    <select class="form-select form-select-sm form-no-border">-->
+<!--      <option class="badge bg-label-success me-1" selected>Lunch</option>-->
+<!--      <option class="badge bg-label-primary me-1">Full Time</option>-->
+<!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+<!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+<!--    </select>-->
+<!--  </td>-->
 
-  <td>
-    <select class="form-select form-select-sm form-no-border">
-      <option class="badge bg-label-primary me-1" selected>Full Time</option>
-      <option class="badge bg-label-warning me-1">Not Work</option>
-      <option class="badge bg-label-info me-1">Dinner</option>
-      <option class="badge bg-label-success me-1">Lunch</option>
-    </select>
-  </td>
+<!--  <td>-->
+<!--    <select class="form-select form-select-sm form-no-border">-->
+<!--      <option class="badge bg-label-primary me-1" value="FULL" selected>Full Time</option>-->
+<!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+<!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+<!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+<!--    </select>-->
+<!--  </td>-->
 
-  <td>
-    <select class="form-select form-select-sm form-no-border">
-      <option class="badge bg-label-primary me-1" selected>Full Time</option>
-      <option class="badge bg-label-warning me-1">Not Work</option>
-      <option class="badge bg-label-info me-1">Dinner</option>
-      <option class="badge bg-label-success me-1">Lunch</option>
-    </select>
-  </td>
+<!--  <td>-->
+<!--    <select class="form-select form-select-sm form-no-border">-->
+<!--      <option class="badge bg-label-primary me-1" selected>Full Time</option>-->
+<!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+<!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+<!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+<!--    </select>-->
+<!--  </td>-->
 
-  <td>
-    <select class="form-select form-select-sm form-no-border">
-      <option class="badge bg-label-primary me-1" selected>Full Time</option>
-      <option class="badge bg-label-warning me-1">Not Work</option>
-      <option class="badge bg-label-info me-1">Dinner</option>
-      <option class="badge bg-label-success me-1">Lunch</option>
-    </select>
-  </td>
-</tr>
-              
+<!--  <td>-->
+<!--    <select class="form-select form-select-sm form-no-border">-->
+<!--      <option class="badge bg-label-primary me-1" selected>Full Time</option>-->
+<!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+<!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+<!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+<!--    </select>-->
+<!--  </td>-->
+<!--</tr>-->
+<!--              -->
           </tbody>
         </table>
       </div>
+    </div>
+
+
+
+
+
+    <div class="card-body mt-5">
+        <div class="table-responsive text-nowrap">
+            <p> Server Schedule </p>
+            <table class="table table-bordered server-schedule">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                    <th>Sunday</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--<tr>-->
+                <!--  <td><strong>Kyle</strong></td>-->
+
+                <!--  <td>-->
+                <!--    <select class="form-select form-select-sm form-no-border">-->
+                <!--      <option class="badge bg-label-primary me-1" selected>Full Time</option>-->
+                <!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+                <!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+                <!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+                <!--    </select>-->
+                <!--  </td>-->
+
+                <!--  <td>-->
+                <!--    <select class="form-select form-select-sm form-no-border">-->
+                <!--      <option class="badge bg-label-warning me-1" selected>Not Work</option>-->
+                <!--      <option class="badge bg-label-primary me-1">Full Time</option>-->
+                <!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+                <!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+                <!--    </select>-->
+                <!--  </td>-->
+
+                <!--  <td>-->
+                <!--    <select class="form-select form-select-sm form-no-border">-->
+                <!--      <option class="badge bg-label-info me-1" selected>Dinner</option>-->
+                <!--      <option class="badge bg-label-primary me-1">Full Time</option>-->
+                <!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+                <!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+                <!--    </select>-->
+                <!--  </td>-->
+
+                <!--  <td>-->
+                <!--    <select class="form-select form-select-sm form-no-border">-->
+                <!--      <option class="badge bg-label-success me-1" selected>Lunch</option>-->
+                <!--      <option class="badge bg-label-primary me-1">Full Time</option>-->
+                <!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+                <!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+                <!--    </select>-->
+                <!--  </td>-->
+
+                <!--  <td>-->
+                <!--    <select class="form-select form-select-sm form-no-border">-->
+                <!--      <option class="badge bg-label-primary me-1" value="FULL" selected>Full Time</option>-->
+                <!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+                <!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+                <!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+                <!--    </select>-->
+                <!--  </td>-->
+
+                <!--  <td>-->
+                <!--    <select class="form-select form-select-sm form-no-border">-->
+                <!--      <option class="badge bg-label-primary me-1" selected>Full Time</option>-->
+                <!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+                <!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+                <!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+                <!--    </select>-->
+                <!--  </td>-->
+
+                <!--  <td>-->
+                <!--    <select class="form-select form-select-sm form-no-border">-->
+                <!--      <option class="badge bg-label-primary me-1" selected>Full Time</option>-->
+                <!--      <option class="badge bg-label-warning me-1">Not Work</option>-->
+                <!--      <option class="badge bg-label-info me-1">Dinner</option>-->
+                <!--      <option class="badge bg-label-success me-1">Lunch</option>-->
+                <!--    </select>-->
+                <!--  </td>-->
+                <!--</tr>-->
+                <!--              -->
+                </tbody>
+            </table>
+        </div>
     </div>
     <!-- Vertically Centered Modal -->
         <!-- Button trigger modal -->
@@ -156,7 +253,7 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                   Close
                 </button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary saveBtn">Save changes</button>
               </div>
             </div>
           </div>
@@ -191,40 +288,9 @@
 <script src="/js/dashboards-analytics.js">
 </script>
 <script src="/js/header/header.js"></script>
+<script src="/js/user/schedule.js"></script>
 
 
 
-    <script>
-        const colorMap = {
-  "Full Time": "bg-label-primary",
-  "Dinner": "bg-label-info",
-  "Lunch": "bg-label-success",
-  "Not Work": "bg-label-warning",
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("select.form-select").forEach(select => {
-    updateColor(select);
-    select.addEventListener("change", () => updateColor(select));
-  });
-});
-
-function updateColor(select) {
-  const value = select.value;
-
-  // 색상 클래스 제거
-  select.classList.remove(
-    "bg-label-primary",
-    "bg-label-info",
-    "bg-label-success",
-    "bg-label-warning"
-  );
-
-  // 새 색상 클래스 추가
-  const color = colorMap[value];
-  if (color) select.classList.add(color);
-}
-        
-    </script>
 
     </html>
