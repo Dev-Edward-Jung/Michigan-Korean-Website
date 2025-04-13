@@ -2358,7 +2358,6 @@ textarea.form-control-lg {
 
 .form-select {
   display: block;
-  width: 100%;
   padding: 0.4375rem 1.875rem 0.4375rem 0.875rem;
   -moz-padding-start: calc(0.875rem - 3px);
   font-size: 0.9375rem;
@@ -16684,6 +16683,33 @@ input.number-input[type=number] {
   -moz-appearance: textfield;
 }
 
+
+
+/* employee schedule */
+.no-padding-side{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+.form-no-border{
+  border : none;
+  box-sizing: border-box;
+  background-color: transparent;
+  -webkit-appearance: none; /* Safari & Chrome */
+  -moz-appearance: none;    /* Firefox */
+  appearance: none;
+  outline: none;
+  background-image: none !important;
+  background-repeat: no-repeat;
+  background-position: right center;
+
+}
+
+.form-no-border
+.form-no-border::-ms-expand {
+  display: none;
+}
 
 /* I changed */
 
