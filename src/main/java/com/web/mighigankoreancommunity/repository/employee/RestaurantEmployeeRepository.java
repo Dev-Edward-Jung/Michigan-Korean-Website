@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RestaurantEmployeeRepository  extends JpaRepository<RestaurantEmployee, Long> {
     public List<RestaurantEmployee> findRestaurantEmployeesByRestaurant_Id(Long restaurantId);
+
 }
