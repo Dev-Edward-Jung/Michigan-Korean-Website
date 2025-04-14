@@ -21,14 +21,13 @@ public class employeeScheduleRestController {
     @GetMapping("/list")
     public Map<String, List<EmployeeDTO>> getAllSchedule(@RequestParam Long restaurantId,
                                                          @AuthenticationPrincipal CustomUserDetails user){
-        System.out.println(restaurantId);
         Map<String, List<EmployeeDTO>> result = scheduleService.findAllScheduleByRestaurantId(restaurantId, user.getOwner());
         return result;
     }
 
     @PostMapping("/save")
-    public void saveSchedule(@RequestParam Long restaurantId, @AuthenticationPrincipal CustomUserDetails user){
-
+    public void saveSchedule(@RequestParam Long restaurantId, @RequestBody List<EmployeeDTO> employeeDTOList, @AuthenticationPrincipal CustomUserDetails user){
+        scheduleService.ScheduleSave(restaurantId, employeeDTOList, user.getOwner());
     }
 
 }
