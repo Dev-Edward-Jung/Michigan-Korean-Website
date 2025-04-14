@@ -1,43 +1,56 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    // ✅ CSRF 정보
+    // CSRF 정보 읽기
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-    // 날짜 입력 없이도 로드하도록 호출
     loadEmployeeList(csrfToken, csrfHeader);
 
     // Save 버튼 이벤트 등록
     document.querySelector(".saveBtn").addEventListener("click", async () => {
-        // 배열 선언 (외부 변수로 선언)
+        // 시작일, 종료일 값 가져오기 (yyyy-MM-dd 형식)
+        const shiftStartDate = document.getElementById("startDateInput").value;
+        const shiftEndDate = document.getElementById("endDateInput").value;
+
+        if (!shiftStartDate || !shiftEndDate) {
+            alert("시작일과 종료일을 모두 선택해주세요.");
+            return;
+        }
+
+        // 직원 스케줄 데이터를 담을 배열
         const schedulePayload = [];
 
-        // 두 테이블의 행을 처리합니다.
+        // 테이블의 행들을 처리하는 함수
         const processRows = (rows) => {
             // 요일 배열 (인덱스 0~6에 대응)
             const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
             rows.forEach(row => {
                 const employeeId = row.dataset.employeeId;
+                const memberRole = row.dataset.memberRole;
                 if (!employeeId) return;
-                // 해당 행 내의 모든 select 요소를 가져옴 (순서대로 월~일에 해당한다고 가정)
+
+                // 해당 행 내의 모든 select 요소(월~일 순서대로)를 가져옴
                 const selects = row.querySelectorAll("select.form-select");
                 const schedules = [];
-                selects.forEach((select) => {
+                selects.forEach((select, index) => {
                     schedules.push({
+                        day: days[index],
                         shift: select.value
                     });
                 });
+                // 각 직원 객체에 shiftStartDate, shiftEndDate 추가
                 schedulePayload.push({
                     id: employeeId,
-                    schedules: schedules
+                    memberRole: memberRole,
+                    schedules: schedules,
+                    shiftStartDate: shiftStartDate,
+                    shiftEndDate: shiftEndDate
                 });
             });
         };
 
-        // kitchen 테이블 처리
+        // 각 테이블의 행 데이터를 처리
         const kitchenRows = document.querySelectorAll("table.kitchen-schedule tbody tr");
         processRows(kitchenRows);
-        console.log(kitchenRows)
-        // server 테이블 처리
         const serverRows = document.querySelectorAll("table.server-schedule tbody tr");
         processRows(serverRows);
 
@@ -45,17 +58,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         const urlParams = new URLSearchParams(window.location.search);
         const restaurantId = urlParams.get("restaurantId");
         if (!restaurantId) {
-            alert("restaurantId가 URL에 없습니다");
+            alert("restaurantId가 URL에 없습니다.");
             return;
         }
-        console.log(schedulePayload)
+
+        console.log("전송할 데이터:", schedulePayload);
+
         try {
+            // 컨트롤러가 List<EmployeeDTO>를 받으므로 배열을 그대로 전송합니다.
             const res = await fetch(`/api/employee/schedule/save?restaurantId=${restaurantId}`, {
                 method: "POST",
-                credentials : "include",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
-                    [csrfHeader] : csrfToken
+                    [csrfHeader]: csrfToken
                 },
                 body: JSON.stringify(schedulePayload)
             });
@@ -108,8 +124,9 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
         // kitchenList 렌더링
         kitchenList.forEach(employee => {
             const tr = document.createElement("tr");
-            // 직원 아이디 저장 (나중에 save 시 그룹화에 사용)
+            // 직원 아이디와 memberRole 저장 (나중에 save 시 사용)
             tr.dataset.employeeId = employee.id;
+            tr.dataset.memberRole = employee.memberRole;
 
             // 첫 번째 셀: 직원 이름 표시
             const tdName = document.createElement("td");
@@ -120,20 +137,18 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
             if (employee.schedules && employee.schedules.length > 0) {
                 employee.schedules.forEach(schedule => {
                     const tdSelect = document.createElement("td");
-                    // schedule.shift 값이 있으면 사용, 없으면 기본값 "FULL_TIME"
                     const selectedValue = schedule.shift || "FULL_TIME";
                     tdSelect.innerHTML = `
                         <select class="form-select form-select-sm form-no-border">
                             <option class="badge bg-label-primary me-1" value="FULL_TIME" ${selectedValue === "FULL_TIME" ? "selected" : ""}>Full Time</option>
                             <option class="badge bg-label-info me-1" value="DINNER" ${selectedValue === "DINNER" ? "selected" : ""}>Dinner</option>
                             <option class="badge bg-label-success me-1" value="LUNCH" ${selectedValue === "LUNCH" ? "selected" : ""}>Lunch</option>
-                            <option class="badge bg-label-warning me-1" value="NO_WORK" ${selectedValue === "NO_WORK" ? "selected" : ""}>Not Work</option>
+                            <option class="badge bg-label-warning me-1" value="OFF" ${selectedValue === "OFF" ? "selected" : ""}>Off</option>
                         </select>
                     `;
                     tr.appendChild(tdSelect);
                 });
             } else {
-                // 스케줄 정보가 없으면 7일(월~일)용 셀을 기본값 "FULL_TIME"으로 생성
                 for (let i = 0; i < 7; i++) {
                     const tdSelect = document.createElement("td");
                     const selectedValue = "FULL_TIME";
@@ -142,7 +157,7 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
                             <option class="badge bg-label-primary me-1" value="FULL_TIME" ${selectedValue === "FULL_TIME" ? "selected" : ""}>Full Time</option>
                             <option class="badge bg-label-info me-1" value="DINNER" ${selectedValue === "DINNER" ? "selected" : ""}>Dinner</option>
                             <option class="badge bg-label-success me-1" value="LUNCH" ${selectedValue === "LUNCH" ? "selected" : ""}>Lunch</option>
-                            <option class="badge bg-label-warning me-1" value="NO_WORK" ${selectedValue === "NO_WORK" ? "selected" : ""}>Not Work</option>
+                            <option class="badge bg-label-warning me-1" value="OFF" ${selectedValue === "OFF" ? "selected" : ""}>Off</option>
                         </select>
                     `;
                     tr.appendChild(tdSelect);
@@ -156,6 +171,7 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
         serverList.forEach(employee => {
             const tr = document.createElement("tr");
             tr.dataset.employeeId = employee.id;
+            tr.dataset.memberRole = employee.memberRole;
 
             // 첫 번째 셀: 직원 이름 표시
             const tdName = document.createElement("td");
@@ -171,7 +187,7 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
                             <option class="badge bg-label-primary me-1" value="FULL_TIME" ${selectedValue === "FULL_TIME" ? "selected" : ""}>Full Time</option>
                             <option class="badge bg-label-info me-1" value="DINNER" ${selectedValue === "DINNER" ? "selected" : ""}>Dinner</option>
                             <option class="badge bg-label-success me-1" value="LUNCH" ${selectedValue === "LUNCH" ? "selected" : ""}>Lunch</option>
-                            <option class="badge bg-label-warning me-1" value="NO_WORK" ${selectedValue === "NO_WORK" ? "selected" : ""}>Not Work</option>
+                            <option class="badge bg-label-warning me-1" value="OFF" ${selectedValue === "OFF" ? "selected" : ""}>Off</option>
                         </select>
                     `;
                     tr.appendChild(tdSelect);
@@ -185,7 +201,7 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
                             <option class="badge bg-label-primary me-1" value="FULL_TIME" ${selectedValue === "FULL_TIME" ? "selected" : ""}>Full Time</option>
                             <option class="badge bg-label-info me-1" value="DINNER" ${selectedValue === "DINNER" ? "selected" : ""}>Dinner</option>
                             <option class="badge bg-label-success me-1" value="LUNCH" ${selectedValue === "LUNCH" ? "selected" : ""}>Lunch</option>
-                            <option class="badge bg-label-warning me-1" value="NO_WORK" ${selectedValue === "NO_WORK" ? "selected" : ""}>Not Work</option>
+                            <option class="badge bg-label-warning me-1" value="OFF" ${selectedValue === "OFF" ? "selected" : ""}>Off</option>
                         </select>
                     `;
                     tr.appendChild(tdSelect);
@@ -210,12 +226,12 @@ function clearTableBodies() {
 
 // helper: select cell 생성 함수 (필요 시 사용)
 function createSelectCell(employeeId, date, value) {
-    const scheduleOptions = ["Full Time", "Dinner", "Lunch", "Not Work"];
+    const scheduleOptions = ["Full Time", "Dinner", "Lunch", "Off"];
     const colorMap = {
         "Full Time": "bg-label-primary",
         "Dinner": "bg-label-info",
         "Lunch": "bg-label-success",
-        "Not Work": "bg-label-warning"
+        "Off": "bg-label-warning"
     };
 
     const td = document.createElement("td");

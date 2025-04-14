@@ -2,17 +2,16 @@ package com.web.mighigankoreancommunity.dto;
 
 
 import com.web.mighigankoreancommunity.domain.MemberRole;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class EmployeeDTO {
     Long id;
     String name;
@@ -21,4 +20,6 @@ public class EmployeeDTO {
     MemberRole memberRole;
     Long restaurantId;
     List<ScheduleDTO> schedules;
+    LocalDate shiftStartDate;
+    LocalDate shiftEndDate;
 }
