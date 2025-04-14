@@ -27,7 +27,9 @@ public class employeeScheduleRestController {
 
     @PostMapping("/save")
     public void saveSchedule(@RequestParam Long restaurantId, @RequestBody List<EmployeeDTO> employeeDTOList, @AuthenticationPrincipal CustomUserDetails user){
-        scheduleService.ScheduleSave(restaurantId, employeeDTOList, user.getOwner());
+//        scheduleService.scheduleSave(restaurantId, employeeDTOList, user.getOwner());
+//        Only have EmployeeId and MemberRole, and Shifts
+        scheduleService.scheduleSave(restaurantId, employeeDTOList, user.getOwner());
     }
 
 }

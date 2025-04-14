@@ -28,7 +28,8 @@ public class Schedule {
 
     private String dayOfWeek; // ex: "Monday"
 
-    private Shift shift = Shift.FULL_TIME;
+    @Enumerated(EnumType.STRING)
+    private Shift shift;
 
     private LocalDate startShiftDate;
     private LocalDate endShiftDate;
@@ -45,4 +46,9 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private RestaurantEmployee restaurantEmployee;
+
+
+    public Schedule(RestaurantEmployee restaurantEmployee) {
+        this.restaurantEmployee = restaurantEmployee;
+    }
 }
