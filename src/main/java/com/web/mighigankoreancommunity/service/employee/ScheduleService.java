@@ -25,11 +25,6 @@ public class ScheduleService {
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
     private final RestaurantRepository restaurantRepository;
 
-    public void ScheduleSave(Long restaurantId, ScheduleDTO scheduleDTO, Owner owner) {
-        List<Schedule> scheduleList = scheduleRepository.findSchedulesByRestaurantEmployee_Restaurant_Id(restaurantId);
-        System.out.println("Schedule List :  -------------" + scheduleList.toString());
-
-    }
 
     public Map<String, List<EmployeeDTO>> findAllScheduleByRestaurantId(Long restaurantId, Owner owner) {
         List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurantId);
@@ -48,11 +43,12 @@ public class ScheduleService {
             employeeDTO.setEmail(employee.getEmail());
             employeeDTO.setId(employee.getId());
 
+            System.out.println(employeeDTO.getMemberRole());
            if (employeeDTO.getMemberRole() == MemberRole.KITCHEN || employeeDTO.getMemberRole() == MemberRole.MANAGER || employeeDTO.getMemberRole() == MemberRole.EMPLOYEE) {
                kitchenList.add(employeeDTO);
+           } else{
+               serverList.add(employeeDTO);
            }
-
-           serverList.add(employeeDTO);
 
 
            restaurantEmployee.getSchedules().forEach(schedule -> {
@@ -74,5 +70,11 @@ public class ScheduleService {
         result.put("serverList", serverList);
 
         return result;
+    }
+
+
+
+    public void ScheduleSave(Long restaurantId, List<EmployeeDTO> employeeDTOList, Owner owner) {
+
     }
 }

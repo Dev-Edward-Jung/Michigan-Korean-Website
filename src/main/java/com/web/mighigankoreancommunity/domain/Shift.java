@@ -4,5 +4,5 @@ public enum Shift {
     DINNER,
     LUNCH,
     FULL_TIME,
-    NO_WORK
+    OFF
 }
