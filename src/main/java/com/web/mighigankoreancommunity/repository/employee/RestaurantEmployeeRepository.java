@@ -10,4 +10,6 @@ import java.util.List;
 public interface RestaurantEmployeeRepository  extends JpaRepository<RestaurantEmployee, Long> {
     public List<RestaurantEmployee> findRestaurantEmployeesByRestaurant_Id(Long restaurantId);
 
+    public RestaurantEmployee findRestaurantEmployeeByRestaurant_IdAndEmployee_Id(Long restaurantId, Long employeeId);
+
 }

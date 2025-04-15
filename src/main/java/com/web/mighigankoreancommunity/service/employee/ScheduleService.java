@@ -12,8 +12,10 @@ import com.web.mighigankoreancommunity.repository.employee.ScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +36,7 @@ public class ScheduleService {
         List<EmployeeDTO> kitchenList = new ArrayList<>();
         List<EmployeeDTO> serverList = new ArrayList<>();
 
-        ScheduleDTO scheduleDTO = new ScheduleDTO();
+
         EmployeeDTO employeeDTO = new EmployeeDTO();
 
         restaurantEmployeeList.forEach(restaurantEmployee -> {
@@ -44,8 +46,7 @@ public class ScheduleService {
             employeeDTO.setName(employee.getName());
             employeeDTO.setEmail(employee.getEmail());
             employeeDTO.setId(employee.getId());
-
-            System.out.println(employeeDTO.getMemberRole());
+            System.out.println(restaurantEmployee.getSchedules().get(0));
            if (employeeDTO.getMemberRole() == MemberRole.KITCHEN || employeeDTO.getMemberRole() == MemberRole.MANAGER || employeeDTO.getMemberRole() == MemberRole.EMPLOYEE) {
                kitchenList.add(employeeDTO);
            } else{
@@ -54,6 +55,8 @@ public class ScheduleService {
 
 
            restaurantEmployee.getSchedules().forEach(schedule -> {
+               ScheduleDTO scheduleDTO = new ScheduleDTO();
+               System.out.println(schedule.getShift());
                scheduleDTO.setShift(schedule.getShift());
                scheduleDTO.setRestaurantId(restaurant.getId());
                scheduleDTO.setEmployeeId(employee.getId());
@@ -64,12 +67,14 @@ public class ScheduleService {
            });
 
            employeeDTO.setSchedules(scheduleDTOList);
+           scheduleDTOList.stream().forEach(System.out::println);
 
         });
 
         Map<String, List<EmployeeDTO>> result = new HashMap<>();
         result.put("kitchenList", kitchenList);
         result.put("serverList", serverList);
+
 
         return result;
     }
@@ -80,46 +85,57 @@ public class ScheduleService {
     @Transactional
     public void scheduleSave(Long restaurantId, List<EmployeeDTO> employeeDTOList, Owner owner) {
         // 저장할 RestaurantEmployee, Schedule 객체들을 각각 리스트에 담음
-        List<RestaurantEmployee> restaurantEmployeeList = new ArrayList<>();
         List<Schedule> scheduleList = new ArrayList<>();
 
         // employeeDTOList 순회
         for (EmployeeDTO employeeDTO : employeeDTOList) {
             // 각 직원마다 새 RestaurantEmployee 인스턴스 생성
-            RestaurantEmployee restaurantEmployee = new RestaurantEmployee();
+            RestaurantEmployee restaurantEmployee = restaurantEmployeeRepository.findRestaurantEmployeeByRestaurant_IdAndEmployee_Id(restaurantId, employeeDTO.getId());
 
-            Employee employee = employeeRepository.findById(employeeDTO.getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Employee not found: " + employeeDTO.getId()));
+            Employee employee = restaurantEmployee.getEmployee();
+            Restaurant restaurant = restaurantEmployee.getRestaurant();
+
+
             // DTO에 restaurantId가 없다면 파라미터의 restaurantId를 사용할 수도 있음.
-            Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                    .orElseThrow(() -> new EntityNotFoundException("Restaurant not found: " + restaurantId));
-
             restaurantEmployee.setEmployee(employee);
             restaurantEmployee.setRestaurant(restaurant);
             restaurantEmployee.setMemberRole(employeeDTO.getMemberRole());
-            restaurantEmployeeList.add(restaurantEmployee);
 
-            // 해당 직원의 스케줄 정보가 있는 경우 Schedule 객체들을 생성해서 리스트에 추가
-            if (employeeDTO.getSchedules() != null) {
-                for (ScheduleDTO scheduleDTO : employeeDTO.getSchedules()) {
-                    // 생성자에 restaurantEmployee를 전달하는 방식 (생성자 내부에서 기본 값 설정 등 처리 가능)
-                    Schedule schedule = new Schedule(restaurantEmployee);
-                    schedule.setShift(scheduleDTO.getShift());
-                    schedule.setStartShiftDate(scheduleDTO.getShiftStartDate());
-                    schedule.setEndShiftDate(scheduleDTO.getShiftEndDate());
-                    // 필요한 경우 restaurantEmployee를 별도로 세팅해도 무방
-                    schedule.setRestaurantEmployee(restaurantEmployee);
-                    schedule.setEndShiftDate(employeeDTO.getShiftEndDate());
-                    schedule.setStartShiftDate(employeeDTO.getShiftStartDate());
-                    scheduleList.add(schedule);
-                }
+            List<Schedule> scheduleCheck  = scheduleRepository.findSchedulesByRestaurantEmployee(restaurantEmployee);
+
+//            if an employee does not have schedule in DB
+        if (scheduleCheck.isEmpty()) {
+            for (ScheduleDTO scheduleDTO : employeeDTO.getSchedules()) {
+                Schedule schedule = new Schedule(restaurantEmployee);
+                schedule.setShift(scheduleDTO.getShift());
+                schedule.setStartShiftDate(scheduleDTO.getShiftStartDate());
+                schedule.setEndShiftDate(scheduleDTO.getShiftEndDate());
+
+                // 필요한 경우 restaurantEmployee를 별도로 세팅해도 무방
+                schedule.setRestaurantEmployee(restaurantEmployee);
+                schedule.setEndShiftDate(employeeDTO.getShiftEndDate());
+                schedule.setStartShiftDate(employeeDTO.getShiftStartDate());
+                scheduleList.add(schedule);
+            }
+//            if employee has schedule
+        } else {
+            // DB에 스케줄이 있다면, 순서대로 employeeDTO의 ScheduleDTO와 매칭하여 업데이트
+            // (순서와 건수가 동일하다는 전제 하에)
+            int size = Math.min(employeeDTO.getSchedules().size(), scheduleCheck.size());
+            for (int i = 0; i < size; i++) {
+                ScheduleDTO scheduleDTO = employeeDTO.getSchedules().get(i);
+                Schedule schedule = scheduleCheck.get(i);
+                schedule.setShift(scheduleDTO.getShift());
+                schedule.setStartShiftDate(employeeDTO.getShiftStartDate());
+                schedule.setEndShiftDate(employeeDTO.getShiftEndDate());
+                // 이미 DB에서 로드된 엔티티이므로 update 쿼리가 실행됨
+                scheduleList.add(schedule);
             }
         }
+        }
 
-        // RestaurantEmployee와 Schedule 객체들을 배치로 저장
-        restaurantEmployeeRepository.saveAll(restaurantEmployeeList);
         if (!scheduleList.isEmpty()) {
-            scheduleRepository.up(scheduleList);
+            scheduleRepository.saveAll(scheduleList);
         }
     }
 }

@@ -36,7 +36,7 @@ public class RestaurantEmployee {
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole = MemberRole.EMPLOYEE; // ex: manager, owner, kitchen, sushi
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurantEmployee")
     @JsonManagedReference
     List<Schedule> schedules;
 
