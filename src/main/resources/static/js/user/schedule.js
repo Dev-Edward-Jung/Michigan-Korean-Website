@@ -115,6 +115,18 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
         const kitchenList = data.kitchenList || [];
         const serverList = data.serverList || [];
 
+        // 예제: kitchenList의 첫 번째 직원의 첫 번째 스케줄에서 shiftEndDate 추출
+        if (data.kitchenList && data.kitchenList.length > 0) {
+            const firstEmployee = data.kitchenList[0];
+            if (firstEmployee.schedules && firstEmployee.schedules.length > 0) {
+                const shiftEndDate = firstEmployee.schedules[0].shiftEndDate;
+                const startDateInput = firstEmployee.schedules[0].shiftStartDate;
+                // HTML의 input[type="date"]는 "yyyy-MM-dd" 형식이어야 합니다.
+                document.getElementById("endDateInput").value = shiftEndDate;
+                document.getElementById("startDateInput").value = startDateInput;
+            }
+        }
+
         // 두 테이블의 tbody를 각각 선택하고 기존 내용을 초기화
         const kitchenTbody = document.querySelector("table.kitchen-schedule tbody");
         const serverTbody = document.querySelector("table.server-schedule tbody");
