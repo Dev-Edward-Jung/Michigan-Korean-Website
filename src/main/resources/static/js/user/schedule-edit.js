@@ -4,6 +4,108 @@ document.addEventListener("DOMContentLoaded", async () => {
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
     loadEmployeeList(csrfToken, csrfHeader);
+
+    // Save 버튼 이벤트 등록
+    document.querySelector(".saveBtn").addEventListener("click", async () => {
+        // 시작일, 종료일 값 가져오기 (yyyy-MM-dd 형식)
+        const shiftStartDate = document.getElementById("startDateInput").value;
+        const shiftEndDate = document.getElementById("endDateInput").value;
+
+        if (!shiftStartDate || !shiftEndDate) {
+            alert("시작일과 종료일을 모두 선택해주세요.");
+            return;
+        }
+
+        // 스케줄 데이터를 담을 배열
+        const schedulePayload = [];
+
+        // 주방과 서버 테이블의 모든 행 가져오기 (각 직원당 두 줄이 있어야 함: week="1"과 week="2")
+        const kitchenRows = document.querySelectorAll("table.kitchen-schedule tbody tr");
+        const serverRows = document.querySelectorAll("table.server-schedule tbody tr");
+
+        // 두 테이블의 행들을 합침
+        const allRows = [...kitchenRows, ...serverRows];
+
+        // 각 직원별로 두 주차 데이터를 그룹화하기 위한 객체 생성
+        const groupedData = {};
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+        allRows.forEach(row => {
+            const employeeId = row.dataset.employeeId;
+            const memberRole = row.dataset.memberRole;
+            const week = row.dataset.week; // "1" 또는 "2"여야 함.
+            if (!employeeId) return;
+
+            // 해당 행에 있는 select 요소들을 가져와 7일간 스케줄 배열 생성
+            const selects = row.querySelectorAll("select.form-select");
+            const weekSchedule = [];
+            selects.forEach((select, index) => {
+                weekSchedule.push({
+                    day: days[index],
+                    shift: select.value
+                });
+            });
+
+            // 해당 직원이 그룹에 없으면 새로 생성
+            if (!groupedData[employeeId]) {
+                groupedData[employeeId] = {
+                    id: employeeId,
+                    memberRole: memberRole,
+                    // schedules: 각 주차별 데이터를 저장할 객체 (키: "1", "2")
+                    schedules: {}
+                };
+            }
+            // 주차 번호에 해당하는 스케줄 데이터를 저장
+            groupedData[employeeId].schedules[week] = weekSchedule;
+        });
+
+        // 그룹핑한 데이터에서, 각 직원별로 [week1(7일), week2(7일)]를 순서대로 합쳐 최종 payload에 추가
+        Object.values(groupedData).forEach(emp => {
+            const combinedSchedules = [
+                ...(emp.schedules["1"] || []),
+                ...(emp.schedules["2"] || [])
+            ];
+            schedulePayload.push({
+                id: emp.id,
+                memberRole: emp.memberRole,
+                schedules: combinedSchedules, // 1주차 7일 + 2주차 7일 순서대로
+                shiftStartDate: shiftStartDate,
+                shiftEndDate: shiftEndDate
+            });
+        });
+
+        // URL에서 restaurantId 추출
+        const urlParams = new URLSearchParams(window.location.search);
+        const restaurantId = urlParams.get("restaurantId");
+        if (!restaurantId) {
+            alert("restaurantId가 URL에 없습니다.");
+            return;
+        }
+
+        console.log("전송할 데이터:", schedulePayload);
+
+        try {
+            // API 호출: 컨트롤러는 List<EmployeeDTO> 형태로 배열을 받도록 구성되어 있어, 그대로 전송합니다.
+            const res = await fetch(`/api/employee/schedule/save?restaurantId=${restaurantId}`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(schedulePayload)
+            });
+
+            if (res.ok) {
+                alert("✅ 스케줄이 성공적으로 저장되었습니다!");
+            } else {
+                const err = await res.text();
+                alert("❌ 저장 실패: " + err);
+            }
+        } catch (e) {
+            alert("❌ 오류 발생: " + e.message);
+        }
+    });
 });
 
 // 직원+스케줄 로드 함수 (두 개의 리스트: kitchenList, serverList)
@@ -100,8 +202,12 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
                                 <option value="OFF" ${selectedValue === "OFF" ? "selected" : ""}>Off</option>
                             </select>
                         `;
+                        // 선택 변경 시 색상 업데이트를 위해 이벤트 등록
                         const selectElem = tdSelect.querySelector("select");
-                        selectElem.disabled = true;
+                        selectElem.addEventListener("change", () => {
+                            updateSelectColor(selectElem, colorMap);
+                        });
+                        // 초기 선택값에 따른 색상 설정
                         updateSelectColor(selectElem, colorMap);
                         tr.appendChild(tdSelect);
                     });
@@ -118,7 +224,9 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
                             </select>
                         `;
                         const selectElem = tdSelect.querySelector("select");
-                        selectElem.disabled = true;
+                        selectElem.addEventListener("change", () => {
+                            updateSelectColor(selectElem, colorMap);
+                        });
                         updateSelectColor(selectElem, colorMap);
                         tr.appendChild(tdSelect);
                     }
@@ -164,7 +272,9 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
                             </select>
                         `;
                         const selectElem = tdSelect.querySelector("select");
-                        selectElem.disabled = true;
+                        selectElem.addEventListener("change", () => {
+                            updateSelectColor(selectElem, colorMap);
+                        });
                         updateSelectColor(selectElem, colorMap);
                         tr.appendChild(tdSelect);
                     });
@@ -181,7 +291,9 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
                             </select>
                         `;
                         const selectElem = tdSelect.querySelector("select");
-                        selectElem.disabled = true;
+                        selectElem.addEventListener("change", () => {
+                            updateSelectColor(selectElem, colorMap);
+                        });
                         updateSelectColor(selectElem, colorMap);
                         tr.appendChild(tdSelect);
                     }
@@ -243,7 +355,10 @@ function createSelectCell(employeeId, date, value) {
         select.appendChild(opt);
     });
 
-    select.disabled = true;
+    // 업데이트: 선택 변경 시 셀 색상 변경
+    select.addEventListener("change", () => {
+        updateSelectColor(select, colorMap);
+    });
     updateSelectColor(select, colorMap);
 
     td.appendChild(select);
@@ -261,19 +376,3 @@ function updateSelectColor(select, colorMap) {
         select.classList.add(colorMap[selectedValue]);
     }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const restaurantId = params.get("restaurantId");
-
-    if (!restaurantId) {
-        console.log("No restaurantId found");
-        return;
-    }
-
-    // 예: 특정 버튼 클릭 시 해당 URL로 이동
-    document.getElementById("edit-schedule-btn").addEventListener("click", () => {
-        // restaurantId를 포함한 URL로 이동
-        window.location.href = "/page/employee/schedule/edit?restaurantId=" + restaurantId;
-    });
-});
