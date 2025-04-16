@@ -46,7 +46,6 @@ public class ScheduleService {
             employeeDTO.setName(employee.getName());
             employeeDTO.setEmail(employee.getEmail());
             employeeDTO.setId(employee.getId());
-            System.out.println(restaurantEmployee.getSchedules().get(0));
            if (employeeDTO.getMemberRole() == MemberRole.KITCHEN || employeeDTO.getMemberRole() == MemberRole.MANAGER || employeeDTO.getMemberRole() == MemberRole.EMPLOYEE) {
                kitchenList.add(employeeDTO);
            } else{
