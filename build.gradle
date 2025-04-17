@@ -29,7 +29,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
     compileOnly 'org.projectlombok:lombok'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.7'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'
@@ -40,6 +39,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
     testCompileOnly 'org.projectlombok:lombok:1.18.26'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
 
 }
 
@@ -52,6 +52,11 @@ sourceSets {
             srcDirs = ['src/main/resources']
             includes = ['**/*.properties', '**/*.yml', '**/*.xml', '**/*.html', '**/*.js', '**/*.css', '**/*.png']
         }
+        java {
+            // Querydsl Annotation Processor가 생성한 코드는 build/generated/sources/annotationProcessor/java/main 에 위치합니다.
+            srcDir 'build/generated/sources/annotationProcessor/java/main'
+        }
     }
 }
+
 
