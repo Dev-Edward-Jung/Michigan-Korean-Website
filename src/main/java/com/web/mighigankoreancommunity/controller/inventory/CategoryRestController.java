@@ -26,32 +26,43 @@ public class CategoryRestController {
     public ResponseEntity<List<CategoryDTO>> findCategories(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                          @RequestParam Long restaurantId) {
         List<CategoryDTO> categoryListDTOList = categoryService.findCategoriesByRestaurant(restaurantId, userDetails.getOwner());
-        System.out.println("category List : " + categoryListDTOList.toString());
         return new ResponseEntity<>(categoryListDTOList, HttpStatus.OK);
 
     }
 
     @PostMapping("/save")
-    public void saveCategory(@RequestBody CategoryDTO categoryDTO,
-                             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        System.out.println("Category DTO : " + categoryDTO.toString());
+    public ResponseEntity<?> saveCategory(@RequestBody CategoryDTO categoryDTO,
+                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
         boolean categorySuccess =  categoryService.addCategory(categoryDTO, userDetails.getOwner());
-        System.out.println("category save success : " + categorySuccess);
-        System.out.println(categoryDTO.toString());
+        if (categorySuccess) {
+            return ResponseEntity.ok().body("Category saved successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to save category");
+        }
 
     }
 
     @PutMapping("/update")
-    public void updateCategory(@RequestBody CategoryDTO categoryDTO,
+    public ResponseEntity<?> updateCategory(@RequestBody CategoryDTO categoryDTO,
                                @AuthenticationPrincipal CustomUserDetails userDetails){
-        categoryService.updateCategory(categoryDTO, userDetails.getOwner());
-        System.out.println(categoryDTO.toString());
+        boolean categorySuccess = categoryService.updateCategory(categoryDTO, userDetails.getOwner());
+        if (categorySuccess) {
+            return ResponseEntity.ok().body("Category saved successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to save category");
+        }
+
     }
 
     @DeleteMapping("/delete")
-    public void deleteCategory(@RequestBody CategoryDTO categoryDTO,
+    public ResponseEntity<?> deleteCategory(@RequestBody CategoryDTO categoryDTO,
                                @AuthenticationPrincipal CustomUserDetails userDetails){
-        categoryService.deleteCategory(categoryDTO, userDetails.getOwner());
+        boolean categorySuccess = categoryService.deleteCategory(categoryDTO, userDetails.getOwner());
+        if (categorySuccess) {
+            return ResponseEntity.ok().body("Category saved successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to save category");
+        }
     }
 
 
