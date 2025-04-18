@@ -23,7 +23,6 @@ public class OwnerController {
     @GetMapping("/login")
     public String loginPage(@AuthenticationPrincipal CustomUserDetails loginUser) {
         if (loginUser != null) {
-            // 이미 로그인 되어 있으면 대시보드(혹은 리스트 페이지)로 리다이렉트
             return "redirect:/page/restaurant/list";
         }
         return "user/owner-login";
