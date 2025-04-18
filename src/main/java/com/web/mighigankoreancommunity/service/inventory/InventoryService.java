@@ -5,6 +5,7 @@ import com.web.mighigankoreancommunity.dto.InventoryDTO;
 import com.web.mighigankoreancommunity.entity.Inventory;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.repository.inevntory.CategoryRepository;
 import com.web.mighigankoreancommunity.repository.inevntory.InventoryRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
@@ -25,12 +26,14 @@ public class InventoryService {
     // Get Inventory List
     public List<InventoryDTO> getInventoriesByRestaurant(Long retaurantId, Owner loginUser) {
         System.out.println("In Service, loginUser is : " + loginUser.toString());
-        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(retaurantId, loginUser);
+        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(retaurantId, loginUser)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
         System.out.println("In Service, restaurantName is : " + restaurant.toString());
         if (restaurant == null) {
             throw new IllegalArgumentException("Invalid restaurant or unauthorized access.");
         }
-        List<Inventory> inventories = inventoryRepository.findByRestaurantsId(retaurantId);
+        List<Inventory> inventories = inventoryRepository.findByRestaurantsId(retaurantId)
+                .orElseThrow(()-> new RuntimeException("Inventory not found."));
         List<InventoryDTO> inventoryDTOList = new ArrayList<>();
         inventories.forEach(inventory -> {
             InventoryDTO dto = new InventoryDTO();
@@ -94,7 +97,8 @@ public class InventoryService {
 
 
     public boolean deleteInventory(InventoryDTO inventoryDTO, Owner loginUser) {
-        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(inventoryDTO.getRestaurantId(), loginUser);
+        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(inventoryDTO.getRestaurantId(), loginUser)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
         System.out.println(restaurant.toString());
         if (restaurant == null) {
             return false;

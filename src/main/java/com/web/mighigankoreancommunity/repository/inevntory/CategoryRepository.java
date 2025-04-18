@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    public List<Category> findCategoriesByRestaurant(Restaurant restaurant);
+    public Optional<List<Category>> findCategoriesByRestaurant(Restaurant restaurant);
 
-    public Category findCategoryById(Long id);
+    public Optional<Category> findCategoryById(Long id);
 }

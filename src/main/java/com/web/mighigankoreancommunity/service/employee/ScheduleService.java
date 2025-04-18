@@ -5,6 +5,7 @@ import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.EmployeeDTO;
 import com.web.mighigankoreancommunity.dto.ScheduleDTO;
 import com.web.mighigankoreancommunity.entity.*;
+import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
@@ -31,7 +32,8 @@ public class ScheduleService {
 
 
     public Map<String, List<EmployeeDTO>> findAllScheduleByRestaurantId(Long restaurantId, Owner owner) {
-        List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurantId);
+        List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurantId)
+                .orElseThrow(()-> new RuntimeException("Restaurant Employee not found."));
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
         List<EmployeeDTO> kitchenList = new ArrayList<>();
         List<EmployeeDTO> serverList = new ArrayList<>();
@@ -89,7 +91,8 @@ public class ScheduleService {
         // employeeDTOList 순회
         for (EmployeeDTO employeeDTO : employeeDTOList) {
             // 각 직원마다 새 RestaurantEmployee 인스턴스 생성
-            RestaurantEmployee restaurantEmployee = restaurantEmployeeRepository.findRestaurantEmployeeByRestaurant_IdAndEmployee_Id(restaurantId, employeeDTO.getId());
+            RestaurantEmployee restaurantEmployee = restaurantEmployeeRepository.findRestaurantEmployeeByRestaurant_IdAndEmployee_Id(restaurantId, employeeDTO.getId())
+                    .orElseThrow(()-> new RuntimeException("Restaurant Employee not found."));
 
             Employee employee = restaurantEmployee.getEmployee();
             Restaurant restaurant = restaurantEmployee.getRestaurant();
@@ -100,7 +103,8 @@ public class ScheduleService {
             restaurantEmployee.setRestaurant(restaurant);
             restaurantEmployee.setMemberRole(employeeDTO.getMemberRole());
 
-            List<Schedule> scheduleCheck  = scheduleRepository.findSchedulesByRestaurantEmployee(restaurantEmployee);
+            List<Schedule> scheduleCheck  = scheduleRepository.findSchedulesByRestaurantEmployee(restaurantEmployee)
+                    .orElseThrow(()-> new RuntimeException("Schedule not found."));
 
 //            if an employee does not have schedule in DB
         if (scheduleCheck.isEmpty()) {

@@ -136,7 +136,31 @@ async function addEmployee(csrf, restaurantId) {
 
     if (!res.ok) throw new Error("Add failed");
 }
+function setupAddEmployeeFormValidation() {
+    const nameInput = document.querySelector("#modalCenterAdd input[name='name']");
+    const emailInput = document.querySelector("#modalCenterAdd input[name='email']");
+    const emailConfirmInput = document.querySelector("#modalCenterAdd input[name='emailConfirm']");
+    const roleSelect = document.querySelector("#modalCenterAdd select.roleSelect");
+    const addBtn = document.querySelector("#modalCenterAdd .addBtn");
 
+    function validateForm() {
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const emailConfirm = emailConfirmInput.value.trim();
+        const role = roleSelect.value;
+
+        const isValid = name && email && emailConfirm && email === emailConfirm && role;
+        addBtn.disabled = !isValid;
+    }
+
+    // 입력값 변경 시마다 validate 실행
+    [nameInput, emailInput, emailConfirmInput, roleSelect].forEach(input => {
+        input.addEventListener("input", validateForm);
+    });
+
+    // 모달 열릴 때도 초기 상태 설정
+    validateForm();
+}
 // ✅ 전체 로직 초기화
 async function initEmployeePage() {
     const csrf = getCsrfInfo();
@@ -193,6 +217,7 @@ async function initEmployeePage() {
             }
         });
     }
+    setupAddEmployeeFormValidation();
 }
 
 let currentEmployeeId = null;

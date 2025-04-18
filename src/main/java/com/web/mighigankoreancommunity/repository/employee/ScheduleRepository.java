@@ -6,14 +6,16 @@ import com.web.mighigankoreancommunity.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    public List<Schedule> findSchedulesByRestaurantEmployee_Restaurant_Id(Long restaurantId);
+    public Optional<List<Schedule>> findSchedulesByRestaurantEmployee_Restaurant_Id(Long restaurantId);
 
-    public List<Schedule> findSchedulesByRestaurantEmployee(RestaurantEmployee restaurantEmployee);
+    public Optional<List<Schedule>> findSchedulesByRestaurantEmployee(RestaurantEmployee restaurantEmployee);
 
-    public Schedule findScheduleByRestaurantEmployee(RestaurantEmployee restaurantEmployee);
+    public Optional<Schedule> findScheduleByRestaurantEmployee(RestaurantEmployee restaurantEmployee);
 }
