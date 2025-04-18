@@ -79,8 +79,8 @@ async function loadRestaurantList(csrfToken, csrfHeader) {
             tr.setAttribute("onclick", `location.href='/page/inventory/list?restaurantId=${restaurant.id}'`);
 
             tr.innerHTML = `
-                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>${restaurant.name}</strong></td>
-                <td>${restaurant.city}</td>
+                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>${restaurant.restaurantName}</strong></td>
+                <td>${restaurant.restaurantCity}</td>
             `;
 
             tbody.appendChild(tr);

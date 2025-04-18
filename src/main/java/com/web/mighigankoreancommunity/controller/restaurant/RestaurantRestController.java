@@ -27,7 +27,7 @@ public class RestaurantRestController {
 
 
     @GetMapping("/list")
-    public List<Restaurant> restaurantList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public List<RestaurantDTO> restaurantList(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return restaurantService.restaurantListService(userDetails.getOwner());
     }
 }

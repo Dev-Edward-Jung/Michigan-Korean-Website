@@ -4,11 +4,13 @@ package com.web.mighigankoreancommunity.service;
 import com.web.mighigankoreancommunity.dto.RestaurantDTO;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.error.UnauthorizedRestaurantAccessException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,10 +29,22 @@ public class RestaurantService {
     }
 
     // ✅ 로그인한 사용자의 레스토랑 목록 반환
-    public List<Restaurant> restaurantListService(Owner owner) {
+    public List<RestaurantDTO> restaurantListService(Owner owner) {
         if (owner == null) {
             throw new UnauthorizedRestaurantAccessException("You are not authorized to access this service");
         }
-        return restaurantRepository.findRestaurantsByOwner(owner);
+        List<Restaurant> restaurantList = restaurantRepository.findRestaurantsByOwner(owner)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
+        List<RestaurantDTO> restaurantDTOList = new ArrayList<>();
+        for (Restaurant restaurant : restaurantList) {
+            RestaurantDTO restaurantDTO = new RestaurantDTO();
+            restaurantDTO.setId(restaurant.getId());
+            restaurantDTO.setRestaurantName(restaurant.getName());
+            restaurantDTO.setRestaurantCity(restaurant.getCity());
+            restaurantDTOList.add(restaurantDTO);
+            System.out.println(restaurantDTO.toString());
+        }
+        return restaurantDTOList;
+
     }
 }

@@ -5,6 +5,7 @@ import com.web.mighigankoreancommunity.dto.CategoryDTO;
 import com.web.mighigankoreancommunity.entity.Category;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.inevntory.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,10 @@ public class CategoryService {
     private final RestaurantRepository restaurantRepository;
 
     public List<CategoryDTO> findCategoriesByRestaurant(Long restaurantId, Owner owner) {
-            Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner);
-            List<Category> categoryList= categoryRepository.findCategoriesByRestaurant(restaurant);
+            Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner)
+                    .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
+            List<Category> categoryList= categoryRepository.findCategoriesByRestaurant(restaurant)
+                    .orElseThrow(()-> new RuntimeException("Category not found."));
             List<CategoryDTO> categoryDTOList = new ArrayList<>();
             categoryList.forEach(category -> {
                 CategoryDTO dto = new CategoryDTO();
@@ -37,7 +40,8 @@ public class CategoryService {
 
     public boolean addCategory( CategoryDTO categoryDTO, Owner owner) {
         Long restaurantId = categoryDTO.getRestaurantId();
-        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner);
+        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
         if (restaurant == null) {
             return false;
         }
@@ -53,7 +57,8 @@ public class CategoryService {
 
     public boolean updateCategory( CategoryDTO categoryDTO, Owner owner) {
         Long restaurantId = categoryDTO.getRestaurantId();
-        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner);
+        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
         if (restaurant == null) {
             return false;
         }
@@ -69,7 +74,8 @@ public class CategoryService {
 
     public boolean deleteCategory(CategoryDTO categoryDTO, Owner owner) {
         Long restaurantId = categoryDTO.getRestaurantId();
-        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner);
+        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
         if (restaurant == null) {
             return false;
         }

@@ -8,13 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
 //    get all inventories
     @Query("SELECT i FROM Inventory i where i.restaurant.id = :restaurantId")
-    List<Inventory> findByRestaurantsId(Long restaurantId);
+    Optional<List<Inventory>> findByRestaurantsId(Long restaurantId);
 
 
 

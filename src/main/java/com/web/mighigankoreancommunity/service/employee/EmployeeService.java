@@ -37,14 +37,14 @@ public class EmployeeService {
 
 //    Check Expire Date
     public boolean isInvitationExpired(String token) {
-        Invitation invitation = invitationRepository.findByToken(token);
+        Invitation invitation = invitationRepository.findByToken(token).orElseThrow(() -> new RuntimeException("Invitation not found"));
         LocalDateTime expiresAt= invitation.getExpiresAt();
         return LocalDateTime.now().isAfter(expiresAt);
     }
 
 //    get information from repository
     public Invitation getInvitationInfoByToken(String token) {
-        return invitationRepository.findByToken(token);
+        return invitationRepository.findByToken(token).orElseThrow(() -> new RuntimeException("Invitation not found"));
     }
 
 
@@ -54,14 +54,20 @@ public class EmployeeService {
         String name = employeeDTO.getName();
         String email = employeeDTO.getEmail();
         MemberRole role = employeeDTO.getMemberRole();
-        // 실제 이메일 전송 로직 대신 로그 출력
-        // 실제 구현 시, JavaMailSender 등을 사용하여 이메일 전송
-        Restaurant restaurant = restaurantRepository.findById(employeeDTO.getRestaurantId()).get();
-
+        Restaurant restaurant = restaurantRepository.findById(employeeDTO.getRestaurantId()).
+                orElseThrow(()->new RuntimeException("Restaurant not found"));
+        Employee employee = employeeRepository.findEmployeeByEmail(email)
+                .orElseThrow(()->new RuntimeException("Employee not found"));
 //        Create Token
         String inviteToken = UUID.randomUUID().toString();
         Invitation invitation = new Invitation();
-        Employee employee = new Employee(name, email, null);
+
+        if (employee == null) {
+            employee = new Employee(name, email, null);
+        } else {
+            employee.setName(name);
+        }
+
         employeeRepository.save(employee);
 
         invitation.setRestaurant(restaurant);
@@ -114,7 +120,7 @@ public class EmployeeService {
         employee.setApproved(true);
         
 //      later error define
-        Invitation invitation = invitationRepository.findByToken(token);
+        Invitation invitation = invitationRepository.findByToken(token).orElseThrow(()->new RuntimeException("Invitation not found"));
         invitation.setStatus(InvitationStatus.ACCEPTED);
         employeeRepository.save(employee);
 
@@ -125,7 +131,8 @@ public class EmployeeService {
     public List<EmployeeDTO> getAllEmployees(Long restaurantId, Owner owner) {
 //        Should check with owner
         Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
-        List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurant.getId());
+        List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurant.getId())
+                .orElseThrow(()->new RuntimeException("Restaurant not found"));
         List<EmployeeDTO> employeeDTOList = new ArrayList<>();
 
         restaurantEmployeeList.forEach(restaurantEmployee -> {

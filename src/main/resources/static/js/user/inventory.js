@@ -189,6 +189,38 @@ async function addInventory(csrf, restaurantId) {
     if (!res.ok) throw new Error("Add failed");
 }
 
+function setupAddInventoryFormValidation() {
+    const nameInput = document.querySelector("#modalCenterAdd input[name='name']");
+    const quantityInput = document.querySelector("#modalCenterAdd input[name='quantity']");
+    const unitSelect = document.querySelector("#modalCenterAdd select.unitSelect");
+    const categorySelect = document.querySelector("#modalCenterAdd select.categorySelect");
+    const addBtn = document.querySelector("#modalCenterAdd .addBtn");
+
+    function validateForm() {
+        const name = nameInput.value.trim();
+        const quantity = parseInt(quantityInput.value);
+        const unit = unitSelect.value;
+        const categoryId = categorySelect.value;
+
+        const isValid =
+            name.length > 0 &&
+            !isNaN(quantity) &&
+            quantity > 0 &&
+            unit && unit !== "Select Unit" &&
+            categoryId && categoryId !== "Select Category";
+
+        addBtn.disabled = !isValid;
+    }
+
+    [nameInput, quantityInput, unitSelect, categorySelect].forEach(input => {
+        input.addEventListener("input", validateForm);
+        input.addEventListener("change", validateForm);
+    });
+
+    validateForm(); // 초기 상태 설정
+}
+
+
 // ✅ 전체 로직 초기화
 async function initInventoryPage() {
     const csrf = getCsrfInfo();
@@ -240,6 +272,8 @@ async function initInventoryPage() {
             console.error(err);
         }
     });
+
+    setupAddInventoryFormValidation()
 }
 
 let currentInventoryId = null;

@@ -24,7 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String ownerEmail) throws UsernameNotFoundException {
-        Owner owner = ownerRepository.findOwnerByOwnerEmail(ownerEmail);
+        Owner owner = ownerRepository.findOwnerByOwnerEmail(ownerEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("Owner not found."));
         if (owner == null) {
             throw new UsernameNotFoundException("Owner not found with email: " + ownerEmail);
         }
