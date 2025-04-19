@@ -2,11 +2,18 @@ package com.web.mighigankoreancommunity.entity;
 
 import com.web.mighigankoreancommunity.domain.SubscriptionStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Table(name = "subscription")
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
