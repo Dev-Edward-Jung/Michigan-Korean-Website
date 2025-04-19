@@ -2,6 +2,7 @@ package com.web.mighigankoreancommunity.controller.inventory;
 
 
 import com.web.mighigankoreancommunity.domain.InventoryUnit;
+import com.web.mighigankoreancommunity.dto.ApiResponse;
 import com.web.mighigankoreancommunity.dto.CategoryDTO;
 import com.web.mighigankoreancommunity.dto.InventoryDTO;
 import com.web.mighigankoreancommunity.entity.Category;
@@ -31,27 +32,27 @@ public class InventoryRestController {
     @PostMapping("/save")
     public void saveInventory(@RequestBody InventoryDTO dto,
                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Inventory savedInventory = inventoryService.saveInventory(dto, userDetails.getOwner());
+        Long inventoryId = inventoryService.saveInventory(dto, userDetails.getOwner());
 //        CategoryDTO 변환 메소드 필요
-        InventoryDTO responseDto = InventoryDTO.fromEntity(savedInventory); // <- DTO 변환 메서드 필요
-        System.out.println("response DTO : " + responseDto);
-
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateInventory(@RequestBody InventoryDTO dto,
-                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        boolean updated = inventoryService.updateInventory(dto, userDetails.getOwner());
-        System.out.println(updated);
-        return updated ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    public ResponseEntity<ApiResponse<Long>> updateInventory(@RequestBody InventoryDTO dto,
+                                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long updatedId = inventoryService.updateInventory(dto, userDetails.getOwner());
+
+        return ResponseEntity.ok(
+                ApiResponse.success(updatedId, "Update Successfully")
+        );
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteInventory(@RequestBody InventoryDTO dto,
                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        boolean result = inventoryService.deleteInventory(dto, customUserDetails.getOwner());
-        return result ? ResponseEntity.ok("Deleted successfully") :
-                ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not allowed");
+        inventoryService.deleteInventory(dto, customUserDetails.getOwner());
+        return ResponseEntity.ok(
+                ApiResponse.success(1, "Update Successfully")
+        );
     }
 
 

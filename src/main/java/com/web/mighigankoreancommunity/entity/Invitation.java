@@ -14,6 +14,10 @@ import java.time.LocalDateTime;
 @Table(name = "invitation")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class Invitation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

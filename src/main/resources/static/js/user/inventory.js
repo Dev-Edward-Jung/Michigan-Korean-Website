@@ -60,7 +60,7 @@ function addInventoryToUI(inv, categoryList) {
           data-name="${inv.name}"
           data-quantity="${inv.quantity}"
           data-unit="${inv.unit}"
-          data-category="${inv.category && inv.category.id ? inv.category.id : ''}"
+          data-category="${inv.categoryName ? inv.categoryId : ''}"
       >EDIT</button>
     </div>
   `;
@@ -80,6 +80,8 @@ function addInventoryToUI(inv, categoryList) {
             const option = document.createElement("option");
             option.value = category.id;
             option.textContent = category.name;
+
+
             categorySelect.appendChild(option);
         });
 
@@ -89,7 +91,10 @@ function addInventoryToUI(inv, categoryList) {
         modalEl.querySelector("input.nameInput").value = lastBtn.dataset.name;
         modalEl.querySelector("input.numberInput").value = lastBtn.dataset.quantity;
         modalEl.querySelector("select.unitSelect").value = lastBtn.dataset.unit;
-        modalEl.querySelector("select.categorySelect").value = lastBtn.dataset.category;
+        modalEl.querySelector("select.categorySelect option").value = lastBtn.dataset.category
+
+        console.log(lastBtn.dataset.category)
+
         currentInventoryId = lastBtn.dataset.id;
     });
 }

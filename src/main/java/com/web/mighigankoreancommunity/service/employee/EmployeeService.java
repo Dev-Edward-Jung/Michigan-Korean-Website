@@ -5,6 +5,7 @@ import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.EmployeeDTO;
 import com.web.mighigankoreancommunity.dto.InvitationDTO;
 import com.web.mighigankoreancommunity.entity.*;
+import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.InvitationRepository;
@@ -15,12 +16,12 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 
 @RequiredArgsConstructor
@@ -49,69 +50,71 @@ public class EmployeeService {
 
 
 
+    @Transactional
+    public String sendInvitationEmail(EmployeeDTO dto, Long ownerId) {
+        String email = dto.getEmail();
+        String name = dto.getName();
+        Long restaurantId = dto.getRestaurantId();
 
-    public String sendInvitationEmail(EmployeeDTO employeeDTO, Long ownerId) {
-        String name = employeeDTO.getName();
-        String email = employeeDTO.getEmail();
-        MemberRole role = employeeDTO.getMemberRole();
-        Restaurant restaurant = restaurantRepository.findById(employeeDTO.getRestaurantId()).
-                orElseThrow(()->new RuntimeException("Restaurant not found"));
+        // ✅ 1. 레스토랑 조회 & 권한 확인
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RestaurantNotFoundException("레스토랑을 찾을 수 없습니다."));
+
+        // ✅ 2. 직원 조회 or 생성
         Employee employee = employeeRepository.findEmployeeByEmail(email)
-                .orElseThrow(()->new RuntimeException("Employee not found"));
-//        Create Token
-        String inviteToken = UUID.randomUUID().toString();
-        Invitation invitation = new Invitation();
+                .orElseGet(() -> new Employee(name, email, null));
+        employee.setName(name);  // 이름 최신화
 
-        if (employee == null) {
-            employee = new Employee(name, email, null);
-        } else {
-            employee.setName(name);
+        // ✅ 3. 초대 생성 또는 재설정
+        String token = UUID.randomUUID().toString();
+        Invitation invitation = employee.getInvitation();
+
+        if (invitation == null) {
+            invitation = new Invitation();
+            invitation.setEmployee(employee); // 양방향 설정
         }
 
-        employeeRepository.save(employee);
-
         invitation.setRestaurant(restaurant);
+        invitation.setToken(token);
         invitation.setInvitedBy(ownerId);
-        invitation.setToken(inviteToken);
         invitation.setExpiresAt(LocalDateTime.now().plusHours(24));
-        invitation.setEmployee(employee);
+        employee.setInvitation(invitation); // 다시 설정 (양방향)
+
+        // ✅ 4. 저장
+        employeeRepository.save(employee);
         invitationRepository.save(invitation);
 
-        employee.setInvitation(invitation);
-        employeeRepository.save(employee);
+        // ✅ 5. Restaurant-Employee 관계 추가 (없을 경우에만)
+        boolean exists = restaurantEmployeeRepository
+                .existsByEmployee_EmailAndRestaurant_Id(email, restaurantId);
 
+        if (!exists) {
+            RestaurantEmployee rel = new RestaurantEmployee();
+            rel.setEmployee(employee);
+            rel.setRestaurant(restaurant);
+            rel.setMemberRole(dto.getMemberRole());
+            restaurantEmployeeRepository.save(rel);
+        }
 
-//      invitation link need to be changed
-//        String invitationLink = "https://restoflowing.com/page/employee/invited?token=" + inviteToken;
-        String invitationLink = "http://127.0.0.1:10000/page/employee/invited?token=" + inviteToken;
+        // ✅ 6. 이메일 전송
+        String invitationLink = "http://127.0.0.1:10000/page/employee/invited?token=" + token;
+//        server
+//        String invitationLink = "https://restoflowing/page/employee/invited?token=" + token;
+        sendInvitationEmailToUser(employee, restaurant.getName(), invitationLink);
 
-//        Message
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(employee.getEmail());
-        message.setSubject("Welcome! " + employee.getName() + " You are invited by " + restaurant.getName());
-        message.setText("You can now join your account with link below! \n\n" + "Your Invitation Link is : " + invitationLink);
-        message.setFrom("restoflowing@gmail.com");
-
-
-//        save employee
-        RestaurantEmployee restaurantEmployee = new RestaurantEmployee();
-        restaurantEmployee.setEmployee(employee);
-        restaurantEmployee.setRestaurant(restaurant);
-        restaurantEmployee.setMemberRole(role);
-
-//        employee role save and employee save
-        employeeRepository.save(employee);
-        restaurantEmployeeRepository.save(restaurantEmployee);
-
-
-
-        mailSender.send(message);
-
-        System.out.println("Email sent");
         return invitationLink;
     }
 
+    private void sendInvitationEmailToUser(Employee employee, String restaurantName, String link) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(employee.getEmail());
+        message.setSubject("Welcome! You are invited to " + restaurantName);
+        message.setText("Please use the following link to join (valid for 24 hours):\n\n" + link);
+        message.setFrom("restoflowing@gmail.com");
+        mailSender.send(message);
+    }
 
+    @Transactional
     public boolean registerEmployeeService(String token, String password){
 //        find Employee by token
         Employee employee = employeeRepository.findEmployeeByInvitation_Token(token);
@@ -129,22 +132,23 @@ public class EmployeeService {
 
 
     public List<EmployeeDTO> getAllEmployees(Long restaurantId, Owner owner) {
-//        Should check with owner
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
-        List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurant.getId())
-                .orElseThrow(()->new RuntimeException("Restaurant not found"));
-        List<EmployeeDTO> employeeDTOList = new ArrayList<>();
+        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner)
+                .orElseThrow(RestaurantNotFoundException::new);
 
-        restaurantEmployeeList.forEach(restaurantEmployee -> {
-            EmployeeDTO employeeDTO = new EmployeeDTO();
-            employeeDTO.setMemberRole(restaurantEmployee.getMemberRole());
-            employeeDTO.setEmail(restaurantEmployee.getEmployee().getEmail());
-            employeeDTO.setName(restaurantEmployee.getEmployee().getName());
-            employeeDTOList.add(employeeDTO);
-        });
+        List<RestaurantEmployee> employeeList = restaurantEmployeeRepository
+                .findRestaurantEmployeesByRestaurant_Id(restaurant.getId())
+                .orElse(Collections.emptyList());
 
-
-        return employeeDTOList;
+        return employeeList.stream()
+                .filter(RestaurantEmployee::isActive)
+                .map(emp ->new EmployeeDTO(
+                        emp.getId(),
+                        emp.getEmployee().getName(),
+                        emp.getEmployee().getEmail(),
+                        emp.getMemberRole(),
+                        emp.getRestaurant().getId()
+                        )
+                ).collect(Collectors.toList());
     }
 }
 

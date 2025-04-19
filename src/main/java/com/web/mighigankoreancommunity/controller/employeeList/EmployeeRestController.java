@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.controller.employeeList;
 
 
+import com.web.mighigankoreancommunity.dto.ApiResponse;
 import com.web.mighigankoreancommunity.dto.EmployeeDTO;
 import com.web.mighigankoreancommunity.entity.CustomUserDetails;
 import com.web.mighigankoreancommunity.entity.Employee;
@@ -21,8 +22,13 @@ public class EmployeeRestController {
     private final EmployeeService employeeService;
 
     @PostMapping("/invite")
-    public void sendInvitation(@RequestBody EmployeeDTO employeeDTO, @AuthenticationPrincipal CustomUserDetails user) {
-        employeeService.sendInvitationEmail(employeeDTO, user.getOwner().getId());
+    public ResponseEntity<ApiResponse<String>> sendInvitation(@RequestBody EmployeeDTO employeeDTO,
+                                                              @AuthenticationPrincipal CustomUserDetails user) {
+        String invitationLink = employeeService.sendInvitationEmail(employeeDTO, user.getOwner().getId());
+
+        return ResponseEntity.ok(
+                ApiResponse.success(invitationLink, "Invitation sent successfully")
+        );
     }
 
     @GetMapping("/list")
