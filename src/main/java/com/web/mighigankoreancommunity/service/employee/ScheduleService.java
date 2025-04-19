@@ -5,7 +5,9 @@ import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.EmployeeDTO;
 import com.web.mighigankoreancommunity.dto.ScheduleDTO;
 import com.web.mighigankoreancommunity.entity.*;
+import com.web.mighigankoreancommunity.error.RestaurantEmployeeNotFoundException;
 import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
+import com.web.mighigankoreancommunity.error.UnauthorizedRestaurantAccessException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
@@ -31,51 +33,51 @@ public class ScheduleService {
     private final RestaurantRepository restaurantRepository;
 
 
+    @Transactional
     public Map<String, List<EmployeeDTO>> findAllScheduleByRestaurantId(Long restaurantId, Owner owner) {
-        List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurantId)
-                .orElseThrow(()-> new RuntimeException("Restaurant Employee not found."));
-        List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
+
+        List<RestaurantEmployee> restaurantEmployees = restaurantEmployeeRepository
+                .findRestaurantEmployeesByRestaurant_Id(restaurantId)
+                .orElseThrow(RestaurantEmployeeNotFoundException::new);
+
         List<EmployeeDTO> kitchenList = new ArrayList<>();
         List<EmployeeDTO> serverList = new ArrayList<>();
 
+        for (RestaurantEmployee re : restaurantEmployees) {
+            Employee employee = re.getEmployee();
+            MemberRole role = re.getMemberRole();
 
-        EmployeeDTO employeeDTO = new EmployeeDTO();
-
-        restaurantEmployeeList.forEach(restaurantEmployee -> {
-           Restaurant restaurant = restaurantEmployee.getRestaurant();
-           Employee employee = restaurantEmployee.getEmployee();
-            employeeDTO.setMemberRole(restaurantEmployee.getMemberRole());
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.setId(employee.getId());
             employeeDTO.setName(employee.getName());
             employeeDTO.setEmail(employee.getEmail());
-            employeeDTO.setId(employee.getId());
-           if (employeeDTO.getMemberRole() == MemberRole.KITCHEN || employeeDTO.getMemberRole() == MemberRole.MANAGER || employeeDTO.getMemberRole() == MemberRole.EMPLOYEE) {
-               kitchenList.add(employeeDTO);
-           } else{
-               serverList.add(employeeDTO);
-           }
+            employeeDTO.setMemberRole(role);
 
+            // ✅ 개별 스케줄 리스트 생성 (공용 리스트 쓰면 안 됨!)
+            List<ScheduleDTO> individualSchedules = re.getSchedules().stream().map(schedule -> {
+                ScheduleDTO s = new ScheduleDTO();
+                s.setShift(schedule.getShift());
+                s.setRestaurantId(restaurantId);
+                s.setEmployeeId(employee.getId());
+                s.setName(employee.getName());
+                s.setShiftStartDate(schedule.getStartShiftDate());
+                s.setShiftEndDate(schedule.getEndShiftDate());
+                return s;
+            }).toList();
 
-           restaurantEmployee.getSchedules().forEach(schedule -> {
-               ScheduleDTO scheduleDTO = new ScheduleDTO();
-               System.out.println(schedule.getShift());
-               scheduleDTO.setShift(schedule.getShift());
-               scheduleDTO.setRestaurantId(restaurant.getId());
-               scheduleDTO.setEmployeeId(employee.getId());
-               scheduleDTO.setName(employee.getName());
-               scheduleDTO.setShiftStartDate(schedule.getStartShiftDate());
-               scheduleDTO.setShiftEndDate(schedule.getEndShiftDate());
-               scheduleDTOList.add(scheduleDTO);
-           });
+            employeeDTO.setSchedules(individualSchedules);
 
-           employeeDTO.setSchedules(scheduleDTOList);
-           scheduleDTOList.stream().forEach(System.out::println);
-
-        });
+            // ✅ 역할 기반 분리
+            if (role == MemberRole.KITCHEN || role == MemberRole.MANAGER || role == MemberRole.EMPLOYEE) {
+                kitchenList.add(employeeDTO);
+            } else {
+                serverList.add(employeeDTO);
+            }
+        }
 
         Map<String, List<EmployeeDTO>> result = new HashMap<>();
         result.put("kitchenList", kitchenList);
         result.put("serverList", serverList);
-
 
         return result;
     }
@@ -85,60 +87,55 @@ public class ScheduleService {
 
     @Transactional
     public void scheduleSave(Long restaurantId, List<EmployeeDTO> employeeDTOList, Owner owner) {
-        // 저장할 RestaurantEmployee, Schedule 객체들을 각각 리스트에 담음
-        List<Schedule> scheduleList = new ArrayList<>();
+        // 1. 레스토랑 권한 체크
+        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner)
+                .orElseThrow(() -> new UnauthorizedRestaurantAccessException("레스토랑 권한 없음"));
 
-        // employeeDTOList 순회
+        List<Schedule> schedulesToSave = new ArrayList<>();
+
         for (EmployeeDTO employeeDTO : employeeDTOList) {
-            // 각 직원마다 새 RestaurantEmployee 인스턴스 생성
-            RestaurantEmployee restaurantEmployee = restaurantEmployeeRepository.findRestaurantEmployeeByRestaurant_IdAndEmployee_Id(restaurantId, employeeDTO.getId())
-                    .orElseThrow(()-> new RuntimeException("Restaurant Employee not found."));
+            Long employeeId = employeeDTO.getId();
 
-            Employee employee = restaurantEmployee.getEmployee();
-            Restaurant restaurant = restaurantEmployee.getRestaurant();
+            // 2. RestaurantEmployee 조회
+            RestaurantEmployee restaurantEmployee = restaurantEmployeeRepository
+                    .findRestaurantEmployeeByRestaurant_IdAndEmployee_Id(restaurantId, employeeId)
+                    .orElseThrow(() -> new RestaurantEmployeeNotFoundException("직원 정보 없음"));
 
+            List<ScheduleDTO> incomingSchedules = employeeDTO.getSchedules();
+            if (incomingSchedules == null || incomingSchedules.isEmpty()) continue;
 
-            // DTO에 restaurantId가 없다면 파라미터의 restaurantId를 사용할 수도 있음.
-            restaurantEmployee.setEmployee(employee);
-            restaurantEmployee.setRestaurant(restaurant);
-            restaurantEmployee.setMemberRole(employeeDTO.getMemberRole());
+            // 3. 기존 스케줄 조회 (Optional 대신 List)
+            List<Schedule> existingSchedules = scheduleRepository.findSchedulesByRestaurantEmployee(restaurantEmployee);
 
-            List<Schedule> scheduleCheck  = scheduleRepository.findSchedulesByRestaurantEmployee(restaurantEmployee)
-                    .orElseThrow(()-> new RuntimeException("Schedule not found."));
+            if (existingSchedules.isEmpty()) {
+                // 3-1. 신규 스케줄 저장
+                for (ScheduleDTO dto : incomingSchedules) {
+                    Schedule schedule = Schedule.builder()
+                            .restaurantEmployee(restaurantEmployee)
+                            .shift(dto.getShift())
+                            .startShiftDate(dto.getShiftStartDate())
+                            .endShiftDate(dto.getShiftEndDate())
+                            .build();
+                    schedulesToSave.add(schedule);
+                }
+            } else {
+                // 3-2. 기존 스케줄 업데이트 (순서 기준. 이상적으론 날짜 기준 매칭이 바람직)
+                int size = Math.min(existingSchedules.size(), incomingSchedules.size());
+                for (int i = 0; i < size; i++) {
+                    Schedule schedule = existingSchedules.get(i);
+                    ScheduleDTO dto = incomingSchedules.get(i);
 
-//            if an employee does not have schedule in DB
-        if (scheduleCheck.isEmpty()) {
-            for (ScheduleDTO scheduleDTO : employeeDTO.getSchedules()) {
-                Schedule schedule = new Schedule(restaurantEmployee);
-                schedule.setShift(scheduleDTO.getShift());
-                schedule.setStartShiftDate(scheduleDTO.getShiftStartDate());
-                schedule.setEndShiftDate(scheduleDTO.getShiftEndDate());
-
-                // 필요한 경우 restaurantEmployee를 별도로 세팅해도 무방
-                schedule.setRestaurantEmployee(restaurantEmployee);
-                schedule.setEndShiftDate(employeeDTO.getShiftEndDate());
-                schedule.setStartShiftDate(employeeDTO.getShiftStartDate());
-                scheduleList.add(schedule);
-            }
-//            if employee has schedule
-        } else {
-            // DB에 스케줄이 있다면, 순서대로 employeeDTO의 ScheduleDTO와 매칭하여 업데이트
-            // (순서와 건수가 동일하다는 전제 하에)
-            int size = Math.min(employeeDTO.getSchedules().size(), scheduleCheck.size());
-            for (int i = 0; i < size; i++) {
-                ScheduleDTO scheduleDTO = employeeDTO.getSchedules().get(i);
-                Schedule schedule = scheduleCheck.get(i);
-                schedule.setShift(scheduleDTO.getShift());
-                schedule.setStartShiftDate(employeeDTO.getShiftStartDate());
-                schedule.setEndShiftDate(employeeDTO.getShiftEndDate());
-                // 이미 DB에서 로드된 엔티티이므로 update 쿼리가 실행됨
-                scheduleList.add(schedule);
+                    schedule.setShift(dto.getShift());
+                    schedule.setStartShiftDate(dto.getShiftStartDate());
+                    schedule.setEndShiftDate(dto.getShiftEndDate());
+                    schedulesToSave.add(schedule);
+                }
             }
         }
-        }
 
-        if (!scheduleList.isEmpty()) {
-            scheduleRepository.saveAll(scheduleList);
+        // 4. 저장
+        if (!schedulesToSave.isEmpty()) {
+            scheduleRepository.saveAll(schedulesToSave);
         }
     }
 }

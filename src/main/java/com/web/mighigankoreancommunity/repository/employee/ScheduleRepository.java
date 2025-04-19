@@ -15,7 +15,8 @@ import java.util.Optional;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     public Optional<List<Schedule>> findSchedulesByRestaurantEmployee_Restaurant_Id(Long restaurantId);
 
-    public Optional<List<Schedule>> findSchedulesByRestaurantEmployee(RestaurantEmployee restaurantEmployee);
+    public List<Schedule> findSchedulesByRestaurantEmployee(RestaurantEmployee restaurantEmployee);
 
     public Optional<Schedule> findScheduleByRestaurantEmployee(RestaurantEmployee restaurantEmployee);
+
 }

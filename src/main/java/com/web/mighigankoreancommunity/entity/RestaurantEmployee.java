@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.web.mighigankoreancommunity.domain.MemberRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "restaurantEmployee")
+@Builder
 public class RestaurantEmployee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
