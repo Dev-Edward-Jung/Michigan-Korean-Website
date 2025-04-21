@@ -14,27 +14,28 @@
 <!-- beautify ignore:start -->
 <html xmlns:th="http://www.thymeleaf.org" lang="en" class="light-style layout-menu-fixed"
       dir="ltr" data-theme="theme-default" data-template="vertical-menu-template-free" data-assets-path="/">
+
 <head>
   <meta charset="utf-8" />
   <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
   />
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
-  <title>Login To KR</title>
+  <title>RestoFlowing</title>
   <meta name="description" content="" />
 
   <!-- Favicon -->
-  <!-- <link rel="icon" type="image/x-icon" href="/img/favicon/favicon.ico" /> -->
+  <link rel="icon" type="image/x-icon" href="/img/favicon/favicon.png" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-    rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet"
   />
 
   <!-- Icons. Uncomment required icon fonts -->
@@ -59,104 +60,103 @@
   <script src="/js/config.js"></script>
 </head>
 
-  <body>
-    <!-- Content -->
+<body>
+<!-- Content -->
 
-    <div class="container-xxl">
-      <div class="authentication-wrapper authentication-basic container-p-y">
-        <div class="authentication-inner">
-          <!-- Register -->
-          <div class="card">
-            <div class="card-body">
-              <!-- Logo -->
-              <div class="app-brand justify-content-center ">
-                <a href="owner-login.html" class="app-brand-link gap-2">
-                  <img src="/img/logo/logo-gray.png" class="logo-auth" alt="">
+<div class="container-xxl">
+  <div class="authentication-wrapper authentication-basic container-p-y">
+    <div class="authentication-inner">
+      <!-- Register -->
+      <div class="card">
+        <div class="card-body">
+          <!-- Logo -->
+          <div class="app-brand justify-content-center ">
+            <a href="owner-login.html" class="app-brand-link gap-2">
+              <img src="/img/logo/logo-gray.png" class="logo-auth" alt="">
+            </a>
+          </div>
+          <!-- /Logo -->
+          <h4 class="mb-2"><strong> Employee Login</strong></h4>
+          <p class="mb-4">Please sign in to your account</p>
+
+          <form id="formAuthentication" class="mb-3" th:action="@{/page/employee/login}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                      type="text"
+                      class="form-control"
+                      id="email"
+                      name="ownerEmail"
+                      placeholder="Enter your email"
+                      autofocus
+              />
+            </div>
+            <div class="mb-3 form-password-toggle">
+              <div class="d-flex justify-content-between">
+                <label class="form-label" for="password">Password</label>
+                <a href="/page/owner/forgot/password">
+                  <small>Forgot Password?</small>
                 </a>
               </div>
-              <!-- /Logo -->
-              <h4 class="mb-2">Welcome to KR! 👋</h4>
-              <p class="mb-4">Please sign in to your account</p>
-
-              <form id="formAuthentication" class="mb-3" th:action="@{/page/owner/login}" method="post">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="email"
-                    name="ownerEmail"
-                    placeholder="Enter your email"
-                    autofocus
-                  />
-                </div>
-                <div class="mb-3 form-password-toggle">
-                  <div class="d-flex justify-content-between">
-                    <label class="form-label" for="password">Password</label>
-                    <a href="/page/owner/forgot/password">
-                      <small>Forgot Password?</small>
-                    </a>
-                  </div>
-                  <div class="input-group input-group-merge">
-                    <input
-                      type="password"
-                      id="password"
-                      class="form-control"
-                      name="ownerPassword"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password"
-                    />
-                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me"/>
-                    <label class="form-check-label" for="remember-me"> Remember Me </label>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                </div>
-              </form>
-
-              <p class="text-center">
-                <span>If you are owner, and new to our platform</span>
-                <a href="/page/owner/register">
-                  <span>Create an account</span>
-                </a>
-              </p>
+              <div class="input-group input-group-merge">
+                <input
+                        type="password"
+                        id="password"
+                        class="form-control"
+                        name="ownerPassword"
+                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                        aria-describedby="password"
+                />
+                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+              </div>
             </div>
-          </div>
-          <!-- /Register -->
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me"/>
+                <label class="form-check-label" for="remember-me"> Remember Me </label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+            </div>
+          </form>
+          <p class="text-center">
+            <span>Are you owner of a restaurant?</span>
+            <a href="/page/owner/login">
+              <span>Owner Login</span>
+            </a>
+          </p>
         </div>
       </div>
+      <!-- /Register -->
     </div>
+  </div>
+</div>
 
-    <!-- / Content -->
+<!-- / Content -->
 
 
 
-    <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="/js/libs/jquery/jquery.js"></script>
-    <script src="/js/libs/popper/popper.js"></script>
-    <script src="/js/vendor/bootstrap.js"></script>
-    <script src="/js/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="/js/libs/jquery/jquery.js"></script>
+<script src="/js/libs/popper/popper.js"></script>
+<script src="/js/vendor/bootstrap.js"></script>
+<script src="/js/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
 
-    <script src="/js/vendor/menu.js"></script>
-    <!-- endbuild -->
+<script src="/js/vendor/menu.js"></script>
+<!-- endbuild -->
 
-    <!-- Vendors JS -->
-    <script src="/js/libs/apex-charts/apexcharts.js"></script>
+<!-- Vendors JS -->
+<script src="/js/libs/apex-charts/apexcharts.js"></script>
 
-    <!-- Main JS -->
-    <script src="/js/main.js"></script>
+<!-- Main JS -->
+<script src="/js/main.js"></script>
 
-    <!-- Page JS -->
-    <script src="/js/dashboards-analytics.js"></script>
+<!-- Page JS -->
+<script src="/js/dashboards-analytics.js"></script>
 
-    <!-- Place this tag in your head or just before your close body tag. -->
-  </body>
+<!-- Place this tag in your head or just before your close body tag. -->
+</body>
 </html>

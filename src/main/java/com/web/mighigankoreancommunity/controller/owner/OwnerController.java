@@ -1,7 +1,7 @@
 package com.web.mighigankoreancommunity.controller.owner;
 
 
-import com.web.mighigankoreancommunity.entity.CustomUserDetails;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
 import jakarta.servlet.ServletException;

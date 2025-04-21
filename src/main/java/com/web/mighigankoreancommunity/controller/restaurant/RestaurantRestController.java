@@ -2,11 +2,11 @@ package com.web.mighigankoreancommunity.controller.restaurant;
 
 
 
+import ch.qos.logback.core.model.Model;
 import com.web.mighigankoreancommunity.dto.RestaurantDTO;
-import com.web.mighigankoreancommunity.entity.CustomUserDetails;
-import com.web.mighigankoreancommunity.entity.Owner;
-import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.RestaurantService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +27,7 @@ public class RestaurantRestController {
 
 
     @GetMapping("/list")
-    public List<RestaurantDTO> restaurantList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public List<RestaurantDTO> restaurantList(@AuthenticationPrincipal CustomUserDetails userDetails, Model model, HttpServletRequest request) {
         return restaurantService.restaurantListService(userDetails.getOwner());
     }
 }

@@ -42,7 +42,6 @@ public class RestaurantService {
             restaurantDTO.setRestaurantName(restaurant.getName());
             restaurantDTO.setRestaurantCity(restaurant.getCity());
             restaurantDTOList.add(restaurantDTO);
-            System.out.println(restaurantDTO.toString());
         }
         return restaurantDTOList;
 

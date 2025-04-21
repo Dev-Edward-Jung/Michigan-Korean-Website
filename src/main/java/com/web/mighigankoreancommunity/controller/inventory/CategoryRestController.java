@@ -2,19 +2,14 @@ package com.web.mighigankoreancommunity.controller.inventory;
 
 
 import com.web.mighigankoreancommunity.dto.CategoryDTO;
-import com.web.mighigankoreancommunity.entity.Category;
-import com.web.mighigankoreancommunity.entity.CustomUserDetails;
-import com.web.mighigankoreancommunity.entity.Restaurant;
-import com.web.mighigankoreancommunity.repository.inevntory.CategoryRepository;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.inventory.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor

@@ -18,11 +18,11 @@ public class CustomErrorController implements ErrorController {
             int statusCode = Integer.parseInt(status.toString());
 
             if (statusCode == 404) {
-                return "redirect:/page/owner/login";
+                return "error/404-error";
             } else if (statusCode == 403) {
-                return "redirect:/page/owner/login";
+                return "error/403-error";
             } else if (statusCode == 500) {
-                return "redirect:/page/owner/login";
+                return "error/500-error";
             }
         }
         return "redirect:/page/owner/login";

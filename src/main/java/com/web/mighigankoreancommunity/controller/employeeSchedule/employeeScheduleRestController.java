@@ -2,8 +2,7 @@ package com.web.mighigankoreancommunity.controller.employeeSchedule;
 
 
 import com.web.mighigankoreancommunity.dto.EmployeeDTO;
-import com.web.mighigankoreancommunity.dto.ScheduleDTO;
-import com.web.mighigankoreancommunity.entity.CustomUserDetails;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.employee.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,7 +1,6 @@
 package com.web.mighigankoreancommunity.controller.employeeSchedule;
 
-import ch.qos.logback.core.model.Model;
-import com.web.mighigankoreancommunity.entity.CustomUserDetails;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

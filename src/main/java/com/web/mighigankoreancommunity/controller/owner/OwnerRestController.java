@@ -33,5 +33,9 @@ public class OwnerRestController {
         return ResponseEntity.ok(dto);
     }
 
+    @PostMapping("/forgot/password")
+    public void forgotPassword(String email){
+        ownerService.forgotPasswordService(email);
+    }
 
 }
