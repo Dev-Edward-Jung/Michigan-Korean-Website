@@ -17,4 +17,7 @@ public interface RestaurantEmployeeRepository  extends JpaRepository<RestaurantE
     public boolean existsByRestaurant_IdAndMemberRole(Long restaurantId, MemberRole memberRole);
 
     public boolean existsByEmployee_EmailAndRestaurant_Id(String email, Long employeeId);
+
+//    we don't need to use Optional for findAll bc it will return empty list if it is empty
+    public List<RestaurantEmployee> findAllByEmployee_Email(String email);
 }

@@ -1,34 +1,26 @@
 package com.web.mighigankoreancommunity.service.owner;
 
 
-import com.web.mighigankoreancommunity.entity.CustomUserDetails;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.repository.owner.OwnerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@RequiredArgsConstructor
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
-
+@RequiredArgsConstructor
+public class OwnerUserDetailsService implements UserDetailsService {
 
     private final OwnerRepository ownerRepository;
 
     @Override
-    public CustomUserDetails loadUserByUsername(String ownerEmail) throws UsernameNotFoundException {
-        Owner owner = ownerRepository.findOwnerByOwnerEmail(ownerEmail)
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Owner owner = ownerRepository.findOwnerByOwnerEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Owner not found."));
-        if (owner == null) {
-            throw new UsernameNotFoundException("Owner not found with email: " + ownerEmail);
-        }
         return new CustomUserDetails(owner);
     }
 }

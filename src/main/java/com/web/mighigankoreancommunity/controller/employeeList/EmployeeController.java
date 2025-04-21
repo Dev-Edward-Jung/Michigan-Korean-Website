@@ -1,9 +1,10 @@
 package com.web.mighigankoreancommunity.controller.employeeList;
 
 
-import ch.qos.logback.core.model.Model;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 
@@ -25,6 +26,16 @@ public class EmployeeController {
     }
 
 
+    @GetMapping("/login")
+    public String employeeLogin(@AuthenticationPrincipal CustomUserDetails loginUser){
+        if (loginUser != null) {
+            return "redirect:/page/schedule/list";
+        }
+        return "user/employee-login";
+    }
+
+
+
 
 
 //    When an owner sent a invitation to employee
@@ -39,14 +50,14 @@ public class EmployeeController {
     }
 
     @PostMapping("/register")
-    public String registerEmployee(@RequestParam("token") String token, String password) {
+    public String registerEmployee(@RequestParam("token") String token,@RequestParam("restaurantId") Long restaurantId,  String password) {
         System.out.println(password + " --------------------------------------- ");
         boolean isExpired = employeeService.isInvitationExpired(token);
         if (isExpired) {
             return "error/expired-error";
         }
 //        save employee password
-        employeeService.registerEmployeeService(token, password);
-        return "redirect:/page/announcement/list";
+        employeeService.registerEmployee(token, password);
+        return "user/employee-login";
     }
 }

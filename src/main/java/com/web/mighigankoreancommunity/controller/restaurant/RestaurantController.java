@@ -1,6 +1,9 @@
 package com.web.mighigankoreancommunity.controller.restaurant;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RestaurantController {
 
     @GetMapping("/list")
-    public String list() {
+    public String list(Model model, HttpServletRequest request) {
+        CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("_csrf", token);
         return "restaurant/restaurant-list";
     }
 

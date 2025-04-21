@@ -72,9 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Get Token from URL parameter
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
+    const restaurantId = urlParams.get('restaurantId');
 
     // form 안에 숨겨진 input에 값 넣기
     document.getElementById('tokenInput').value = token;
+    document.getElementById('restaurantId').value = restaurantId;
 
 });
 

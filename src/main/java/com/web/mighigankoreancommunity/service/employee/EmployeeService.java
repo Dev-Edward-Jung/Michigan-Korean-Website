@@ -5,12 +5,16 @@ import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.EmployeeDTO;
 import com.web.mighigankoreancommunity.dto.InvitationDTO;
 import com.web.mighigankoreancommunity.entity.*;
+import com.web.mighigankoreancommunity.error.AlreadyApprovedEmployeeException;
+import com.web.mighigankoreancommunity.error.EmployeeNotFoundException;
+import com.web.mighigankoreancommunity.error.InvitationNotFoundException;
 import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.InvitationRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,7 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class EmployeeService {
@@ -97,9 +101,9 @@ public class EmployeeService {
         }
 
         // ✅ 6. 이메일 전송
-        String invitationLink = "http://127.0.0.1:10000/page/employee/invited?token=" + token;
+        String invitationLink = "http://127.0.0.1:10000/page/employee/invited?token=" + token + "&restaurantId=" + restaurant.getId();;
 //        server
-//        String invitationLink = "https://restoflowing/page/employee/invited?token=" + token;
+//        String invitationLink = "https://restoflowing/page/employee/invited?token=" + token + "&restaurantId=" + restaurant.getId();
         sendInvitationEmailToUser(employee, restaurant.getName(), invitationLink);
 
         return invitationLink;
@@ -115,19 +119,36 @@ public class EmployeeService {
     }
 
     @Transactional
-    public boolean registerEmployeeService(String token, String password){
-//        find Employee by token
-        Employee employee = employeeRepository.findEmployeeByInvitation_Token(token);
-        String encodedPassword = passwordEncoder.encode(password);
+    public Long registerEmployee(String token, String rawPassword) {
+        // 1. 초대 정보 조회
+        Invitation invitation = invitationRepository.findByToken(token)
+                .orElseThrow(() -> new InvitationNotFoundException("Not valid Token"));
+
+        // 2. 초대에 연결된 직원 확인
+        Employee employee = invitation.getEmployee();
+        if (employee == null) {
+            throw new EmployeeNotFoundException("Employee not found by token");
+        }
+
+        // 3. 이미 승인된 직원인지 확인 (옵션)
+        if (employee.isApproved()) {
+            throw new AlreadyApprovedEmployeeException("Already registered");
+        }
+
+        // 4. 비밀번호 암호화 및 승인 처리
+        String encodedPassword = passwordEncoder.encode(rawPassword);
         employee.setPassword(encodedPassword);
         employee.setApproved(true);
-        
-//      later error define
-        Invitation invitation = invitationRepository.findByToken(token).orElseThrow(()->new RuntimeException("Invitation not found"));
-        invitation.setStatus(InvitationStatus.ACCEPTED);
-        employeeRepository.save(employee);
 
-        return true;
+        // 5. 초대 상태 변경
+        invitation.setStatus(InvitationStatus.ACCEPTED);
+
+        // 6. 저장 (양방향 연관 시 둘 다 save)
+        employeeRepository.save(employee);
+        invitationRepository.save(invitation);
+
+        log.info("✅ complete Employee: email={}, employeeId={}", employee.getEmail(), employee.getId());
+        return employee.getId();
     }
 
 

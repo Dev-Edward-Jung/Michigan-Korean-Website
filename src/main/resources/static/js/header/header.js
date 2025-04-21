@@ -5,6 +5,7 @@
 
     if (!restaurantId) {
     console.log("No restaurantId found");
+        window.location.href = "/page/owner/login";
     return;
 }
 
