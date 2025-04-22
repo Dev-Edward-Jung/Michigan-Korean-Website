@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 @Configuration
-@Order(0)
+@Order(100)
 public class DefaultSecurityConfig {
 
     @Bean
@@ -25,9 +25,13 @@ public class DefaultSecurityConfig {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
-                .securityMatcher("/css/**", "/js/**", "/img/**", "/favicon.ico", "/page/error/**") // ✅ 이 라인이 핵심
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                "/css/**", "/js/**", "/img/**", "/favicon.ico",
+                                "/page/owner/login", "/page/owner/register",
+                                "/page/employee/login", "/page/employee/register",
+                                "/error")
+                        .permitAll().anyRequest().authenticated()
                 )
                 .csrf(Customizer.withDefaults());
 

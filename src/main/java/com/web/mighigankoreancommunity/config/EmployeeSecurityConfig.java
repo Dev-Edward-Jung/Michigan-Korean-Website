@@ -33,7 +33,7 @@ public class EmployeeSecurityConfig {
                         "/page/announcement/**", "/api/announcement/**"
                         ) // employee 관련 요청만 필터됨
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/page/employee/login", "/page/employee/invited").permitAll()
+                        .requestMatchers("/page/employee/login", "/page/employee/invited", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -41,7 +41,7 @@ public class EmployeeSecurityConfig {
                         .loginProcessingUrl("/page/employee/login")
                         .usernameParameter("employeeEmail")
                         .passwordParameter("employeePassword")
-                        .defaultSuccessUrl("/page/schedule/list", true)
+                        .defaultSuccessUrl("/page/restaurant/list", true)
                         .failureUrl("/page/employee/login?error=true")
                         .permitAll()
                 )

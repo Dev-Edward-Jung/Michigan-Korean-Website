@@ -2,6 +2,7 @@ package com.web.mighigankoreancommunity.controller.inventory;
 
 
 import com.web.mighigankoreancommunity.domain.InventoryUnit;
+import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.ApiResponse;
 import com.web.mighigankoreancommunity.dto.CategoryDTO;
 import com.web.mighigankoreancommunity.dto.InventoryDTO;
@@ -11,6 +12,7 @@ import com.web.mighigankoreancommunity.service.inventory.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -55,10 +57,11 @@ public class InventoryRestController {
 
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> inventoryList(@RequestParam Long restaurantId,
-                                                         @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+                                                             @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         List<InventoryDTO> inventoryList = inventoryService.getInventoriesByRestaurant(restaurantId, customUserDetails.getOwner());
         List<CategoryDTO> categoryList = categoryService.findCategoriesByRestaurant(restaurantId, customUserDetails.getOwner());
+
 
         Map<String, Object> result = new HashMap<>();
         result.put("categoryList", categoryList);

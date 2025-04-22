@@ -38,7 +38,8 @@ public class OwnerSecurityConfig {
                                 "/page/owner/register",
                                 "/page/owner/login",
                                 "/page/owner/forgot/password",
-                                "/api/owner/checkEmail"
+                                "/api/owner/checkEmail",
+                                "/error"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

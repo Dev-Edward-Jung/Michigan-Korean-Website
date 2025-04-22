@@ -2,19 +2,24 @@ package com.web.mighigankoreancommunity.service;
 
 
 import com.web.mighigankoreancommunity.dto.RestaurantDTO;
+import com.web.mighigankoreancommunity.entity.Employee;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.entity.RestaurantEmployee;
 import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.error.UnauthorizedRestaurantAccessException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
@@ -45,5 +50,12 @@ public class RestaurantService {
         }
         return restaurantDTOList;
 
+    }
+
+    public List<RestaurantDTO> restaurantListForEmployee(Employee employee) {
+        return employee.getRestaurantEmployeeList().stream()
+                .map(RestaurantEmployee::getRestaurant)
+                .map(RestaurantDTO::from)
+                .collect(Collectors.toList());
     }
 }

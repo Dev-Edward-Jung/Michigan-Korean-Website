@@ -11,21 +11,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception ex) {
-        // 로그 남기기
-        ex.printStackTrace();
-        // 원하는 페이지로 이동 (HTML 뷰 이름)
-        return "error/custom-error";
-    }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public String handle404(NoHandlerFoundException ex) {
-        return "error/404-error";
+        return "error/custom-error"; // 또는 "error/custom-error"
     }
 
     @ExceptionHandler(NullPointerException.class)
@@ -36,5 +32,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public String handleNoResourceFound(NoResourceFoundException ex) {
         return "error/custom-error"; // 또는 다른 에러 페이지
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", ex.getClass().getSimpleName());
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }

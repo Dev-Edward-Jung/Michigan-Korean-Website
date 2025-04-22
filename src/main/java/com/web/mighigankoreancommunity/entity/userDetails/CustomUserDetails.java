@@ -1,7 +1,9 @@
 package com.web.mighigankoreancommunity.entity.userDetails;
 
+import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.entity.Employee;
 import com.web.mighigankoreancommunity.entity.Owner;
+import com.web.mighigankoreancommunity.entity.RestaurantEmployee;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,11 +15,24 @@ import java.util.Collections;
 import java.util.List;
 
 
+
+@Setter
 @Getter
 public class CustomUserDetails implements UserDetails {
 
     private Owner owner;
     private Employee employee;
+
+    public Long currentRestaurantId;
+
+    public MemberRole getCurrentMemberRole() {
+        return employee.getRestaurantEmployeeList().stream()
+                .filter(re -> re.getRestaurant().getId().equals(currentRestaurantId))
+                .findFirst()
+                .map(RestaurantEmployee::getMemberRole)
+                .orElse(null);
+    }
+
 
     public CustomUserDetails(Owner owner) {
         this.owner = owner;
