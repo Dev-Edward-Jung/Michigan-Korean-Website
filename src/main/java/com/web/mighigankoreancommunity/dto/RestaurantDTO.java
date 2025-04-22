@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.dto;
 
 
+import com.web.mighigankoreancommunity.entity.Restaurant;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,15 @@ public class RestaurantDTO {
     this.restaurantName = restaurantName;
     this.restaurantCity = restaurantCity;
     this.ownerId = ownerId;
+    }
+
+    public static RestaurantDTO from(Restaurant restaurant) {
+        return new RestaurantDTO(
+                restaurant.getId(),
+                restaurant.getName(),
+                restaurant.getCity(),
+                restaurant.getOwner().getId()
+        );
     }
 
 

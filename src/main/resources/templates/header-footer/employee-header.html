@@ -13,16 +13,16 @@
  -->
 <!-- beautify ignore:start -->
 <html
-  lang="en"
-  class="light-style layout-menu-fixed"
-  dir="ltr"
+        lang="en"
+        class="light-style layout-menu-fixed"
+        dir="ltr"
 
 >
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
     <!-- Favicon -->
@@ -32,8 +32,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+            rel="stylesheet"
     />
 
     <!-- Icons. Uncomment required icon fonts -->
@@ -57,14 +57,14 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="/js/config.js"></script>
-  </head>
+</head>
 <body>
-    <div th:fragment="header">
+<div th:fragment="header">
     <nav
             class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
             id="layout-navbar"
-          >
-            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+    >
+        <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
               <span class="nav-item nav-link px-0 me-xl-4">
                 <i class="bx bx-menu bx-sm">
                   <!-- left Nav bar **needs to be edited later -->
@@ -74,7 +74,7 @@
                 </i>
 
               </span>
-            </div>
+        </div>
         <form th:action="@{/page/owner/logout}" method="post" style="display: inline;">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <button type="submit" class="btn btn-link" style="padding: 0; border: none; background: none;">
@@ -82,42 +82,42 @@
                 <span class="align-middle">Log Out</span>
             </button>
         </form>
-          </nav>
-                  <!-- Menu -->
-        <!-- Nav Bar -->
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-            <div class="app-brand demo">
-              <a href="/page/restaurant/list" class="app-brand-link">
-                  <img src="/img/logo/logo-gray.png" class = "logo-nav"alt="">
-              </a>
+    </nav>
+    <!-- Menu -->
+    <!-- Nav Bar -->
+    <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+        <div class="app-brand demo">
+            <a href="/page/restaurant/list" class="app-brand-link">
+                <img src="/img/logo/logo-gray.png" class = "logo-nav"alt="">
+            </a>
 
-              <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
                 <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+
+        </div>
+
+        <div class="menu-inner-shadow"></div>
+
+        <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <!-- <li class="menu-item active">
+              <a href="index.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Dashboard</div>
               </a>
+            </li> -->
 
-            </div>
-
-            <div class="menu-inner-shadow"></div>
-
-            <ul class="menu-inner py-1">
-              <!-- Dashboard -->
-              <!-- <li class="menu-item active">
-                <a href="index.html" class="menu-link">
-                  <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                  <div data-i18n="Analytics">Dashboard</div>
-                </a>
-              </li> -->
-
-              <!-- Layouts -->
+            <!-- Layouts -->
 
 
-              <li class="menu-header small text-uppercase">
+            <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">Pages</span>
-              </li>
-              <li class="menu-item">
+            </li>
+            <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle restaurant_link">
-                  <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                  <div data-i18n="Account Settings">My Restaurant</div>
+                    <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                    <div data-i18n="Account Settings">My Restaurant</div>
                 </a>
                 <ul class="menu-sub">
                     <li>
@@ -154,11 +154,6 @@
                         </a>
                         <ul class="menu-sub">
                             <li>
-                                <a href="/page/employee/list" class="menu-link inventory_link">
-                                    <div data-i18n="employee">Employee List</div>
-                                </a>
-                            </li>
-                            <li>
                                 <a href="/page/employee/schedule/list" class="menu-link inventory_link">
                                     <div data-i18n="employee">Employee Schedule</div>
                                 </a>
@@ -167,11 +162,11 @@
                     </li>
 
 
-<!--                    <li>-->
-<!--                        <a href="/page/payroll/list" class="menu-link payroll_link">-->
-<!--                            <div data-i18n="Connections">Payroll(Not Ready)</div>-->
-<!--                        </a>-->
-<!--                    </li>-->
+                    <!--                    <li>-->
+                    <!--                        <a href="/page/payroll/list" class="menu-link payroll_link">-->
+                    <!--                            <div data-i18n="Connections">Payroll(Not Ready)</div>-->
+                    <!--                        </a>-->
+                    <!--                    </li>-->
                     <li class="menu-item">
                         <a href="/page/announcement/list" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-collection"></i>
@@ -182,44 +177,44 @@
 
                 </ul>
 
-              <!-- Components -->
-              <li class="menu-header small text-uppercase"><span class="menu-header-text">Not Ready</span></li>
-              <!-- Cards -->
-              <li class="menu-item">
+                <!-- Components -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Not Ready</span></li>
+            <!-- Cards -->
+            <li class="menu-item">
                 <a href="cards-basic.html" class="menu-link">
-                  <i class="menu-icon tf-icons bx bx-collection"></i>
-                  <div data-i18n="Basic">Announcment</div>
+                    <i class="menu-icon tf-icons bx bx-collection"></i>
+                    <div data-i18n="Basic">Announcment</div>
                 </a>
-              </li>
-              <!-- User interface -->
-            </ul>
-          </aside>
-          <!-- / Menu -->
-          </div>
-          <!-- / Navbar -->
+            </li>
+            <!-- User interface -->
+        </ul>
+    </aside>
+    <!-- / Menu -->
+</div>
+<!-- / Navbar -->
 
 
 
 
 </body>
-    <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="/js/libs/jquery/jquery.js"></script>
-    <script src="/js/libs/popper/popper.js"></script>
-    <script src="/js/vendor/bootstrap.js"></script>
-    <script src="/js/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="/js/libs/jquery/jquery.js"></script>
+<script src="/js/libs/popper/popper.js"></script>
+<script src="/js/vendor/bootstrap.js"></script>
+<script src="/js/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
 
-    <script src="/js/vendor/menu.js"></script>
-    <!-- endbuild -->
+<script src="/js/vendor/menu.js"></script>
+<!-- endbuild -->
 
-    <!-- Vendors JS -->
-    <script src="/js/libs/apex-charts/apexcharts.js"></script>
+<!-- Vendors JS -->
+<script src="/js/libs/apex-charts/apexcharts.js"></script>
 
-    <!-- Main JS -->
-    <script src="/js/main.js"></script>
+<!-- Main JS -->
+<script src="/js/main.js"></script>
 
-    <!-- Page JS -->
-    <script src="/js/dashboards-analytics.js"></script>
+<!-- Page JS -->
+<script src="/js/dashboards-analytics.js"></script>
 
 
 </html>

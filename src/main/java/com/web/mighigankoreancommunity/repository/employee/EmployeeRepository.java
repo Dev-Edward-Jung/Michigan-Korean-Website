@@ -2,6 +2,8 @@ package com.web.mighigankoreancommunity.repository.employee;
 
 import com.web.mighigankoreancommunity.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,4 +15,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     public Optional<Employee> findEmployeeByEmail(String email);
 
+    @Query("SELECT e FROM Employee e " +
+            "LEFT JOIN FETCH e.restaurantEmployeeList rel " +
+            "LEFT JOIN FETCH rel.restaurant r " +
+            "WHERE e.email = :email")
+    Optional<Employee> findByEmailWithRestaurants(@Param("email") String email);
 }
