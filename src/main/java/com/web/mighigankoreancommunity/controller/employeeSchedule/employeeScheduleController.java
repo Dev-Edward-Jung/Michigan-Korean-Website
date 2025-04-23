@@ -15,11 +15,11 @@ public class employeeScheduleController {
 
     @GetMapping("/list")
     public String employeeSchedule(@RequestParam Long restaurantId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return "restaurant/employee-schedule";
+        return "owner-pages/employee-schedule";
     }
 
     @GetMapping("/edit")
     public String employeeScheduleEdit(@RequestParam Long restaurantId,@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return "restaurant/employee-schedule-edit";
+        return "owner-pages/employee-schedule-edit";
     }
 }

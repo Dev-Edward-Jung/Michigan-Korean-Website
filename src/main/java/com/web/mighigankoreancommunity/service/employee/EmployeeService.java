@@ -97,6 +97,7 @@ public class EmployeeService {
             rel.setEmployee(employee);
             rel.setRestaurant(restaurant);
             rel.setMemberRole(dto.getMemberRole());
+            rel.setApproved(false);
             restaurantEmployeeRepository.save(rel);
         }
 
@@ -130,22 +131,25 @@ public class EmployeeService {
             throw new EmployeeNotFoundException("Employee not found by token");
         }
 
-        // 3. 이미 승인된 직원인지 확인 (옵션)
-        if (employee.isApproved()) {
-            throw new AlreadyApprovedEmployeeException("Already registered");
-        }
-
-        // 4. 비밀번호 암호화 및 승인 처리
+        // 3. 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(rawPassword);
         employee.setPassword(encodedPassword);
-        employee.setApproved(true);
+
+        // ✅ 4. 해당 레스토랑과 직원 간의 관계 승인 처리
+        Long restaurantId = invitation.getRestaurant().getId(); // 초대된 레스토랑 ID
+        RestaurantEmployee restaurantEmployee = restaurantEmployeeRepository
+                .findByEmployeeIdAndRestaurantId(employee.getId(), restaurantId)
+                .orElseThrow(() -> new RuntimeException("RestaurantEmployee relation not found"));
+
+        restaurantEmployee.setApproved(true); // 승인 처리
 
         // 5. 초대 상태 변경
         invitation.setStatus(InvitationStatus.ACCEPTED);
 
-        // 6. 저장 (양방향 연관 시 둘 다 save)
+        // 6. 저장
         employeeRepository.save(employee);
         invitationRepository.save(invitation);
+        restaurantEmployeeRepository.save(restaurantEmployee);
 
         log.info("✅ complete Employee: email={}, employeeId={}", employee.getEmail(), employee.getId());
         return employee.getId();
@@ -157,11 +161,10 @@ public class EmployeeService {
                 .orElseThrow(RestaurantNotFoundException::new);
 
         List<RestaurantEmployee> employeeList = restaurantEmployeeRepository
-                .findRestaurantEmployeesByRestaurant_Id(restaurant.getId())
+                .findRestaurantEmployeesByRestaurant_IdAndApprovedTrue(restaurant.getId())
                 .orElse(Collections.emptyList());
 
         return employeeList.stream()
-                .filter(RestaurantEmployee::isActive)
                 .map(emp ->new EmployeeDTO(
                         emp.getId(),
                         emp.getEmployee().getName(),

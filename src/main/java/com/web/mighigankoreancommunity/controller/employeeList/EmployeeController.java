@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,14 @@ public class EmployeeController {
 
 
     @GetMapping("/list")
-    public String employeeList() {
-        return "restaurant/employee-list";
+    public String employeeList(Model model, @AuthenticationPrincipal CustomUserDetails loginUser) {
+        model.addAttribute("isOwner", loginUser.isOwner());
+        model.addAttribute("isEmployee", loginUser.isEmployee());
+
+        if (loginUser.isEmployee()) {
+            model.addAttribute("memberRole", loginUser.getCurrentMemberRole());
+        }
+        return "owner-pages/employee-list";
     }
 
 

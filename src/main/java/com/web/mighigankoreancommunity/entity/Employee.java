@@ -33,8 +33,6 @@ public class Employee {
 
     private String password;
 
-    private boolean approved = false; // 사장님이 승인했는지 여부
-
     // Save create created time automatically
     @CreationTimestamp
     private LocalDateTime joined_at;

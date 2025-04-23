@@ -14,7 +14,7 @@ public class RestaurantController {
 
     @GetMapping("/list")
     public String list(Model model, HttpServletRequest request) {
-        return "restaurant/restaurant-list";
+        return "owner-pages/restaurant-list";
     }
 
 }

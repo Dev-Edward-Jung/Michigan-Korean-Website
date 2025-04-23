@@ -37,7 +37,7 @@ public class ScheduleService {
     public Map<String, List<EmployeeDTO>> findAllScheduleByRestaurantId(Long restaurantId, Owner owner) {
 
         List<RestaurantEmployee> restaurantEmployees = restaurantEmployeeRepository
-                .findRestaurantEmployeesByRestaurant_Id(restaurantId)
+                .findRestaurantEmployeesByRestaurant_IdAndApprovedTrue(restaurantId)
                 .orElseThrow(RestaurantEmployeeNotFoundException::new);
 
         List<EmployeeDTO> kitchenList = new ArrayList<>();
