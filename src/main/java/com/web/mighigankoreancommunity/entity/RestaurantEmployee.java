@@ -38,7 +38,6 @@ public class RestaurantEmployee {
     @JsonManagedReference
     List<Schedule> schedules;
 
-    private LocalDateTime startDate;
-
-    private boolean active;
+    @Column(name = "approved", nullable = false)
+    private boolean approved = false;
 }

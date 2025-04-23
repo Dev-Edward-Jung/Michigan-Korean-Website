@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface RestaurantEmployeeRepository  extends JpaRepository<RestaurantEmployee, Long> {
-    public Optional<List<RestaurantEmployee>> findRestaurantEmployeesByRestaurant_Id(Long restaurantId);
+    public Optional<List<RestaurantEmployee>> findRestaurantEmployeesByRestaurant_IdAndApprovedTrue(Long restaurantId);
 
     public Optional<RestaurantEmployee> findRestaurantEmployeeByRestaurant_IdAndEmployee_Id(Long restaurantId, Long employeeId);
 
@@ -20,4 +20,6 @@ public interface RestaurantEmployeeRepository  extends JpaRepository<RestaurantE
 
 //    we don't need to use Optional for findAll bc it will return empty list if it is empty
     public List<RestaurantEmployee> findAllByEmployee_Email(String email);
+
+    Optional<RestaurantEmployee> findByEmployeeIdAndRestaurantId(Long employeeId, Long restaurantId);
 }

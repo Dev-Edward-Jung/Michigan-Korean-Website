@@ -15,6 +15,6 @@ public class AnnouncementController {
 
     @GetMapping("/list")
     public String goAnnouncement(){
-        return "restaurant/announcement-list";
+        return "owner-pages/announcement-list";
     }
 }

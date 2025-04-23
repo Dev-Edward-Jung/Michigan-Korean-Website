@@ -20,11 +20,11 @@ public class InventoryController {
 
     @GetMapping("/list")
     public String inventoryList(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam Long restaurantId) {
-        return "restaurant/inventory-list";
+        return "owner-pages/inventory-list";
     }
 
     @GetMapping("/category")
     public String category() {
-        return "restaurant/category-list";
+        return "owner-pages/category-list";
     }
 }
