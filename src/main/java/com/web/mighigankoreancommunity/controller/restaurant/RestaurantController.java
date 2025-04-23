@@ -14,8 +14,6 @@ public class RestaurantController {
 
     @GetMapping("/list")
     public String list(Model model, HttpServletRequest request) {
-        CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
-        model.addAttribute("_csrf", token);
         return "restaurant/restaurant-list";
     }
 
