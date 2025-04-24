@@ -104,7 +104,7 @@ public class EmployeeService {
         // ✅ 6. 이메일 전송
         String invitationLink = "http://127.0.0.1:10000/page/employee/invited?token=" + token + "&restaurantId=" + restaurant.getId();;
 //        server
-//        String invitationLink = "https://restoflowing/page/employee/invited?token=" + token + "&restaurantId=" + restaurant.getId();
+//        String invitationLink = "https://www.restoflowing.com/page/employee/invited?token=" + token + "&restaurantId=" + restaurant.getId();
         sendInvitationEmailToUser(employee, restaurant.getName(), invitationLink);
 
         return invitationLink;
@@ -153,6 +153,22 @@ public class EmployeeService {
 
         log.info("✅ complete Employee: email={}, employeeId={}", employee.getEmail(), employee.getId());
         return employee.getId();
+    }
+
+
+    public boolean employeeForgotPasswordService(String email){
+        Optional<Employee> employeeOpt = employeeRepository.findEmployeeByEmail(email);
+        if(employeeOpt.isPresent()){
+            Employee employee = employeeOpt.get();
+
+            String token = UUID.randomUUID().toString();
+            String resetLink = "http://127.0.0.1:10000/page/owner/forgot/password?token=" + token;
+//            String resetLink = "https://restoflowing.com/owner/forgot/password?token=" + token;
+            sendInvitationEmailToUser(employee, email, resetLink);
+            return true;
+        } else{
+            return false;
+        }
     }
 
 
