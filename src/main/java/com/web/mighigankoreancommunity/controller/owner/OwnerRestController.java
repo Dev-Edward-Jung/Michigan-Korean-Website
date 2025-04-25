@@ -3,6 +3,7 @@ package com.web.mighigankoreancommunity.controller.owner;
 
 import com.web.mighigankoreancommunity.dto.OwnerDTO;
 import com.web.mighigankoreancommunity.entity.Owner;
+import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class OwnerRestController {
     private final OwnerService ownerService;
+
+    public String emailToLowerCase(String email){
+        return email.trim().toLowerCase();
+
+    }
 
     @PostMapping("/checkEmail")
     public boolean checkEmail(@RequestBody String email) {
@@ -33,9 +39,16 @@ public class OwnerRestController {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/forgot/password")
-    public void forgotPassword(String email){
-        ownerService.forgotPasswordService(email);
-    }
 
+    @PostMapping("/forgot/password")
+    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+        email = emailToLowerCase(email);
+        if (ownerService.ownerForgotPasswordService(email)) {
+            System.out.println("Owner mail sent!");
+            return ResponseEntity.ok("Owner password reset email sent.");
+        } else {
+            System.out.println("Email does not exist!");
+            return ResponseEntity.badRequest().body("Email does not exist in our system.");
+        }
+    }
 }

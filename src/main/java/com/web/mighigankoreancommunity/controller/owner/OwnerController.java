@@ -43,7 +43,7 @@ public class OwnerController {
     }
 
     @GetMapping("/forgot/password")
-    public String forgotPasswordPage() {return "user/auth-forgot-password";}
+    public String forgotPasswordPage() {return "/user/owner-forgot-password";}
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) throws ServletException {

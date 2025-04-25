@@ -18,6 +18,11 @@ import java.util.List;
 public class EmployeeRestController {
     private final EmployeeService employeeService;
 
+    public String emailToLowerCase(String email){
+        return email.trim().toLowerCase();
+
+    }
+
     @PostMapping("/invite")
     public ResponseEntity<ApiResponse<String>> sendInvitation(@RequestBody EmployeeDTO employeeDTO,
                                                               @AuthenticationPrincipal CustomUserDetails user) {
@@ -35,5 +40,18 @@ public class EmployeeRestController {
         return employeeDTOList;
 
 
+    }
+
+
+    @PostMapping("/forgot/password")
+    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+        email = emailToLowerCase(email);
+        if (employeeService.employeeForgotPasswordService(email)) {
+            System.out.println("Employee mail sent!");
+            return ResponseEntity.ok("Employee password reset email sent.");
+        } else {
+            System.out.println("Email does not exist!");
+            return ResponseEntity.badRequest().body("Email does not exist in our system.");
+        }
     }
 }

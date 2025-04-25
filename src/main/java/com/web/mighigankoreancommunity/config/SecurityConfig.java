@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(handler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/page/owner/login", "/page/owner/register", "/page/owner/forgot/password",
+                                "/page/owner/login", "/page/owner/register", "/page/owner/forgot/password", "/api/owner/forgot/password",
                                 "/page/restaurant/**",
                                 "/api/restaurant/**",
                                 "/page/inventory/**",
@@ -94,7 +94,8 @@ public class SecurityConfig {
                 .securityMatcher("/page/employee/**", "/api/employee/**")
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(handler))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/page/employee/login", "/page/employee/invited", "/error").permitAll()
+                        .requestMatchers("/page/employee/login", "/page/employee/invited", "/error",
+                                "/api/employee/forgot/password", "/page/employee/forgot/password").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -126,18 +127,23 @@ public class SecurityConfig {
     @Bean
     @Order(100)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        CsrfTokenRequestAttributeHandler handler = new CsrfTokenRequestAttributeHandler();
+        handler.setCsrfRequestAttributeName("_csrf");
+
         http
-                .securityMatcher(
-                        "/css/**", "/js/**", "/img/**", "/favicon.ico",
-                        "/error", "/",
-                        "/page/owner/login", "/page/owner/register",
-                        "/page/employee/login", "/page/employee/register",
-                        "/page/employee/invited"
-                )
+                .csrf(csrf -> csrf.csrfTokenRequestHandler(handler))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                "/css/**", "/js/**", "/img/**", "/favicon.ico", "/error", "/"
+                        ).permitAll()
+                        .requestMatchers(
+                                "/page/owner/login", "/page/owner/register", "/page/owner/forgot/password",
+                                "/page/employee/login", "/page/employee/register", "/page/employee/invited",
+                                "/api/owner/forgot/password", "/api/employee/forgot/password", "/page/employee/forgot/password"
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .csrf(Customizer.withDefaults());
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
