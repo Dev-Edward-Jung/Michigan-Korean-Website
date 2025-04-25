@@ -41,6 +41,9 @@ public class EmployeeController {
         return "user/employee-login";
     }
 
+    @GetMapping("/forgot/password")
+    public String forgotPasswordPage() {return "user/employee-forgot-password";}
+
 
 
 
