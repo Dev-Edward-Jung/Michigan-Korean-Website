@@ -39,6 +39,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
     testCompileOnly 'org.projectlombok:lombok:1.18.26'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.jsoup:jsoup:1.17.2'
     implementation 'com.querydsl:querydsl-jpa:5.0.0'
 
 }

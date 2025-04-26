@@ -9,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "passwordToken")
+@Table(name = "employeePasswordToken")
 @Getter
 @Setter
 @Builder
@@ -34,6 +34,9 @@ public class PasswordToken {
 
 
     private LocalDateTime expiresAt;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Employee employee;
 
 
 }
