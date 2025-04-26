@@ -24,4 +24,7 @@ public class Subscription {
     private LocalDateTime end_date;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Owner owner;
 }

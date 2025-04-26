@@ -34,10 +34,14 @@ public class RestaurantEmployee {
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole = MemberRole.EMPLOYEE; // ex: manager, owner, kitchen, sushi
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurantEmployee")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurantEmployee", cascade = CascadeType.ALL)
     @JsonManagedReference
     List<Schedule> schedules;
 
     @Column(name = "approved", nullable = false)
     private boolean approved = false;
+
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+            @JsonManagedReference
+    List<Announcement> announcementList;
 }
