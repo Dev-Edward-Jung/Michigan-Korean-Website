@@ -1,15 +1,14 @@
 package com.web.mighigankoreancommunity.controller.announcement;
 
 import com.web.mighigankoreancommunity.dto.AnnouncementResponse;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.AnnouncementService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/page/announcement")
@@ -24,8 +23,9 @@ public class AnnouncementController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<AnnouncementResponse> getAnnouncement(@PathVariable Long id) {
-        AnnouncementResponse response = announcementService.getAnnouncement(id);
+    public ResponseEntity<AnnouncementResponse> getAnnouncement(@PathVariable Long id, @RequestParam Long restaurantId,
+                                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
+        AnnouncementResponse response = announcementService.getAnnouncement(id, restaurantId);
         return ResponseEntity.ok(response);
     }
 

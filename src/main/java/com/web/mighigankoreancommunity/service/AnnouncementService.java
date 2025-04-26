@@ -62,15 +62,15 @@ public class AnnouncementService {
     }
 
     @Transactional(readOnly = true)
-    public AnnouncementResponse getAnnouncement(Long id) {
-        Announcement announcement = announcementRepository.findById(id)
+    public AnnouncementResponse getAnnouncement(Long id, Long restaurantId) {
+        Announcement announcement = announcementRepository.findAnnouncementByIdAndRestaurant_Id(id, restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
         return AnnouncementResponse.from(announcement);
     }
 
     @Transactional
-    public AnnouncementResponse updateAnnouncement(Long id, AnnouncementRequest request) {
-        Announcement announcement = announcementRepository.findById(id)
+    public AnnouncementResponse updateAnnouncement(Long id, AnnouncementRequest request, Long restaurantId) {
+        Announcement announcement = announcementRepository.findAnnouncementByIdAndRestaurant_Id(id, restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
         announcement.update(
@@ -84,8 +84,8 @@ public class AnnouncementService {
     }
 
     @Transactional
-    public void deleteAnnouncement(Long id) {
-        Announcement announcement = announcementRepository.findById(id)
+    public void deleteAnnouncement(Long id, Long restaurantId) {
+        Announcement announcement = announcementRepository.findAnnouncementByIdAndRestaurant_Id(id, restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
         announcementRepository.delete(announcement);
