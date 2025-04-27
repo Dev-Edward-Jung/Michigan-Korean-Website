@@ -22,6 +22,7 @@ public class CustomUserDetails implements UserDetails {
 
     private Owner owner;
     private Employee employee;
+    private RestaurantEmployee restaurantEmployee;
 
     public Long currentRestaurantId;
 

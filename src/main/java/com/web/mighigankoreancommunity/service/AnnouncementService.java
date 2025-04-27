@@ -8,6 +8,7 @@ import com.web.mighigankoreancommunity.entity.Announcement;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
 import com.web.mighigankoreancommunity.entity.RestaurantEmployee;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.repository.AnnouncementRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
@@ -15,6 +16,7 @@ import com.web.mighigankoreancommunity.repository.owner.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,21 +33,24 @@ public class AnnouncementService {
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
 
     @Transactional
-    public Long createAnnouncement(AnnouncementRequest request) {
-        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+    public Long createAnnouncement(AnnouncementRequest request, Long restaurantId, CustomUserDetails userDetails) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
 
         ContentType type = request.getType();
+        System.out.println(restaurant.toString());
 
         Owner owner = null;
         RestaurantEmployee employee = null;
 
-        if (request.getOwnerId() != null) {
-            owner = ownerRepository.findById(request.getOwnerId())
-                    .orElseThrow(() -> new IllegalArgumentException("Owner not found"));
-        } else if (request.getRestaurantEmployeeId() != null) {
-            employee = restaurantEmployeeRepository.findById(request.getRestaurantEmployeeId())
-                    .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+        if (userDetails.getOwner() != null) {
+            owner = userDetails.getOwner();
+            System.out.println("owner = " + owner.toString());
+        } else if (userDetails.getEmployee() != null) {
+            Long restaurantEmployeeId = request.getRestaurantEmployeeId();
+            employee = restaurantEmployeeRepository.findByIdAndRestaurantId(restaurantEmployeeId, restaurantId)
+                    .orElseThrow(() -> new IllegalArgumentException("Employee not found or does not belong to this restaurant"));
+            System.out.println("employee = " + employee.toString());
         } else {
             throw new IllegalArgumentException("Writer Not Found");
         }
@@ -69,7 +74,7 @@ public class AnnouncementService {
     }
 
     @Transactional
-    public AnnouncementResponse updateAnnouncement(Long id, AnnouncementRequest request, Long restaurantId) {
+    public AnnouncementResponse updateAnnouncement(Long id, AnnouncementRequest request, Long restaurantId, UserDetails userDetails) {
         Announcement announcement = announcementRepository.findAnnouncementByIdAndRestaurant_Id(id, restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
@@ -84,7 +89,7 @@ public class AnnouncementService {
     }
 
     @Transactional
-    public void deleteAnnouncement(Long id, Long restaurantId) {
+    public void deleteAnnouncement(Long id, Long restaurantId, UserDetails userDetails) {
         Announcement announcement = announcementRepository.findAnnouncementByIdAndRestaurant_Id(id, restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
