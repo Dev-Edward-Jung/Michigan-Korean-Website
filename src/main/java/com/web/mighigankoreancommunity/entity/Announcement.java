@@ -68,10 +68,11 @@ public class Announcement {
     private RestaurantEmployee restaurantEmployee;
 
 
-    public static Announcement create(String content, ContentType type, Restaurant restaurant,
+    public static Announcement create(String content,String title, ContentType type, Restaurant restaurant,
                                       Owner owner, RestaurantEmployee restaurantEmployee) {
         Announcement announcement = new Announcement();
         announcement.content = content;
+        announcement.title = title;
         announcement.type = type;
         announcement.restaurant = restaurant;
         announcement.owner = owner;

@@ -2,10 +2,12 @@ package com.web.mighigankoreancommunity.controller.announcement;
 
 import com.web.mighigankoreancommunity.dto.AnnouncementRequest;
 import com.web.mighigankoreancommunity.dto.AnnouncementResponse;
+import com.web.mighigankoreancommunity.dto.PageResponse;
 import com.web.mighigankoreancommunity.entity.Announcement;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +22,24 @@ public class AnnouncementRestController {
     private final AnnouncementService announcementService;
 
     @GetMapping("/list")
-    public void getAllAnnouncement(){}
+    public ResponseEntity<PageResponse<AnnouncementResponse>> getAnnouncementList(
+            @RequestParam Long restaurantId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<AnnouncementResponse> announcementPage = announcementService.getAllAnnouncements(restaurantId, page, size);
+
+        PageResponse<AnnouncementResponse> pageResponse = new PageResponse<>(
+                announcementPage.getContent(),
+                announcementPage.getNumber(),
+                announcementPage.getSize(),
+                announcementPage.getTotalElements(),
+                announcementPage.getTotalPages(),
+                announcementPage.isLast()
+        );
+
+        return ResponseEntity.ok(pageResponse);
+    }
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getAnnouncement(@PathVariable Long id, @RequestParam Long restaurantId,

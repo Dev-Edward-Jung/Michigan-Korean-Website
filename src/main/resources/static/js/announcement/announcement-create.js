@@ -6,8 +6,6 @@ const quill = new Quill('#editor', {
             [{ 'header': [1, 2, false] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            ['image'],
-            ['clean']
         ]
     }
 });
@@ -40,7 +38,7 @@ async function sendContent() {
 
     if (response.ok) {
         alert('Successfully saved!');
-        location.href = "/page/announcement/list";
+        location.href = `/page/announcement/list?restaurantId=${restaurantId}`;
     } else {
         alert('Save Error');
     }
