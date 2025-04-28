@@ -16,6 +16,10 @@ import com.web.mighigankoreancommunity.repository.owner.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +61,7 @@ public class AnnouncementService {
 
         Announcement announcement = Announcement.create(
                 request.getContent(),
+                request.getTitle(),
                 type,
                 restaurant,
                 owner,
@@ -94,5 +99,13 @@ public class AnnouncementService {
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
         announcementRepository.delete(announcement);
+    }
+
+    @Transactional
+    public Page<AnnouncementResponse> getAllAnnouncements(Long restaurantId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Announcement> announcements = announcementRepository.findByRestaurantId(restaurantId, pageable);
+
+        return announcements.map(AnnouncementResponse::from); // Entity → DTO 변환
     }
 }

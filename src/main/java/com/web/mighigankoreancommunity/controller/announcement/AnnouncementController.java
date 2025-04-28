@@ -23,10 +23,8 @@ public class AnnouncementController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<AnnouncementResponse> getAnnouncement(@PathVariable Long id, @RequestParam Long restaurantId,
-                                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
-        AnnouncementResponse response = announcementService.getAnnouncement(id, restaurantId);
-        return ResponseEntity.ok(response);
+    public String getAnnouncement(@PathVariable Long id, @RequestParam Long restaurantId) {
+        return "announcement/announcement-create";
     }
 
     @GetMapping("/create")

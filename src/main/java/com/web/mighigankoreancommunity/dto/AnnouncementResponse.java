@@ -24,6 +24,7 @@ public class AnnouncementResponse {
     public static AnnouncementResponse from(Announcement announcement) {
         AnnouncementResponse res = new AnnouncementResponse();
         res.setId(announcement.getId());
+        res.setTitle(announcement.getTitle());
         res.setContent(announcement.getContent());
         res.setType(announcement.getType());
         res.setCreatedAt(announcement.getCreatedAt().toString());
