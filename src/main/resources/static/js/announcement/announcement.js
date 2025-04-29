@@ -38,14 +38,28 @@ document.addEventListener("DOMContentLoaded", () => {
         listGroup.innerHTML = "";
 
         if (announcements.length === 0) {
-            listGroup.innerHTML = "<p>등록된 공지사항이 없습니다.</p>";
+            listGroup.innerHTML = "<p>There is no announcement</p>";
             return;
         }
 
-        announcements.forEach(item => {
+        // NOTICE와 NORMAL 나누기
+        const noticeList = announcements.filter(item => item.type === 'NOTICE');
+        const normalList = announcements.filter(item => item.type === 'NORMAL');
+
+        // NOTICE 먼저 렌더링
+        noticeList.forEach(item => {
             const a = document.createElement("a");
             a.href = `/page/announcement/detail/${item.id}?restaurantId=${restaurantId}`;
-            a.className = "list-group-item list-group-item-action";
+            a.className = "list-group-item list-group-item-action announcement-notice"; // Notice 스타일
+            a.innerHTML = `<strong>[Notice]</strong> ${item.title}`; // [공지] 표시 추가
+            listGroup.appendChild(a);
+        });
+
+        // NORMAL 렌더링
+        normalList.forEach(item => {
+            const a = document.createElement("a");
+            a.href = `/page/announcement/detail/${item.id}?restaurantId=${restaurantId}`;
+            a.className = "list-group-item list-group-item-action announcement-normal"; // Normal 스타일
             a.textContent = item.title;
             listGroup.appendChild(a);
         });

@@ -82,7 +82,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        console.log("전송할 데이터:", schedulePayload);
 
         try {
             // API 호출: 컨트롤러는 List<EmployeeDTO> 형태로 배열을 받도록 구성되어 있어, 그대로 전송합니다.
@@ -131,7 +130,6 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
 
         // 응답 데이터 (예: { kitchenList: [employeeDTO,...], serverList: [employeeDTO,...] })
         const data = await res.json();
-        console.log("응답 데이터:", data);
         const kitchenList = data.kitchenList || [];
         const serverList = data.serverList || [];
 

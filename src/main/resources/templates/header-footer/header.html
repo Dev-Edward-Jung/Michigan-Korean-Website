@@ -60,6 +60,12 @@
   </head>
 <body>
     <div th:fragment="header">
+
+        <!-- 로그인 된 사용자라면 -->
+        <div th:if="${#authentication != null}">
+            <meta name="user-id" th:content="${#authentication.principal.owner != null ? #authentication.principal.owner.id : (#authentication.principal.employee != null ? #authentication.principal.employee.id : '')}" />
+            <meta name="user-name" th:content="${#authentication.principal.owner != null ? #authentication.principal.owner.ownerName : (#authentication.principal.employee != null ? #authentication.principal.employee.name : '')}" />
+        </div>
     <nav
             class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
             id="layout-navbar"
@@ -183,14 +189,14 @@
                 </ul>
 
               <!-- Components -->
-              <li class="menu-header small text-uppercase"><span class="menu-header-text">Not Ready</span></li>
+<!--              <li class="menu-header small text-uppercase"><span class="menu-header-text">Not Ready</span></li>-->
               <!-- Cards -->
-              <li class="menu-item">
-                <a href="cards-basic.html" class="menu-link">
-                  <i class="menu-icon tf-icons bx bx-collection"></i>
-                  <div data-i18n="Basic">Announcment</div>
-                </a>
-              </li>
+<!--              <li class="menu-item">-->
+<!--                <a href="cards-basic.html" class="menu-link">-->
+<!--                  <i class="menu-icon tf-icons bx bx-collection"></i>-->
+<!--                  <div data-i18n="Basic">Announcment</div>-->
+<!--                </a>-->
+<!--              </li>-->
               <!-- User interface -->
             </ul>
           </aside>

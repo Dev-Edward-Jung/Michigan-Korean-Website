@@ -45,7 +45,6 @@ async function fetchInventoryList(restaurantId, csrf) {
 // ✅ 인벤토리 하나 UI로 추가 + 이벤트 바인딩
 function addInventoryToUI(inv, categoryList) {
     const container = getInventoryContainer();
-    console.log(inv)
     const html = `
     <div class="mt-2 list-view" data-id="${inv.id}">
       <input class="form-control form-control-lg name-input" disabled value="${inv.name}" />
@@ -93,20 +92,16 @@ function addInventoryToUI(inv, categoryList) {
         modalEl.querySelector("select.unitSelect").value = lastBtn.dataset.unit;
         modalEl.querySelector("select.categorySelect option").value = lastBtn.dataset.category
 
-        console.log(lastBtn.dataset.category)
-
         currentInventoryId = lastBtn.dataset.id;
     });
 }
 
 // ✅ UI 렌더링: 인벤토리 목록을 카테고리별로 출력
 function renderInventory(inventoryList, categoryList) {
-    console.log(inventoryList[0])
     const container = getInventoryContainer();
     container.innerHTML = "";
     // Group inventories by category name
     const groupedInventory = inventoryList.reduce((acc, inv) => {
-        console.log(inv.categoryName)
         const categoryName = inv.categoryName || "Uncategorized";
         if (!acc[categoryName]) acc[categoryName] = [];
         acc[categoryName].push(inv);
@@ -137,7 +132,6 @@ async function updateInventory(restaurantId, csrf) {
         categoryId : document.querySelector("#modalCenter select.categorySelect").value,
     };
     categoryListI = document.querySelector("#modalCenter select.categorySelect").value
-    console.log(categoryListI)
 
     const res = await fetch("/api/inventory/update", {
         method: "PUT",

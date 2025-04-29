@@ -29,7 +29,6 @@ async function loadEmployeeList(csrfToken, csrfHeader) {
 
         // 응답 데이터 (예: { kitchenList: [employeeDTO,...], serverList: [employeeDTO,...] })
         const data = await res.json();
-        console.log("응답 데이터:", data);
         const kitchenList = data.kitchenList || [];
         const serverList = data.serverList || [];
 

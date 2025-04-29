@@ -44,6 +44,7 @@ public class AnnouncementRestController {
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getAnnouncement(@PathVariable Long id, @RequestParam Long restaurantId,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+        System.out.println(id);
         Object writer = null;
         if (userDetails.getOwner() != null) {
             writer = userDetails.getOwner();

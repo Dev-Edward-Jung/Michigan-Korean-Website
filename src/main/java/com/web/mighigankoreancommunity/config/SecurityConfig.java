@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
 @EnableWebSecurity
 @Configuration
@@ -134,17 +135,23 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(handler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/css/**", "/js/**", "/img/**", "/favicon.ico", "/error", "/"
+                                "/css/**", "/js/**", "/img/**", "/favicon.ico", "/error/**", "/"
                         ).permitAll()
                         .requestMatchers(
                                 "/page/owner/login", "/page/owner/register", "/page/owner/forgot/password",
                                 "/page/employee/login", "/page/employee/register", "/page/employee/invited",
                                 "/api/owner/forgot/password", "/api/employee/forgot/password", "/page/employee/forgot/password",
-                                        "/page/announcement/**", "/api/announcement/**"
+                                "/page/announcement/**", "/api/announcement/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                // ❌ 기본 formLogin() 제거
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // 인증 안 된 경우 리다이렉트
+                            response.sendRedirect("/page/owner/login");
+                        })
+                );
 
         return http.build();
     }
@@ -152,5 +159,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
     }
 }
