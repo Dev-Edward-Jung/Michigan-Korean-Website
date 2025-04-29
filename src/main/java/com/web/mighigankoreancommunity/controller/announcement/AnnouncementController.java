@@ -24,7 +24,7 @@ public class AnnouncementController {
 
     @GetMapping("/detail/{id}")
     public String getAnnouncement(@PathVariable Long id, @RequestParam Long restaurantId) {
-        return "announcement/announcement-create";
+        return "announcement/announcement-detail";
     }
 
     @GetMapping("/create")

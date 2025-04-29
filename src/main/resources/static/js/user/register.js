@@ -113,7 +113,6 @@ async function checkEmail() {
         if (!res.ok) throw new Error("Server error");
 
         const text = await res.text();
-        console.log(text)
         const isUsed = text === "true"; // 문자열로 온 걸 boolean으로 변환
 
         if (isUsed) {

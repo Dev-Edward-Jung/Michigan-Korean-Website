@@ -22,7 +22,7 @@ public class EmployeeUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Employee employee = employeeRepository.findByEmailWithRestaurants(email)
+        Employee employee = employeeRepository.findEmployeeByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Employee not found."));
         return new CustomUserDetails(employee);
     }

@@ -32,6 +32,8 @@ public class CustomErrorController implements ErrorController {
                 return "error/403-error";
             } else if (statusCode == 500) {
                 return "error/500-error";
+            } else if (statusCode >= 400 && statusCode < 600) {
+                return "error/custom-error"; // 다른 모든 에러는 공통 에러 페이지로
             }
         }
         return "redirect:/page/owner/login";
