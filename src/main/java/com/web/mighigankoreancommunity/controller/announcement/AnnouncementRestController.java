@@ -25,7 +25,7 @@ public class AnnouncementRestController {
     public ResponseEntity<PageResponse<AnnouncementResponse>> getAnnouncementList(
             @RequestParam Long restaurantId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "10") int size
     ) {
         Page<AnnouncementResponse> announcementPage = announcementService.getAllAnnouncements(restaurantId, page, size);
 
@@ -61,10 +61,6 @@ public class AnnouncementRestController {
     public ResponseEntity<Long> createAnnouncement(@RequestBody AnnouncementRequest request,
                                                    @RequestParam Long restaurantId,
                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
-        System.out.println(request.getTitle());
-        System.out.println(request.getContent());
-        System.out.println(restaurantId);
-        System.out.println(userDetails.getOwner().toString());
         Long id = announcementService.createAnnouncement(request, restaurantId, userDetails);
         return ResponseEntity.ok(id);
     }

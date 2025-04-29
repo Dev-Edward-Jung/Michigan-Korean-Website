@@ -4,10 +4,7 @@ package com.web.mighigankoreancommunity.service;
 import com.web.mighigankoreancommunity.domain.ContentType;
 import com.web.mighigankoreancommunity.dto.AnnouncementRequest;
 import com.web.mighigankoreancommunity.dto.AnnouncementResponse;
-import com.web.mighigankoreancommunity.entity.Announcement;
-import com.web.mighigankoreancommunity.entity.Owner;
-import com.web.mighigankoreancommunity.entity.Restaurant;
-import com.web.mighigankoreancommunity.entity.RestaurantEmployee;
+import com.web.mighigankoreancommunity.entity.*;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.repository.AnnouncementRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
@@ -49,12 +46,11 @@ public class AnnouncementService {
 
         if (userDetails.getOwner() != null) {
             owner = userDetails.getOwner();
-            System.out.println("owner = " + owner.toString());
         } else if (userDetails.getEmployee() != null) {
-            Long restaurantEmployeeId = request.getRestaurantEmployeeId();
-            employee = restaurantEmployeeRepository.findByIdAndRestaurantId(restaurantEmployeeId, restaurantId)
-                    .orElseThrow(() -> new IllegalArgumentException("Employee not found or does not belong to this restaurant"));
-            System.out.println("employee = " + employee.toString());
+            System.out.println("Employee 들어옴?");
+            Long employeeId = userDetails.getEmployee().getId();
+            employee = restaurantEmployeeRepository.findRestaurantEmployeeByRestaurant_IdAndEmployee_Id(restaurantId, employeeId)
+                    .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
         } else {
             throw new IllegalArgumentException("Writer Not Found");
         }
@@ -79,18 +75,28 @@ public class AnnouncementService {
     }
 
     @Transactional
-    public AnnouncementResponse updateAnnouncement(Long id, AnnouncementRequest request, Long restaurantId, UserDetails userDetails) {
+    public AnnouncementResponse updateAnnouncement(Long id, AnnouncementRequest request, Long restaurantId, CustomUserDetails userDetails) {
         Announcement announcement = announcementRepository.findAnnouncementByIdAndRestaurant_Id(id, restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
+        // 🔥 작성자 정보 설정
+        if (userDetails.getOwner() != null) {
+            announcement.setOwner(userDetails.getOwner());
+            announcement.setRestaurantEmployee(null); // 다른 필드 클리어
+        } else if (userDetails.getRestaurantEmployee() != null) {
+            announcement.setRestaurantEmployee(userDetails.getRestaurantEmployee());
+            announcement.setOwner(null); // 다른 필드 클리어
+        } else {
+            throw new IllegalArgumentException("User is not authorized to update this announcement");
+        }
+
+        // 🔄 내용 수정
         announcement.update(
                 request.getContent(),
                 request.getType()
         );
 
         return AnnouncementResponse.from(announcement);
-
-
     }
 
     @Transactional
@@ -101,11 +107,15 @@ public class AnnouncementService {
         announcementRepository.delete(announcement);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<AnnouncementResponse> getAllAnnouncements(Long restaurantId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Announcement> announcements = announcementRepository.findByRestaurantId(restaurantId, pageable);
+        Sort sort = Sort.by(
+                Sort.Order.desc("type"),        // NOTICE → NORMAL 순
+                Sort.Order.desc("createdAt")    // 최신순
+        );
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        return announcements.map(AnnouncementResponse::from); // Entity → DTO 변환
+        Page<Announcement> announcements = announcementRepository.findByRestaurantId(restaurantId, pageable);
+        return announcements.map(AnnouncementResponse::from);
     }
 }

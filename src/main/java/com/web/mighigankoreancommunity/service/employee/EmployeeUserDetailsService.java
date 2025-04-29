@@ -22,8 +22,12 @@ public class EmployeeUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Employee employee = employeeRepository.findEmployeeByEmail(email)
+        Employee employee = employeeRepository.findByEmailWithRestaurants(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Employee not found."));
+        // ✅ null 체크 먼저
+        if (employee.getRestaurantEmployeeList() != null) {
+            employee.getRestaurantEmployeeList().size();
+        }
         return new CustomUserDetails(employee);
     }
 }

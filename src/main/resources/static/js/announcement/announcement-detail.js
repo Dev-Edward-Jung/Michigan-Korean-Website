@@ -1,3 +1,6 @@
+const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
 document.addEventListener("DOMContentLoaded", async () => {
     const pathParts = window.location.pathname.split('/');
     const announcementId = pathParts[pathParts.length - 1]; // ex: /page/announcement/detail/3
@@ -45,23 +48,26 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
 
                     document.getElementById("delete-btn").addEventListener("click", async () => {
-                        const confirmed = confirm("정말 삭제하시겠습니까?");
+                        const confirmed = confirm("Would you really like to delete?");
                         if (!confirmed) return;
 
                         try {
                             const res = await fetch(`/api/announcement/delete/${announcementId}?restaurantId=${restaurantId}`, {
-                                method: "DELETE"
+                                method: "DELETE",
+                                headers :{
+                                    [csrfHeader]: csrfToken
+                                }
                             });
 
                             if (res.ok) {
-                                alert("삭제되었습니다.");
+                                alert("Deleted!");
                                 window.location.href = `/page/announcement/list?restaurantId=${restaurantId}`;
                             } else {
-                                alert("삭제 실패");
+                                alert("Delete Fail");
                             }
                         } catch (err) {
                             console.error(err);
-                            alert("서버 오류로 삭제에 실패했습니다.");
+                            alert("Server Error");
                         }
                     });
                 }

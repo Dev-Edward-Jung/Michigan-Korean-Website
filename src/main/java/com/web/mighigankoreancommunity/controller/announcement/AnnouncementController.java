@@ -27,6 +27,12 @@ public class AnnouncementController {
         return "announcement/announcement-detail";
     }
 
+    @GetMapping("/update/{id}")
+    public String updateAnnouncement(@PathVariable Long id){
+        return "announcement/announcement-update";
+    }
+
+
     @GetMapping("/create")
     public String goCreateAnnouncement(){
         return "announcement/announcement-create";

@@ -10,6 +10,9 @@ const quill = new Quill('#editor', {
     }
 });
 
+const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
 async function sendContent() {
     const title = document.getElementById("basic-default-title").value;
     const content = quill.root.innerHTML;
@@ -27,7 +30,7 @@ async function sendContent() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            [document.querySelector('meta[name="_csrf_header"]').getAttribute('content')]: document.querySelector('meta[name="_csrf"]').getAttribute('content')
+            [csrfHeader]: csrfToken,
         },
         body: JSON.stringify({
             title: title,
@@ -41,29 +44,5 @@ async function sendContent() {
         location.href = `/page/announcement/list?restaurantId=${restaurantId}`;
     } else {
         alert('Save Error');
-    }
-}
-
-
-async function updateContent() {
-    const content = quill.root.innerHTML;
-    const type = document.querySelector('input[name="type"]:checked').value;
-
-    const response = await fetch('/api/announcement/save', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            content: content,
-            type: type
-        })
-    });
-
-    if (response.ok) {
-        alert('저장 완료!');
-        location.reload(); // 저장 후 페이지 새로고침
-    } else {
-        alert('저장 실패 ㅠㅠ');
     }
 }

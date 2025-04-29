@@ -67,16 +67,17 @@
                 <!--                ></textarea>-->
             </div>
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" value="NOTICE" checked="" autocomplete="off">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" value="NORMAL">
                 <label class="btn btn-outline-primary" for="btnradio1">Normal</label>
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" value="NORMAL" autocomplete="off">
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" value="NOTICE">
                 <label class="btn btn-outline-primary" for="btnradio2">Notice</label>
             </div>
         </form>
     </div>
     <div class="div-group">
-        <button type="submit" class="btn btn-primary mt-3 saveBtn" >update</button>
-        <button type="submit" class="btn btn-danger mt-3 deleteBtn">Delete</button>
+        <button type="submit" class="btn btn-primary mt-3 saveBtn" onclick="updateContent()" >update</button>
+        <button type="submit" class="btn btn-danger mt-3 deleteBtn" onclick="deleteContent()">Delete</button>
     </div>
 </div>
 
@@ -109,8 +110,4 @@
 </script>
 <script src="/js/header/header.js"></script>
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<script src="/js/announcement/announcement-create.js"></script>
-
-
-
-</html>
+<script src="/js/announcement/announcement-update.js"></script>
