@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (res.ok) {
                 alert("✅ 스케줄이 성공적으로 저장되었습니다!");
+                window.location.href = `/page/employee/schedule/list??restaurantId=${restaurantId}`;
             } else {
                 const err = await res.text();
                 alert("❌ 저장 실패: " + err);

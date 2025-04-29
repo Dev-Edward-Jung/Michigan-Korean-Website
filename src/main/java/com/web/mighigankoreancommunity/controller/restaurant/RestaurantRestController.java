@@ -30,7 +30,6 @@ public class RestaurantRestController {
     @GetMapping("/list")
     @ResponseBody
     public List<RestaurantDTO> restaurantList(@AuthenticationPrincipal CustomUserDetails userDetails) {
-
         if (userDetails.getOwner() != null) {
             // 사장님인 경우: 자신이 소유한 레스토랑 리스트 반환
             return restaurantService.restaurantListService(userDetails.getOwner());

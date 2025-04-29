@@ -96,7 +96,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(handler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/page/employee/login", "/page/employee/invited", "/error",
-                                "/api/employee/forgot/password", "/page/employee/forgot/password").permitAll()
+                                "/api/employee/forgot/password", "/page/employee/forgot/password",
+                                "/page/restaurant/**, /api/restaurant/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
