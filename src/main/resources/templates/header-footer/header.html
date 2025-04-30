@@ -63,8 +63,14 @@
 
         <!-- 로그인 된 사용자라면 -->
         <div th:if="${#authentication != null}">
-            <meta name="user-id" th:content="${#authentication.principal.owner != null ? #authentication.principal.owner.id : (#authentication.principal.employee != null ? #authentication.principal.employee.id : '')}" />
-            <meta name="user-name" th:content="${#authentication.principal.owner != null ? #authentication.principal.owner.ownerName : (#authentication.principal.employee != null ? #authentication.principal.employee.name : '')}" />
+            <meta name="user-id"
+                  th:content="${#authentication.principal.owner != null ? #authentication.principal.owner.id : (#authentication.principal.employee != null ? #authentication.principal.employee.id : '')}" />
+
+            <meta name="user-name"
+                  th:content="${#authentication.principal.owner != null ? #authentication.principal.owner.ownerName : (#authentication.principal.employee != null ? #authentication.principal.employee.name : '')}" />
+
+            <meta name="user-role"
+                  th:content="${#authentication.principal.owner != null ? 'OWNER' : (#authentication.principal.restaurantEmployee != null ? #authentication.principal.restaurantEmployee.memberRole : '')}" />
         </div>
     <nav
             class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"

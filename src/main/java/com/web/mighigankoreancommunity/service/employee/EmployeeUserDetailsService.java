@@ -24,10 +24,16 @@ public class EmployeeUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Employee employee = employeeRepository.findByEmailWithRestaurants(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Employee not found."));
-        // ✅ null 체크 먼저
-        if (employee.getRestaurantEmployeeList() != null) {
-            employee.getRestaurantEmployeeList().size();
-        }
-        return new CustomUserDetails(employee);
+
+        // ✅ 현재 로그인 시점에서 사용할 restaurantEmployee 하나 선택
+        RestaurantEmployee selectedRel = employee.getRestaurantEmployeeList()
+                .stream()
+                .findFirst() // 또는 너가 정한 기준에 맞게 선택
+                .orElse(null);
+
+        CustomUserDetails userDetails = new CustomUserDetails(employee);
+        userDetails.setRestaurantEmployee(selectedRel); // ✅ 핵심 포인트
+
+        return userDetails;
     }
 }

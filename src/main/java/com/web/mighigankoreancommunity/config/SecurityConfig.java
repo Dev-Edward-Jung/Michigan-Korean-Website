@@ -142,7 +142,7 @@ public class SecurityConfig {
                                 "/page/owner/login", "/page/owner/register", "/page/owner/forgot/password",
                                 "/page/employee/login", "/page/employee/register", "/page/employee/invited",
                                 "/api/owner/forgot/password", "/api/employee/forgot/password", "/page/employee/forgot/password",
-                                "/page/announcement/**", "/api/announcement/**"
+                                "/page/announcement/**", "/api/announcement/**", "/page/inventory/**", "/api/inventory/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -6,6 +6,7 @@ import com.web.mighigankoreancommunity.entity.Category;
 import com.web.mighigankoreancommunity.entity.Inventory;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.error.*;
 import com.web.mighigankoreancommunity.repository.inevntory.CategoryRepository;
 import com.web.mighigankoreancommunity.repository.inevntory.InventoryRepository;
@@ -27,49 +28,58 @@ public class InventoryService {
     private final CategoryRepository categoryRepository;
 
     // Get Inventory List
-    public List<InventoryDTO> getInventoriesByRestaurant(Long retaurantId, Owner loginUser) {
-        System.out.println("In Service, loginUser is : " + loginUser.toString());
-        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(retaurantId, loginUser)
+
+    public List<InventoryDTO> getInventoriesByRestaurant(Long restaurantId, CustomUserDetails loginUser) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
-        System.out.println("In Service, restaurantName is : " + restaurant.toString());
-        if (restaurant == null) {
-            throw new RestaurantNotFoundException("Restaurant not found.");
+
+        // 로그인은 되어 있어야 하며, 모든 직원이나 사장님이 리스트를 볼 수 있음
+        if (!(loginUser.isOwner() || loginUser.isEmployee())) {
+            throw new UnauthorizedRestaurantAccessException("Login required");
         }
-        List<Inventory> inventories = inventoryRepository.findByRestaurantsId(retaurantId)
-                .orElseThrow(()-> new RuntimeException("Inventory not found."));
 
+        List<Inventory> inventories = inventoryRepository.findByRestaurantsId(restaurantId)
+                .orElseThrow(() -> new RuntimeException("Inventory not found."));
 
-        return inventories.stream().map(inventory ->
-                new InventoryDTO(
-                        inventory.getId(),
-                        inventory.getName(),
-                        inventory.getQuantity(),
-                        inventory.getUnit(),
-                        inventory.getCategory().getId(),
-                        inventory.getCategory().getName(),
-                        inventory.getRestaurant().getId()
-                )).collect(Collectors.toList());
+        return inventories.stream().map(inventory -> new InventoryDTO(
+                inventory.getId(),
+                inventory.getName(),
+                inventory.getQuantity(),
+                inventory.getUnit(),
+                inventory.getCategory().getId(),
+                inventory.getCategory().getName(),
+                inventory.getRestaurant().getId()
+        )).collect(Collectors.toList());
+    }
+
+    private boolean hasPermission(Restaurant restaurant, CustomUserDetails loginUser) {
+        if (loginUser.isOwner()) {
+            return restaurant.getOwner().getId().equals(loginUser.getOwner().getId());
+        } else if (loginUser.isEmployee()) {
+            return loginUser.getRestaurantEmployee() != null &&
+                    loginUser.getRestaurantEmployee().getRestaurant().getId().equals(restaurant.getId());
+        }
+        return false;
     }
 
 
     @Transactional
-    public Long saveInventory(InventoryDTO dto, Owner owner) {
-        // ✅ 레스토랑 권한 검증
+    public Long saveInventory(InventoryDTO dto, CustomUserDetails loginUser) {
         Restaurant restaurant = restaurantRepository.findById(dto.getRestaurantId())
-                .filter(r -> r.getOwner().getId().equals(owner.getId()))
-                .orElseThrow(() -> new UnauthorizedRestaurantAccessException("You are NOT authorized to make this inventory"));
+                .orElseThrow(() -> new UnauthorizedRestaurantAccessException("Restaurant not found"));
 
-        // ✅ 카테고리 존재 여부 확인
+        if (!hasPermission(restaurant, loginUser)) {
+            throw new UnauthorizedRestaurantAccessException("Not authorized to save inventory");
+        }
+
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(CategoryNotFoundException::new);
 
-        // ✅ 중복 이름 검사 (선택 사항)
         boolean exists = inventoryRepository.existsByNameAndRestaurant(dto.getName(), restaurant);
         if (exists) {
-            throw new DuplicateInventoryException("You have already this in your inventory.");
+            throw new DuplicateInventoryException("You already have this item in your inventory.");
         }
 
-        // ✅ DTO → Entity 매핑 (직접 하지 않도록 Mapper 분리 가능)
         Inventory inventory = Inventory.builder()
                 .name(dto.getName())
                 .quantity(dto.getQuantity())
@@ -78,65 +88,56 @@ public class InventoryService {
                 .category(category)
                 .build();
 
-        Inventory saved = inventoryRepository.save(inventory);
-        return saved.getId();
+        return inventoryRepository.save(inventory).getId();
     }
 
 
 
     @Transactional
-    public Long updateInventory(InventoryDTO dto, Owner loginUser) {
-        // Search Inventory
+    public Long updateInventory(InventoryDTO dto, CustomUserDetails loginUser) {
         Inventory inventory = inventoryRepository.findById(dto.getId())
                 .orElseThrow(InventoryNotFoundException::new);
 
-        // Confirm if the user is authorized
         Restaurant restaurant = restaurantRepository.findById(dto.getRestaurantId())
                 .orElseThrow(UnauthorizedRestaurantAccessException::new);
 
-        if (!restaurant.getOwner().getId().equals(loginUser.getId())) {
-            throw new UnauthorizedRestaurantAccessException("Not Authorized user to make this inventory");
+        if (!hasPermission(restaurant, loginUser)) {
+            throw new UnauthorizedRestaurantAccessException("Not authorized to update this inventory");
         }
 
-        // 🔍 3. 인벤토리가 해당 레스토랑 소속인지 확인
         if (!inventory.getRestaurant().getId().equals(restaurant.getId())) {
             throw new IllegalStateException("Inventory does not belong to the restaurant.");
         }
 
-        // 🔍 4. 카테고리 조회 및 설정
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+                .orElseThrow(CategoryNotFoundException::new);
 
-        // 🔧 5. 필드 업데이트
         inventory.setName(dto.getName());
         inventory.setQuantity(dto.getQuantity());
         inventory.setUnit(dto.getUnit());
         inventory.setCategory(category);
 
-        // 💾 6. 저장
-        Inventory updated = inventoryRepository.save(inventory);
-
-        return updated.getId(); // ✅ 변경된 인벤토리 ID 반환
+        return inventoryRepository.save(inventory).getId();
     }
 
 
-    @Transactional
-    public void deleteInventory(InventoryDTO inventoryDTO, Owner loginUser) {
-        // 1. 레스토랑 소유자 검증
-        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(
-                inventoryDTO.getRestaurantId(), loginUser
-        ).orElseThrow(UnauthorizedRestaurantAccessException::new);
 
-        // 2. 인벤토리 존재 여부 확인
-        Inventory inventory = inventoryRepository.findById(inventoryDTO.getId())
+    @Transactional
+    public void deleteInventory(InventoryDTO dto, CustomUserDetails loginUser) {
+        Restaurant restaurant = restaurantRepository.findById(dto.getRestaurantId())
+                .orElseThrow(UnauthorizedRestaurantAccessException::new);
+
+        Inventory inventory = inventoryRepository.findById(dto.getId())
                 .orElseThrow(InventoryNotFoundException::new);
 
-        // 3. 인벤토리가 해당 레스토랑 소속인지 확인 (추가 안전장치)
+        if (!hasPermission(restaurant, loginUser)) {
+            throw new UnauthorizedRestaurantAccessException("Not authorized to delete this inventory");
+        }
+
         if (!inventory.getRestaurant().getId().equals(restaurant.getId())) {
             throw new IllegalStateException("Inventory does not belong to the restaurant.");
         }
 
-        // 4. 삭제
         inventoryRepository.delete(inventory);
     }
 }

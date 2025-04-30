@@ -20,7 +20,7 @@ public class CategoryRestController {
     @GetMapping("/list")
     public ResponseEntity<List<CategoryDTO>> findCategories(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                          @RequestParam Long restaurantId) {
-        List<CategoryDTO> categoryListDTOList = categoryService.findCategoriesByRestaurant(restaurantId, userDetails.getOwner());
+        List<CategoryDTO> categoryListDTOList = categoryService.findCategoriesByRestaurant(restaurantId, userDetails);
         return new ResponseEntity<>(categoryListDTOList, HttpStatus.OK);
 
     }
@@ -28,7 +28,7 @@ public class CategoryRestController {
     @PostMapping("/save")
     public ResponseEntity<?> saveCategory(@RequestBody CategoryDTO categoryDTO,
                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
-        boolean categorySuccess =  categoryService.addCategory(categoryDTO, userDetails.getOwner());
+        boolean categorySuccess =  categoryService.addCategory(categoryDTO, userDetails);
         if (categorySuccess) {
             return ResponseEntity.ok().body("Category saved successfully");
         } else {
@@ -40,7 +40,7 @@ public class CategoryRestController {
     @PutMapping("/update")
     public ResponseEntity<?> updateCategory(@RequestBody CategoryDTO categoryDTO,
                                @AuthenticationPrincipal CustomUserDetails userDetails){
-        boolean categorySuccess = categoryService.updateCategory(categoryDTO, userDetails.getOwner());
+        boolean categorySuccess = categoryService.updateCategory(categoryDTO, userDetails);
         if (categorySuccess) {
             return ResponseEntity.ok().body("Category saved successfully");
         } else {
@@ -52,7 +52,7 @@ public class CategoryRestController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteCategory(@RequestBody CategoryDTO categoryDTO,
                                @AuthenticationPrincipal CustomUserDetails userDetails){
-        boolean categorySuccess = categoryService.deleteCategory(categoryDTO, userDetails.getOwner());
+        boolean categorySuccess = categoryService.deleteCategory(categoryDTO, userDetails);
         if (categorySuccess) {
             return ResponseEntity.ok().body("Category saved successfully");
         } else {
