@@ -28,11 +28,10 @@ public class CustomUserDetails implements UserDetails {
     public Long currentRestaurantId;
 
     public MemberRole getCurrentMemberRole() {
-        return employee.getRestaurantEmployeeList().stream()
-                .filter(re -> re.getRestaurant().getId().equals(currentRestaurantId))
-                .findFirst()
-                .map(RestaurantEmployee::getMemberRole)
-                .orElse(null);
+        if (restaurantEmployee != null) {
+            return restaurantEmployee.getMemberRole();
+        }
+        return null;
     }
 
 

@@ -31,14 +31,14 @@ public class InventoryRestController {
     @PostMapping("/save")
     public void saveInventory(@RequestBody InventoryDTO dto,
                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long inventoryId = inventoryService.saveInventory(dto, userDetails.getOwner());
+        Long inventoryId = inventoryService.saveInventory(dto, userDetails);
 //        CategoryDTO 변환 메소드 필요
     }
 
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<Long>> updateInventory(@RequestBody InventoryDTO dto,
                                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long updatedId = inventoryService.updateInventory(dto, userDetails.getOwner());
+        Long updatedId = inventoryService.updateInventory(dto, userDetails);
 
         return ResponseEntity.ok(
                 ApiResponse.success(updatedId, "Update Successfully")
@@ -48,7 +48,7 @@ public class InventoryRestController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteInventory(@RequestBody InventoryDTO dto,
                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        inventoryService.deleteInventory(dto, customUserDetails.getOwner());
+        inventoryService.deleteInventory(dto, customUserDetails);
         return ResponseEntity.ok(
                 ApiResponse.success(1, "Update Successfully")
         );
@@ -59,8 +59,8 @@ public class InventoryRestController {
     public ResponseEntity<Map<String, Object>> inventoryList(@RequestParam Long restaurantId,
                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
-        List<InventoryDTO> inventoryList = inventoryService.getInventoriesByRestaurant(restaurantId, customUserDetails.getOwner());
-        List<CategoryDTO> categoryList = categoryService.findCategoriesByRestaurant(restaurantId, customUserDetails.getOwner());
+        List<InventoryDTO> inventoryList = inventoryService.getInventoriesByRestaurant(restaurantId, customUserDetails);
+        List<CategoryDTO> categoryList = categoryService.findCategoriesByRestaurant(restaurantId, customUserDetails);
 
 
         Map<String, Object> result = new HashMap<>();
