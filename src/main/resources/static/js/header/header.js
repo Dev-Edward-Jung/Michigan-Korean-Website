@@ -1,7 +1,7 @@
 let restaurantId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-    // passing RestaurantId
+    // 🔹 1. restaurantId 처리
     const params = new URLSearchParams(window.location.search);
     restaurantId = params.get("restaurantId");
 
@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // 🔹 2. 메뉴 링크에 restaurantId 추가
     document.querySelectorAll("a.menu-link").forEach(link => {
         const href = link.getAttribute("href");
         if (href && href.startsWith("/") && !href.startsWith("#") && !href.includes("restaurantId=")) {
@@ -20,16 +21,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Role Based Function
+    // 🔹 3. 권한 기반 메뉴/버튼 제어
     const roleMeta = document.querySelector('meta[name="user-role"]');
     const userRole = roleMeta ? roleMeta.content : null;
 
     if (userRole !== "OWNER" && userRole !== "MANAGER") {
-        const employeeMenu = document.querySelectorAll("a.menu-link.inventory_link, .menu-item > a.menu-link.menu-toggle > div[data-i18n='employee']");
-        employeeMenu.forEach(el => {
-            // 상위 li까지 삭제 (menu-sub도 포함)
+        // 메뉴 제거
+        document.querySelectorAll(".employee-list-menu").forEach(el => {
             const menuItem = el.closest(".menu-item") || el.closest("li");
             if (menuItem) menuItem.remove();
         });
+
+        // 버튼 제거
+        document.querySelectorAll(".owner-manager-only").forEach(el => el.remove());
     }
 });
