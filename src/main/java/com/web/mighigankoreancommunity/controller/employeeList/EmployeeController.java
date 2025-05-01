@@ -61,7 +61,6 @@ public class EmployeeController {
 
     @PostMapping("/register")
     public String registerEmployee(@RequestParam("token") String token,@RequestParam("restaurantId") Long restaurantId,  String password) {
-        System.out.println(password + " --------------------------------------- ");
         boolean isExpired = employeeService.isInvitationExpired(token);
         if (isExpired) {
             return "error/expired-error";

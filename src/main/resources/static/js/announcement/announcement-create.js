@@ -16,7 +16,8 @@ const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttrib
 async function sendContent() {
     const title = document.getElementById("basic-default-title").value;
     const content = quill.root.innerHTML;
-    const type = document.querySelector('input[name="btnradio"]:checked').value;
+    let type = "NORMAL";
+    const selectedRadio = document.querySelector('input[name="btnradio"]:checked');
 
     const params = new URLSearchParams(window.location.search);
     const restaurantId = params.get("restaurantId");
@@ -24,6 +25,10 @@ async function sendContent() {
     if (!restaurantId) {
         alert('레스토랑 ID가 없습니다. 다시 로그인해주세요.');
         return;
+    }
+
+    if (selectedRadio) {
+        type = selectedRadio.value;
     }
 
     const response = await fetch(`/api/announcement/save?restaurantId=${restaurantId}`, { // 여기

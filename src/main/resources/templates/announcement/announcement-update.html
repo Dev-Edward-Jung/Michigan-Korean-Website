@@ -111,3 +111,22 @@
 <script src="/js/header/header.js"></script>
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script src="/js/announcement/announcement-update.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const roleMeta = document.querySelector('meta[name="user-role"]');
+        const userRole = roleMeta ? roleMeta.content : null;
+
+        if (userRole !== "OWNER" && userRole !== "MANAGER") {
+            // 🔒 라디오 버튼 모두 비활성화
+            document.querySelectorAll('input[name="btnradio"]').forEach(radio => {
+                radio.disabled = true;
+            });
+
+            // 선택된 라디오 버튼이 없다면 기본 NORMAL 선택
+            const defaultRadio = document.querySelector('#btnradio1'); // NORMAL
+            if (defaultRadio && !defaultRadio.checked) {
+                defaultRadio.checked = true;
+            }
+        }
+    });
+</script>

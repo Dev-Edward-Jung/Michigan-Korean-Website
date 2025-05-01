@@ -66,12 +66,15 @@
 <!--                        placeholder="Please type what you want to say"-->
 <!--                ></textarea>-->
             </div>
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" value="NOTICE" checked="" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio1"> Normal </label>
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" value="NORMAL" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio2">Notice</label>
+            <!-- 타입 선택 영역 -->
+            <div class="btn-group mt-3 owner-manager-only" role="group" aria-label="Content Type Select">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" value="NOTICE">
+                <label class="btn btn-outline-primary" for="btnradio1">공지사항</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" value="NORMAL" checked>
+                <label class="btn btn-outline-primary" for="btnradio2">일반글</label>
             </div>
+
         </form>
     </div>
     <div class="menu-link">
@@ -109,6 +112,18 @@
 <script src="/js/header/header.js"></script>
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script src="/js/announcement/announcement-create.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const roleMeta = document.querySelector('meta[name="user-role"]');
+        const userRole = roleMeta ? roleMeta.content : null;
+
+        // OWNER, MANAGER 외에는 공지/일반 선택 불가
+        if (userRole !== "OWNER" && userRole !== "MANAGER") {
+            // 🔹 선택 버튼 숨기기
+            document.querySelectorAll(".owner-manager-only").forEach(el => el.remove());
+        }
+    });
+</script>
 
 
 </html>
