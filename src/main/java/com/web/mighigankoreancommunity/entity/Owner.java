@@ -42,6 +42,9 @@ public class Owner implements UserDetails {
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole = MemberRole.OWNER;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private PasswordToken passwordToken;
+
 
     @CreationTimestamp
     private LocalDateTime createdAt;

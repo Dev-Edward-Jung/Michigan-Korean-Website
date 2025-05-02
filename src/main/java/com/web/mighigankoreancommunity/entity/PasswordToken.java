@@ -9,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "employeePasswordToken")
+@Table(name = "passwordToken")
 @Getter
 @Setter
 @Builder
@@ -37,6 +37,9 @@ public class PasswordToken {
 
     @OneToOne(fetch = FetchType.LAZY)
     private Employee employee;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Owner owner;
 
 
 }

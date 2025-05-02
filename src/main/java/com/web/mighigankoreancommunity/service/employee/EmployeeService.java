@@ -9,6 +9,7 @@ import com.web.mighigankoreancommunity.error.AlreadyApprovedEmployeeException;
 import com.web.mighigankoreancommunity.error.EmployeeNotFoundException;
 import com.web.mighigankoreancommunity.error.InvitationNotFoundException;
 import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
+import com.web.mighigankoreancommunity.repository.PasswordTokenRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.InvitationRepository;
@@ -35,6 +36,7 @@ public class EmployeeService {
     private final RestaurantRepository restaurantRepository;
     private final InvitationRepository invitationRepository;
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
+    private final PasswordTokenRepository passwordTokenRepository;
 
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
@@ -45,6 +47,18 @@ public class EmployeeService {
         Invitation invitation = invitationRepository.findByToken(token).orElseThrow(() -> new RuntimeException("Invitation not found"));
         LocalDateTime expiresAt= invitation.getExpiresAt();
         return LocalDateTime.now().isAfter(expiresAt);
+    }
+
+    public boolean isPasswordExpired(String token) {
+        Employee employee = employeeRepository.findByPasswordToken_Token(token).orElseThrow(() -> new RuntimeException("Employee not found"));
+        LocalDateTime expiresAt= employee.getPasswordToken().getExpiresAt();
+        return LocalDateTime.now().isAfter(expiresAt);
+    }
+
+    public boolean isTokenValidForEmail(String token, String email) {
+        return passwordTokenRepository.findByToken(token)
+                .map(t -> t.getEmployee().getEmail().equals(email))
+                .orElse(false);
     }
 
 //    get information from repository
@@ -156,19 +170,60 @@ public class EmployeeService {
     }
 
 
-    public boolean employeeForgotPasswordService(String email){
+    public boolean employeeForgotPasswordService(String email) {
         Optional<Employee> employeeOpt = employeeRepository.findEmployeeByEmail(email);
-        if(employeeOpt.isPresent()){
-            Employee employee = employeeOpt.get();
 
+        if (employeeOpt.isPresent()) {
+            Employee employee = employeeOpt.get();
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://127.0.0.1:10000/page/owner/forgot/password?token=" + token;
-//            String resetLink = "https://restoflowing.com/owner/forgot/password?token=" + token;
-            sendInvitationEmailToUser(employee, email, resetLink);
+            String resetLink = "http://127.0.0.1:10000/page/owner/forgot/password?token=" + token + "&email=" + email;
+//            String resetLink = "https://www.restoflowing.com/page/employee/invited?token=" + token + "&email=" + email;
+
+            LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
+
+            // 1. 해당 owner의 토큰 존재 여부 확인
+            Optional<PasswordToken> tokenOpt = passwordTokenRepository.findByEmployee(employee);
+
+            PasswordToken passwordToken;
+            if (tokenOpt.isPresent()) {
+                // 2. 이미 있는 경우 업데이트
+                passwordToken = tokenOpt.get();
+                passwordToken.setToken(token);
+                passwordToken.setExpiresAt(expiresAt);
+            } else {
+                // 3. 없는 경우 새로 생성
+                passwordToken = PasswordToken.builder()
+                        .token(token)
+                        .employee(employee)
+                        .expiresAt(expiresAt)
+                        .build();
+            }
+
+            passwordTokenRepository.save(passwordToken);
+
+            // 4. 이메일 전송
+            sendRestPasswordEmailToUser(employee, resetLink);
             return true;
-        } else{
-            return false;
         }
+
+        return false;
+    }
+
+
+    private void sendRestPasswordEmailToUser(Employee employee, String link) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(employee.getEmail());
+        message.setSubject("This is password reset link");
+        message.setText("Your password reset Link is :  \n\n" + link);
+        message.setFrom("restoflowing@gmail.com");
+        mailSender.send(message);
+    }
+
+
+    public void resetPassword(String email, String password) {
+        Employee employee = employeeRepository.findEmployeeByEmail(email).orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
+        employee.setPassword(password);
+        employeeRepository.save(employee);
     }
 
 
