@@ -33,6 +33,11 @@ public class Employee {
 
     private String password;
 
+    private String token;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private PasswordToken passwordToken;
+
     // Save create created time automatically
     @CreationTimestamp
     private LocalDateTime joined_at;
@@ -48,6 +53,8 @@ public class Employee {
 
     @OneToOne(fetch = FetchType.LAZY)
     private Invitation invitation;
+
+
 
     public Employee(String name, String email, Invitation invitation) {
         this.name = name;

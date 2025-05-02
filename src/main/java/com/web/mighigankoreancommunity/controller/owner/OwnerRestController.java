@@ -40,7 +40,7 @@ public class OwnerRestController {
     }
 
 
-    @PostMapping("/forgot/password")
+    @PostMapping("/reset/password")
     public ResponseEntity<String> forgotPassword(@RequestBody String email) {
         email = emailToLowerCase(email);
         if (ownerService.ownerForgotPasswordService(email)) {
@@ -50,5 +50,29 @@ public class OwnerRestController {
             System.out.println("Email does not exist!");
             return ResponseEntity.badRequest().body("Email does not exist in our system.");
         }
+    }
+
+    @PostMapping("/reset/password")
+    public ResponseEntity<String> resetPassword(
+            @RequestParam("token") String token,
+            @RequestParam("email") String email,
+            String password) {
+
+        email = email.toLowerCase();
+
+        // ✅ 1. 토큰 만료 여부 확인
+        if (ownerService.isPasswordTokenExpired(token)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token expired. Please request a new reset email.");
+        }
+
+        // ✅ 2. 이메일과 토큰이 일치하는지 확인
+        if (!ownerService.isTokenValidForEmail(token, email)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token or email.");
+        }
+
+        // ✅ 3. 비밀번호 재설정
+        ownerService.resetPassword(email, password);
+
+        return ResponseEntity.ok("Password reset successful.");
     }
 }

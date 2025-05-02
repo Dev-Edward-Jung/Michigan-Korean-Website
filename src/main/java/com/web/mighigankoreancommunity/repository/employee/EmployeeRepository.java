@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    public Employee findEmployeeByInvitation_Token(String invitationToken);
+    public Optional<Employee> findEmployeeByInvitation_Token(String invitationToken);
 
     public Optional<Employee> findEmployeeByEmail(String email);
 
@@ -20,4 +20,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "LEFT JOIN FETCH rel.restaurant r " +
             "WHERE e.email = :email")
     Optional<Employee> findByEmailWithRestaurants(@Param("email") String email);
+
+
+    Optional<Employee> findByPasswordToken_Token(String token);
 }

@@ -69,4 +69,18 @@ public class EmployeeController {
         employeeService.registerEmployee(token, password);
         return "user/employee-login";
     }
+
+
+    @GetMapping("/forgot/password")
+    public String resetPassword(@RequestParam("token") String token) {
+        boolean isExpired = employeeService.isPasswordExpired(token);
+        if (isExpired) {
+            return "error/expired-error";
+        } else{
+            return "user/employee-reset-password";
+        }
+    }
+
+
+
 }

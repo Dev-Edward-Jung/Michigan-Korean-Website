@@ -2,6 +2,7 @@ package com.web.mighigankoreancommunity.repository.owner;
 
 
 import com.web.mighigankoreancommunity.entity.Owner;
+import com.web.mighigankoreancommunity.entity.PasswordToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +15,13 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
     Optional<Owner> findOwnerById(Long id);
 
 //    Searching by Email
-    boolean existsByOwnerEmail(String memberEmail);
+    boolean existsByOwnerEmail(String ownerEmail);
 
 //  login with Email
-    Optional<Owner> findOwnerByOwnerEmail(String memberEmail);
+    Optional<Owner> findOwnerByOwnerEmail(String ownerEmail);
+
+
+    Optional<Owner> findOwnerByPasswordToken_Token(String token);
 
 
 }
