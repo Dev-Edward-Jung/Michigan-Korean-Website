@@ -55,7 +55,7 @@ public class SecurityConfig {
                                 "/page/inventory/**",
                                 "/page/category/**",
                                 "/page/announcement/**",
-                                "/api/owner/checkEmail", "/error"
+                                "/api/owner/checkEmail", "/error", "/page/owner/reset/password", "/api/owner/reset/password"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -97,6 +97,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/page/employee/login", "/page/employee/invited", "/error",
                                 "/api/employee/forgot/password", "/page/employee/forgot/password",
+                                "/page/employee/reset/password",
                                 "/page/restaurant/**, /api/restaurant/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -142,7 +143,9 @@ public class SecurityConfig {
                                 "/page/owner/login", "/page/owner/register", "/page/owner/forgot/password",
                                 "/page/employee/login", "/page/employee/register", "/page/employee/invited",
                                 "/api/owner/forgot/password", "/api/employee/forgot/password", "/page/employee/forgot/password",
-                                "/page/announcement/**", "/api/announcement/**", "/page/inventory/**", "/api/inventory/**"
+                                "/page/owner/reset/password", "/page/employee/reset/password",
+                                "/page/announcement/**", "/api/announcement/**", "/page/inventory/**", "/api/inventory/**",
+                                "/api/owner/reset/password", "/api/employee/reset/password"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

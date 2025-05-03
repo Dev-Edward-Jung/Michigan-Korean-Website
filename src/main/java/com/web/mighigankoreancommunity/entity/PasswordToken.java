@@ -36,9 +36,11 @@ public class PasswordToken {
     private LocalDateTime expiresAt;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     private Owner owner;
 
 

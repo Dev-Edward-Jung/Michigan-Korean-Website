@@ -62,7 +62,7 @@ public class Owner implements UserDetails {
     // memberEmail
     @Override
     public String getUsername() {
-        return ownerName;
+        return ownerEmail;
     }
 
     // Password
@@ -70,6 +70,10 @@ public class Owner implements UserDetails {
     public String getPassword() {
         return ownerPassword;
     }
+
+    // Password
+
+
 
     // Authentification
     @Override

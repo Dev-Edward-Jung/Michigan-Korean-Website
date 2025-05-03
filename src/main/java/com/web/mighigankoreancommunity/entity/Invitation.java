@@ -47,9 +47,11 @@ public class Invitation {
     private InvitationStatus status = InvitationStatus.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="restaurant_id")
     private Restaurant restaurant;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 
 

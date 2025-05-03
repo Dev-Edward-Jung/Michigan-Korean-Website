@@ -176,8 +176,8 @@ public class EmployeeService {
         if (employeeOpt.isPresent()) {
             Employee employee = employeeOpt.get();
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://127.0.0.1:10000/page/owner/forgot/password?token=" + token + "&email=" + email;
-//            String resetLink = "https://www.restoflowing.com/page/employee/invited?token=" + token + "&email=" + email;
+            String resetLink = "http://127.0.0.1:10000/page/employee/reset/password?token=" + token + "&email=" + email;
+//            String resetLink = "https://www.restoflowing.com/page/employee/reset/password?token=" + token + "&email=" + email;
 
             LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
 
@@ -222,7 +222,8 @@ public class EmployeeService {
 
     public void resetPassword(String email, String password) {
         Employee employee = employeeRepository.findEmployeeByEmail(email).orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
-        employee.setPassword(password);
+        String newPassword = passwordEncoder.encode(password);
+        employee.setPassword(newPassword);
         employeeRepository.save(employee);
     }
 

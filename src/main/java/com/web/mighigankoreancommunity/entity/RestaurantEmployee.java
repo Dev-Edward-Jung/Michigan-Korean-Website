@@ -34,14 +34,14 @@ public class RestaurantEmployee {
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole = MemberRole.EMPLOYEE; // ex: manager, owner, kitchen, sushi
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurantEmployee", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurantEmployee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     List<Schedule> schedules;
 
     @Column(name = "approved", nullable = false)
     private boolean approved = false;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "restaurantEmployee", orphanRemoval = true)
             @JsonManagedReference
     List<Announcement> announcementList;
 }

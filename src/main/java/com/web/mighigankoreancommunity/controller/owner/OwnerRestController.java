@@ -2,6 +2,7 @@ package com.web.mighigankoreancommunity.controller.owner;
 
 
 import com.web.mighigankoreancommunity.dto.OwnerDTO;
+import com.web.mighigankoreancommunity.dto.PasswordRequest;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
@@ -40,7 +41,7 @@ public class OwnerRestController {
     }
 
 
-    @PostMapping("/reset/password")
+    @PostMapping("/forgot/password")
     public ResponseEntity<String> forgotPassword(@RequestBody String email) {
         email = emailToLowerCase(email);
         if (ownerService.ownerForgotPasswordService(email)) {
@@ -56,8 +57,8 @@ public class OwnerRestController {
     public ResponseEntity<String> resetPassword(
             @RequestParam("token") String token,
             @RequestParam("email") String email,
-            String password) {
-
+            @RequestBody PasswordRequest request) {
+        String password = request.getPassword();
         email = email.toLowerCase();
 
         // ✅ 1. 토큰 만료 여부 확인

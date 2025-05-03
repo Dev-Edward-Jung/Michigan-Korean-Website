@@ -30,8 +30,8 @@ public class OwnerService {
 
     //    Check Expire Date
     public boolean isPasswordTokenExpired(String token) {
-        Owner owner = ownerRepository.findOwnerByPasswordToken_Token(token).orElseThrow(() -> new RuntimeException("Invitation not found"));
-        LocalDateTime expiresAt= owner.getPasswordToken().getExpiresAt();
+        PasswordToken passwordToken = passwordTokenRepository.findByToken(token).orElseThrow(() -> new RuntimeException("Password Token not found"));
+        LocalDateTime expiresAt= passwordToken.getExpiresAt();
         return LocalDateTime.now().isAfter(expiresAt);
     }
 
@@ -79,12 +79,11 @@ public class OwnerService {
 
     public boolean ownerForgotPasswordService(String email) {
         Optional<Owner> ownerOpt = ownerRepository.findOwnerByOwnerEmail(email);
-
         if (ownerOpt.isPresent()) {
             Owner owner = ownerOpt.get();
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://127.0.0.1:10000/page/owner/forgot/password?token=" + token + "&email=" + email;
-//            String resetLink = "https://www.restoflowing.com/page/employee/invited?token=" + token + "&email=" + email;
+            String resetLink = "http://127.0.0.1:10000/page/owner/reset/password?token=" + token + "&email=" + email;
+//            String resetLink = "https://www.restoflowing.com/page/owner/reset/password?token=" + token + "&email=" + email;
 
             LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
 
@@ -119,7 +118,8 @@ public class OwnerService {
 
     public void resetPassword(String email, String password) {
         Owner owner = ownerRepository.findOwnerByOwnerEmail(email).orElseThrow(() -> new RuntimeException("Owner not found"));
-        owner.setOwnerPassword(password);
+        String newPassword = passwordEncoder.encode(password);
+        owner.setOwnerPassword(newPassword);
         ownerRepository.save(owner);
     }
 
