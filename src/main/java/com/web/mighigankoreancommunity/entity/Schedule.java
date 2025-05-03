@@ -44,6 +44,7 @@ public class Schedule {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_employee_id")
     @JsonBackReference
     private RestaurantEmployee restaurantEmployee;
 

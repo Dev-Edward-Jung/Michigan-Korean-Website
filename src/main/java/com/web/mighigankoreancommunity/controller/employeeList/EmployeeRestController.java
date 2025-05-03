@@ -61,7 +61,7 @@ public class EmployeeRestController {
 public ResponseEntity<String> resetPassword(
         @RequestParam("token") String token,
         @RequestParam("email") String email,
-        String password) {
+        @RequestBody String password) {
 
     email = email.toLowerCase();
 

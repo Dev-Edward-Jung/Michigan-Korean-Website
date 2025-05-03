@@ -4,6 +4,8 @@ package com.web.mighigankoreancommunity.controller.employeeList;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
@@ -71,7 +73,7 @@ public class EmployeeController {
     }
 
 
-    @GetMapping("/forgot/password")
+    @GetMapping("/reset/password")
     public String resetPassword(@RequestParam("token") String token) {
         boolean isExpired = employeeService.isPasswordExpired(token);
         if (isExpired) {
@@ -81,6 +83,12 @@ public class EmployeeController {
         }
     }
 
+
+    @PostMapping("/reset/password")
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, String password) {
+        employeeService.resetPassword(token, password);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
 
 }

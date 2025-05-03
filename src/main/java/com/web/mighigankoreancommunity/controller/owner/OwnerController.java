@@ -59,7 +59,7 @@ public class OwnerController {
     }
 
 
-    @GetMapping("/forgot/password")
+    @GetMapping("/reset/password")
     public String resetPassword(@RequestParam("token") String token) {
         boolean isExpired = ownerService.isPasswordTokenExpired(token);
         if (isExpired) {
@@ -68,5 +68,6 @@ public class OwnerController {
             return "user/owner-reset-password";
         }
     }
+
 
 }
