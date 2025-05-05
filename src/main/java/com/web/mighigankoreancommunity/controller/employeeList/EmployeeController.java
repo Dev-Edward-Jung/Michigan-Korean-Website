@@ -3,6 +3,7 @@ package com.web.mighigankoreancommunity.controller.employeeList;
 
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 @RequestMapping("/page/employee")
 @Controller
+@Tag(name = "EmployeePageLoader", description = "Return All the pages related to employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
 
