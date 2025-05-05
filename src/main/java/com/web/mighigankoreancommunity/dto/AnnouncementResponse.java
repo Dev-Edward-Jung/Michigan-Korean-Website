@@ -3,6 +3,7 @@ package com.web.mighigankoreancommunity.dto;
 
 import com.web.mighigankoreancommunity.domain.ContentType;
 import com.web.mighigankoreancommunity.entity.Announcement;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @Data
 @Builder
+@Schema(description = "Response object containing announcement details")
 public class AnnouncementResponse {
     private Long id;
     private String title;

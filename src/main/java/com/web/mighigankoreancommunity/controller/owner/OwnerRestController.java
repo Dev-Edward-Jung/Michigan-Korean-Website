@@ -6,74 +6,79 @@ import com.web.mighigankoreancommunity.dto.PasswordRequest;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@RequiredArgsConstructor
-@RequestMapping("/api/owner")
 @RestController
+@RequestMapping("/api/owner")
+@RequiredArgsConstructor
+@Tag(name = "Owner", description = "APIs for owner authentication and password management")
 public class OwnerRestController {
+
     private final OwnerService ownerService;
 
-    public String emailToLowerCase(String email){
+    public String emailToLowerCase(String email) {
         return email.trim().toLowerCase();
-
     }
 
+    @Operation(summary = "Check if email is already registered", description = "Checks whether the given email is already associated with an existing owner account.")
     @PostMapping("/checkEmail")
-    public boolean checkEmail(@RequestBody String email) {
-        System.out.println(ownerService.getMemberByEmail(email));
+    public boolean checkEmail(
+            @RequestBody @Parameter(description = "Owner email") String email
+    ) {
         return ownerService.getMemberByEmail(email);
     }
 
+    @Operation(summary = "Get current owner profile", description = "Returns information about the currently logged-in owner.")
     @GetMapping("/me")
-    public ResponseEntity<OwnerDTO> getCurrentUser(@AuthenticationPrincipal Owner owner) {
-        System.out.println(owner.getOwnerName());
+    public ResponseEntity<OwnerDTO> getCurrentUser(
+            @AuthenticationPrincipal Owner owner
+    ) {
         if (owner == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         OwnerDTO dto = ownerService.memberToDTO(owner);
-
         return ResponseEntity.ok(dto);
     }
 
-
+    @Operation(summary = "Send password reset email", description = "Sends a password reset email to the owner's registered email address.")
     @PostMapping("/forgot/password")
-    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+    public ResponseEntity<String> forgotPassword(
+            @RequestBody @Parameter(description = "Owner email") String email
+    ) {
         email = emailToLowerCase(email);
         if (ownerService.ownerForgotPasswordService(email)) {
-            System.out.println("Owner mail sent!");
             return ResponseEntity.ok("Owner password reset email sent.");
         } else {
-            System.out.println("Email does not exist!");
             return ResponseEntity.badRequest().body("Email does not exist in our system.");
         }
     }
 
+    @Operation(summary = "Reset owner password", description = "Resets the owner's password using the token sent to their email.")
     @PostMapping("/reset/password")
     public ResponseEntity<String> resetPassword(
-            @RequestParam("token") String token,
-            @RequestParam("email") String email,
-            @RequestBody PasswordRequest request) {
+            @Parameter(description = "Reset token") @RequestParam("token") String token,
+            @Parameter(description = "Owner email") @RequestParam("email") String email,
+            @RequestBody @Parameter(description = "New password") PasswordRequest request
+    ) {
         String password = request.getPassword();
         email = email.toLowerCase();
 
-        // ✅ 1. 토큰 만료 여부 확인
         if (ownerService.isPasswordTokenExpired(token)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token expired. Please request a new reset email.");
         }
 
-        // ✅ 2. 이메일과 토큰이 일치하는지 확인
         if (!ownerService.isTokenValidForEmail(token, email)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token or email.");
         }
 
-        // ✅ 3. 비밀번호 재설정
         ownerService.resetPassword(email, password);
-
         return ResponseEntity.ok("Password reset successful.");
     }
 }

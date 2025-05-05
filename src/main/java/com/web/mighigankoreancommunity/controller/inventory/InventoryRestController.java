@@ -9,6 +9,9 @@ import com.web.mighigankoreancommunity.dto.InventoryDTO;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.inventory.CategoryService;
 import com.web.mighigankoreancommunity.service.inventory.InventoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,47 +24,57 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-@RequestMapping("/api/inventory")
 @RestController
+@RequestMapping("/api/inventory")
+@RequiredArgsConstructor
+@Tag(name = "Inventory", description = "APIs for managing inventory items and categories")
 public class InventoryRestController {
+
     private final InventoryService inventoryService;
     private final CategoryService categoryService;
 
+    @Operation(summary = "Create inventory item", description = "Adds a new inventory item to the restaurant.")
     @PostMapping("/save")
-    public void saveInventory(@RequestBody InventoryDTO dto,
-                                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public void saveInventory(
+            @RequestBody @Parameter(description = "Inventory item data") InventoryDTO dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         Long inventoryId = inventoryService.saveInventory(dto, userDetails);
-//        CategoryDTO 변환 메소드 필요
+        // Note: conversion from InventoryDTO to CategoryDTO handled internally
     }
 
+    @Operation(summary = "Update inventory item", description = "Updates an existing inventory item.")
     @PutMapping("/update")
-    public ResponseEntity<ApiResponse<Long>> updateInventory(@RequestBody InventoryDTO dto,
-                                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<ApiResponse<Long>> updateInventory(
+            @RequestBody @Parameter(description = "Updated inventory item data") InventoryDTO dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         Long updatedId = inventoryService.updateInventory(dto, userDetails);
-
         return ResponseEntity.ok(
                 ApiResponse.success(updatedId, "Update Successfully")
         );
     }
 
+    @Operation(summary = "Delete inventory item", description = "Deletes the given inventory item.")
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteInventory(@RequestBody InventoryDTO dto,
-                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> deleteInventory(
+            @RequestBody @Parameter(description = "Inventory item to delete") InventoryDTO dto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
         inventoryService.deleteInventory(dto, customUserDetails);
         return ResponseEntity.ok(
-                ApiResponse.success(1, "Update Successfully")
+                ApiResponse.success(1, "Delete Successfully")
         );
     }
 
-
+    @Operation(summary = "Get inventory and category lists", description = "Returns all inventory items and their categories for a given restaurant.")
     @GetMapping("/list")
-    public ResponseEntity<Map<String, Object>> inventoryList(@RequestParam Long restaurantId,
-                                                             @AuthenticationPrincipal CustomUserDetails customUserDetails){
-
+    public ResponseEntity<Map<String, Object>> inventoryList(
+            @Parameter(description = "Restaurant ID") @RequestParam Long restaurantId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
         List<InventoryDTO> inventoryList = inventoryService.getInventoriesByRestaurant(restaurantId, customUserDetails);
         List<CategoryDTO> categoryList = categoryService.findCategoriesByRestaurant(restaurantId, customUserDetails);
-
 
         Map<String, Object> result = new HashMap<>();
         result.put("categoryList", categoryList);
@@ -69,14 +82,14 @@ public class InventoryRestController {
         return ResponseEntity.ok(result);
     }
 
-
+    @Operation(summary = "Get inventory unit list", description = "Returns a list of available inventory units (e.g., PIECE, GRAM, LITER).")
     @GetMapping("/unit/list")
-    public ResponseEntity<List<String>> unitList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        List<String> unitList = Arrays.stream(InventoryUnit.values()).map(Enum::name).collect(Collectors.toList());
+    public ResponseEntity<List<String>> unitList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        List<String> unitList = Arrays.stream(InventoryUnit.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(unitList);
-
     }
-
-
-
 }
