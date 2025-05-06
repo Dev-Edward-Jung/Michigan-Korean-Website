@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
@@ -134,6 +135,7 @@ public class SecurityConfig {
         handler.setCsrfRequestAttributeName("_csrf");
 
         http
+                .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(handler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -149,6 +151,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+
                 // ❌ 기본 formLogin() 제거
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
@@ -156,6 +159,7 @@ public class SecurityConfig {
                             response.sendRedirect("/page/owner/login");
                         })
                 );
+
 
         return http.build();
     }
