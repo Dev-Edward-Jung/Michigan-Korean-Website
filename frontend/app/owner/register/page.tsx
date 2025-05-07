@@ -1,0 +1,188 @@
+'use client';
+
+import { useState } from 'react';
+
+export default function OwnerRegisterPage() {
+    const [form, setForm] = useState({
+        username: '',
+        email: '',
+        password: '',
+        passwordConfirm: '',
+        terms: false,
+    });
+    const [emailMessage, setEmailMessage] = useState('');
+    const [error, setError] = useState('');
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setForm((prev) => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    const checkEmail = async () => {
+        if (!form.email.includes('@')) {
+            setEmailMessage('Invalid email format');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/owner/check-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: form.email }),
+            });
+            const data = await res.json();
+            setEmailMessage(data.used ? "You can't use this email" : 'You can use this email');
+        } catch {
+            setEmailMessage('Error checking email');
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!form.username || !form.email || !form.password || !form.passwordConfirm) {
+            setError('Please input everything');
+            return;
+        }
+
+        if (form.password !== form.passwordConfirm) {
+            setError('Password is not same');
+            return;
+        }
+
+        if (!/[0-9]/.test(form.password) || !/[!@#$%^&*]/.test(form.password)) {
+            setError('Password must include number and special character');
+            return;
+        }
+
+        if (!form.terms) {
+            setError('You must agree to the terms');
+            return;
+        }
+
+        // 실제 요청
+        const res = await fetch('/api/owner/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(form),
+        });
+
+        if (res.ok) {
+            alert('Registration successful!');
+        } else {
+            const data = await res.json();
+            setError(data.message || 'Registration failed');
+        }
+    };
+
+    return (
+        <div className="container-xxl">
+            <div className="authentication-wrapper authentication-basic container-p-y">
+                <div className="authentication-inner">
+                    <div className="card">
+                        <div className="card-body">
+                            <div className="app-brand justify-content-center">
+                                <a href="/page/owner/login" className="app-brand-link gap-2">
+                                    <img src="/img/logo/logo-gray.png" className="logo-auth" alt="logo" />
+                                </a>
+                            </div>
+
+                            <h4 className="mb-2">Welcome to Restoflowing.com</h4>
+                            <p className="mb-4">Login and manage your business</p>
+
+                            <form className="mb-3" onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label htmlFor="username" className="form-label">Username</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="username"
+                                        name="username"
+                                        placeholder="Enter your username"
+                                        value={form.username}
+                                        onChange={handleChange}
+                                        autoFocus
+                                    />
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label">Email</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        id="email"
+                                        name="email"
+                                        placeholder="Enter your email"
+                                        value={form.email}
+                                        onChange={handleChange}
+                                        onBlur={checkEmail}
+                                    />
+                                    <span className="form-text">{emailMessage}</span>
+                                </div>
+
+                                <div className="mb-3 form-password-toggle">
+                                    <label className="form-label" htmlFor="password">Password</label>
+                                    <div className="input-group input-group-merge">
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            className="form-control"
+                                            name="password"
+                                            placeholder="********"
+                                            value={form.password}
+                                            onChange={handleChange}
+                                        />
+                                        <span className="input-group-text cursor-pointer"><i className="bx bx-hide"></i></span>
+                                    </div>
+                                </div>
+
+                                <div className="mb-3 form-password-toggle">
+                                    <label className="form-label" htmlFor="passwordConfirm">Password Confirm</label>
+                                    <div className="input-group input-group-merge">
+                                        <input
+                                            type="password"
+                                            id="passwordConfirm"
+                                            className="form-control"
+                                            name="passwordConfirm"
+                                            placeholder="********"
+                                            value={form.passwordConfirm}
+                                            onChange={handleChange}
+                                        />
+                                        <span className="input-group-text cursor-pointer"><i className="bx bx-hide"></i></span>
+                                    </div>
+                                </div>
+
+                                <div className="mb-3">
+                                    <div id="errorMsg" className="text-danger mb-2">{error}</div>
+                                    <div className="form-check">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            id="terms-conditions"
+                                            name="terms"
+                                            checked={form.terms}
+                                            onChange={handleChange}
+                                        />
+                                        <label className="form-check-label" htmlFor="terms-conditions">
+                                            I agree to <a href="#">privacy policy & terms</a>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button className="btn btn-primary d-grid w-100" type="submit">Sign up</button>
+                            </form>
+
+                            <p className="text-center mt-3">
+                                <span>Already have an account? </span>
+                                <a href="/page/owner/login"><span>Login Instead</span></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
