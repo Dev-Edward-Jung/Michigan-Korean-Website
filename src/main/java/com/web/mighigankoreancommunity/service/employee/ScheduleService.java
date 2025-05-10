@@ -2,23 +2,19 @@ package com.web.mighigankoreancommunity.service.employee;
 
 
 import com.web.mighigankoreancommunity.domain.MemberRole;
-import com.web.mighigankoreancommunity.dto.EmployeeDTO;
-import com.web.mighigankoreancommunity.dto.ScheduleDTO;
+import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
+import com.web.mighigankoreancommunity.dto.schedule.ScheduleDTO;
 import com.web.mighigankoreancommunity.entity.*;
 import com.web.mighigankoreancommunity.error.RestaurantEmployeeNotFoundException;
-import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.error.UnauthorizedRestaurantAccessException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.ScheduleRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -2,15 +2,12 @@ package com.web.mighigankoreancommunity.controller.restaurant;
 
 
 
-import ch.qos.logback.core.model.Model;
-import com.web.mighigankoreancommunity.dto.RestaurantDTO;
+import com.web.mighigankoreancommunity.dto.restaurant.RestaurantDTO;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.RestaurantService;
-import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

@@ -2,10 +2,9 @@ package com.web.mighigankoreancommunity.controller.inventory;
 
 
 import com.web.mighigankoreancommunity.domain.InventoryUnit;
-import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.ApiResponse;
-import com.web.mighigankoreancommunity.dto.CategoryDTO;
-import com.web.mighigankoreancommunity.dto.InventoryDTO;
+import com.web.mighigankoreancommunity.dto.category.CategoryDTO;
+import com.web.mighigankoreancommunity.dto.inventory.InventoryDTO;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.inventory.CategoryService;
 import com.web.mighigankoreancommunity.service.inventory.InventoryService;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;

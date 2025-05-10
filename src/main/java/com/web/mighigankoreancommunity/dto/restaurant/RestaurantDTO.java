@@ -1,4 +1,4 @@
-package com.web.mighigankoreancommunity.dto;
+package com.web.mighigankoreancommunity.dto.restaurant;
 
 
 import com.web.mighigankoreancommunity.entity.Restaurant;

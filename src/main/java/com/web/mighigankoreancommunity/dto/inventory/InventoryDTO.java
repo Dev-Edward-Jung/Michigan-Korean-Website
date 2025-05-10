@@ -1,4 +1,4 @@
-package com.web.mighigankoreancommunity.dto;
+package com.web.mighigankoreancommunity.dto.inventory;
 
 import com.web.mighigankoreancommunity.domain.InventoryUnit;
 import com.web.mighigankoreancommunity.entity.Inventory;

@@ -1,7 +1,7 @@
 package com.web.mighigankoreancommunity.controller.employeeSchedule;
 
 
-import com.web.mighigankoreancommunity.dto.EmployeeDTO;
+import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.employee.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;

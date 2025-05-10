@@ -1,4 +1,4 @@
-package com.web.mighigankoreancommunity.dto;
+package com.web.mighigankoreancommunity.dto.auth;
 
 import lombok.Getter;
 import lombok.Setter;

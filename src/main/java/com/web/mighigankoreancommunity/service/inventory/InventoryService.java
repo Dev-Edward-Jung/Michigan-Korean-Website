@@ -1,10 +1,9 @@
 package com.web.mighigankoreancommunity.service.inventory;
 
 
-import com.web.mighigankoreancommunity.dto.InventoryDTO;
+import com.web.mighigankoreancommunity.dto.inventory.InventoryDTO;
 import com.web.mighigankoreancommunity.entity.Category;
 import com.web.mighigankoreancommunity.entity.Inventory;
-import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.error.*;
@@ -15,7 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

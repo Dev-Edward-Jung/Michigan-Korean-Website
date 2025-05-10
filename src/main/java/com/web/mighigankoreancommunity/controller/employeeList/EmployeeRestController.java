@@ -2,7 +2,7 @@ package com.web.mighigankoreancommunity.controller.employeeList;
 
 
 import com.web.mighigankoreancommunity.dto.ApiResponse;
-import com.web.mighigankoreancommunity.dto.EmployeeDTO;
+import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;

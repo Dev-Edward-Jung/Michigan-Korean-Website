@@ -1,9 +1,8 @@
 package com.web.mighigankoreancommunity.service.inventory;
 
 
-import com.web.mighigankoreancommunity.dto.CategoryDTO;
+import com.web.mighigankoreancommunity.dto.category.CategoryDTO;
 import com.web.mighigankoreancommunity.entity.Category;
-import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
@@ -12,7 +11,6 @@ import com.web.mighigankoreancommunity.repository.inevntory.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;

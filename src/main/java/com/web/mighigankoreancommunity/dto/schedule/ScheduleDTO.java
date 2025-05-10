@@ -1,11 +1,10 @@
-package com.web.mighigankoreancommunity.dto;
+package com.web.mighigankoreancommunity.dto.schedule;
 
 import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.domain.Shift;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 public class ScheduleDTO {

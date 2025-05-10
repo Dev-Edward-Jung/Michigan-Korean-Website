@@ -1,4 +1,4 @@
-package com.web.mighigankoreancommunity.dto;
+package com.web.mighigankoreancommunity.dto.category;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;

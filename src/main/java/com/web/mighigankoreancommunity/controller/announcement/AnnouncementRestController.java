@@ -1,9 +1,8 @@
 package com.web.mighigankoreancommunity.controller.announcement;
 
-import com.web.mighigankoreancommunity.dto.AnnouncementRequest;
-import com.web.mighigankoreancommunity.dto.AnnouncementResponse;
+import com.web.mighigankoreancommunity.dto.announcement.AnnouncementRequest;
+import com.web.mighigankoreancommunity.dto.announcement.AnnouncementResponse;
 import com.web.mighigankoreancommunity.dto.PageResponse;
-import com.web.mighigankoreancommunity.entity.Announcement;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.AnnouncementService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.http.HttpResponse;
 
 @RestController
 @RequestMapping("/api/announcement")
