@@ -1,4 +1,4 @@
-package com.web.mighigankoreancommunity.dto;
+package com.web.mighigankoreancommunity.dto.announcement;
 
 
 import com.web.mighigankoreancommunity.domain.ContentType;

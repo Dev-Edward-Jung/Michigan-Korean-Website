@@ -1,7 +1,7 @@
 package com.web.mighigankoreancommunity.service;
 
 
-import com.web.mighigankoreancommunity.dto.RestaurantDTO;
+import com.web.mighigankoreancommunity.dto.restaurant.RestaurantDTO;
 import com.web.mighigankoreancommunity.entity.Employee;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;

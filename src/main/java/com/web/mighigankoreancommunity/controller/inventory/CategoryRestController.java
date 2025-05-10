@@ -1,7 +1,7 @@
 package com.web.mighigankoreancommunity.controller.inventory;
 
 
-import com.web.mighigankoreancommunity.dto.CategoryDTO;
+import com.web.mighigankoreancommunity.dto.category.CategoryDTO;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.inventory.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,11 +1,8 @@
 package com.web.mighigankoreancommunity.service.employee;
 
 import com.web.mighigankoreancommunity.domain.InvitationStatus;
-import com.web.mighigankoreancommunity.domain.MemberRole;
-import com.web.mighigankoreancommunity.dto.EmployeeDTO;
-import com.web.mighigankoreancommunity.dto.InvitationDTO;
+import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
 import com.web.mighigankoreancommunity.entity.*;
-import com.web.mighigankoreancommunity.error.AlreadyApprovedEmployeeException;
 import com.web.mighigankoreancommunity.error.EmployeeNotFoundException;
 import com.web.mighigankoreancommunity.error.InvitationNotFoundException;
 import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
@@ -16,7 +13,6 @@ import com.web.mighigankoreancommunity.repository.employee.InvitationRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;

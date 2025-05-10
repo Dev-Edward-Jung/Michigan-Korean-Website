@@ -1,7 +1,8 @@
-package com.web.mighigankoreancommunity.dto;
+package com.web.mighigankoreancommunity.dto.employee;
 
 
 import com.web.mighigankoreancommunity.domain.MemberRole;
+import com.web.mighigankoreancommunity.dto.schedule.ScheduleDTO;
 import lombok.*;
 
 import java.time.LocalDate;

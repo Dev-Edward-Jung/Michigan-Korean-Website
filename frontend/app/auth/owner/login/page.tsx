@@ -23,7 +23,7 @@ export default function OwnerLoginPage() {
             const csrf = await csrfRes.json();
             console.log("csrf complete")
             // 로그인 요청
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/owner/login`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/owner`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

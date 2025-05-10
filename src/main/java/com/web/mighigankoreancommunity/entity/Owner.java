@@ -34,10 +34,10 @@ public class Owner implements UserDetails {
     private String ownerName;
 
     @Column(nullable = false, unique = true)
-    private String ownerEmail;
+    private String email;
 
     @Column(nullable = false)
-    private String ownerPassword;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole = MemberRole.OWNER;
@@ -62,13 +62,13 @@ public class Owner implements UserDetails {
     // memberEmail
     @Override
     public String getUsername() {
-        return ownerEmail;
+        return email;
     }
 
     // Password
     @Override
     public String getPassword() {
-        return ownerPassword;
+        return password;
     }
 
     // Password

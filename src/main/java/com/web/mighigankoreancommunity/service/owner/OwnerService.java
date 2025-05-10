@@ -37,7 +37,7 @@ public class OwnerService {
 
     public boolean isTokenValidForEmail(String token, String email) {
         return passwordTokenRepository.findByToken(token)
-                .map(t -> t.getOwner().getOwnerEmail().equals(email))
+                .map(t -> t.getOwner().getEmail().equals(email))
                 .orElse(false);
     }
 
@@ -46,7 +46,7 @@ public class OwnerService {
     public Long saveOwner(Owner owner) {
         String rawPassword = owner.getPassword();
         String encodedPassword = passwordEncoder.encode(rawPassword);
-        owner.setOwnerPassword(encodedPassword);
+        owner.setPassword(encodedPassword);
         owner.setMemberRole(MemberRole.OWNER);
         ownerRepository.save(owner);
         return owner.getId();
@@ -54,7 +54,7 @@ public class OwnerService {
 
 //    check Email
     public boolean getMemberByEmail(String email) {
-        return ownerRepository.existsByOwnerEmail(email);
+        return ownerRepository.existsByEmail(email);
     }
 
 
@@ -62,14 +62,14 @@ public class OwnerService {
         OwnerDTO dto = new OwnerDTO(
                 owner.getId(),
                 owner.getOwnerName(),
-                owner.getOwnerEmail()
+                owner.getEmail()
         );
         return dto;
     }
 
     private void sendRestPasswordEmailToUser(Owner owner, String link) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(owner.getOwnerEmail());
+        message.setTo(owner.getEmail());
         message.setSubject("This is password reset link");
         message.setText("Your password reset Link is :  \n\n" + link);
         message.setFrom("restoflowing@gmail.com");
@@ -78,7 +78,7 @@ public class OwnerService {
 
 
     public boolean ownerForgotPasswordService(String email) {
-        Optional<Owner> ownerOpt = ownerRepository.findOwnerByOwnerEmail(email);
+        Optional<Owner> ownerOpt = ownerRepository.findOwnerByEmail(email);
         if (ownerOpt.isPresent()) {
             Owner owner = ownerOpt.get();
             String token = UUID.randomUUID().toString();
@@ -117,9 +117,9 @@ public class OwnerService {
 
 
     public void resetPassword(String email, String password) {
-        Owner owner = ownerRepository.findOwnerByOwnerEmail(email).orElseThrow(() -> new RuntimeException("Owner not found"));
+        Owner owner = ownerRepository.findOwnerByEmail(email).orElseThrow(() -> new RuntimeException("Owner not found"));
         String newPassword = passwordEncoder.encode(password);
-        owner.setOwnerPassword(newPassword);
+        owner.setPassword(newPassword);
         ownerRepository.save(owner);
     }
 

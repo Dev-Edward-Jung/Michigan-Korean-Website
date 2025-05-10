@@ -15,10 +15,9 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
     Optional<Owner> findOwnerById(Long id);
 
 //    Searching by Email
-    boolean existsByOwnerEmail(String ownerEmail);
+    boolean existsByEmail(String email);
 
-//  login with Email
-    Optional<Owner> findOwnerByOwnerEmail(String ownerEmail);
+    Optional<Owner> findOwnerByEmail(String email);
 
 
     Optional<Owner> findOwnerByPasswordToken_Token(String token);

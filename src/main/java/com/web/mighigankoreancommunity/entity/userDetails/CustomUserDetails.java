@@ -63,7 +63,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return isOwner() ? owner.getOwnerEmail() : employee.getEmail();
+        return isOwner() ? owner.getEmail() : employee.getEmail();
     }
 
     @Override

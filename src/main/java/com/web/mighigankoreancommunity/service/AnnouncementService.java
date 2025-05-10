@@ -2,8 +2,8 @@ package com.web.mighigankoreancommunity.service;
 
 
 import com.web.mighigankoreancommunity.domain.ContentType;
-import com.web.mighigankoreancommunity.dto.AnnouncementRequest;
-import com.web.mighigankoreancommunity.dto.AnnouncementResponse;
+import com.web.mighigankoreancommunity.dto.announcement.AnnouncementRequest;
+import com.web.mighigankoreancommunity.dto.announcement.AnnouncementResponse;
 import com.web.mighigankoreancommunity.entity.*;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.repository.AnnouncementRepository;
@@ -11,8 +11,6 @@ import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
 import com.web.mighigankoreancommunity.repository.owner.OwnerRepository;
 import lombok.RequiredArgsConstructor;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 
 @RequiredArgsConstructor
