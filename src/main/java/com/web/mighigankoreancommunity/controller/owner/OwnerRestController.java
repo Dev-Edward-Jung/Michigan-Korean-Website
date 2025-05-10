@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.controller.owner;
 
 
+import com.web.mighigankoreancommunity.dto.LoginRequest;
 import com.web.mighigankoreancommunity.dto.OwnerDTO;
 import com.web.mighigankoreancommunity.dto.PasswordRequest;
 import com.web.mighigankoreancommunity.entity.Owner;
@@ -9,10 +10,18 @@ import com.web.mighigankoreancommunity.service.owner.OwnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class OwnerRestController {
 
     private final OwnerService ownerService;
+    private final AuthenticationManager authenticationManager;
 
     public String emailToLowerCase(String email) {
         return email.trim().toLowerCase();
@@ -80,5 +90,25 @@ public class OwnerRestController {
 
         ownerService.resetPassword(email, password);
         return ResponseEntity.ok("Password reset successful.");
+    }
+
+
+    @PostMapping("/api/owner/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest req) {
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+
+        try {
+            Authentication auth = authenticationManager.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            // 세션 저장
+            HttpSession session = req.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+
+            return ResponseEntity.ok().build(); // 200 OK
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
     }
 }

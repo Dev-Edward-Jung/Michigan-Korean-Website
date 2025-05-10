@@ -2,6 +2,7 @@ package com.web.mighigankoreancommunity.config;
 
 import com.web.mighigankoreancommunity.service.owner.OwnerUserDetailsService;
 import com.web.mighigankoreancommunity.service.employee.EmployeeUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
+
+import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -135,6 +138,15 @@ public class SecurityConfig {
         handler.setCsrfRequestAttributeName("_csrf");
 
         http
+                .cors(cors-> cors
+                        .configurationSource((request ->{
+                            var configuration = new org.springframework.web.cors.CorsConfiguration();
+                            configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Next.js 주소
+                            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            configuration.setAllowedHeaders(List.of("*"));
+                            configuration.setAllowCredentials(true);
+                            return configuration;
+                        })))
                 .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(handler))
                 .authorizeHttpRequests(auth -> auth
@@ -147,7 +159,8 @@ public class SecurityConfig {
                                 "/api/owner/forgot/password", "/api/employee/forgot/password", "/page/employee/forgot/password",
                                 "/page/owner/reset/password", "/page/employee/reset/password",
                                 "/page/announcement/**", "/api/announcement/**", "/page/inventory/**", "/api/inventory/**",
-                                "/api/owner/reset/password", "/api/employee/reset/password"
+                                "/api/owner/reset/password", "/api/employee/reset/password",
+                                "/csrf"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -156,7 +169,9 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             // 인증 안 된 경우 리다이렉트
-                            response.sendRedirect("/page/owner/login");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Unauthorized\"}");
                         })
                 );
 

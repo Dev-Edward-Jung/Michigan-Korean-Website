@@ -13,15 +13,17 @@ export default function OwnerLoginPage() {
         e.preventDefault();
 
         try {
-            // 1️⃣ CSRF 토큰 먼저 받아오기
+            // CSRF 토큰 먼저 가져오기
             const csrfRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/csrf`, {
-                credentials: 'include', // 쿠키 포함 필수
+                credentials: 'include',
             });
 
+            if (!csrfRes.ok) throw new Error('CSRF fetch failed');
+            console.log(csrfRes)
             const csrf = await csrfRes.json();
-
-            // 2️⃣ 로그인 요청에 CSRF 토큰 포함
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/owner/login`, {
+            console.log("csrf complete")
+            // 로그인 요청
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/owner/login`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -34,15 +36,18 @@ export default function OwnerLoginPage() {
                     'remember-me': rememberMe ? 'on' : '',
                 }),
             });
-
+            console.log(response)
             if (response.ok) {
+                // 로그인 성공 시 직접 리다이렉트 (Spring은 HTML로 리턴)
                 window.location.href = '/restaurant/list';
             } else {
-                alert('Login failed');
+                const text = await response.text(); // 실패 시 응답 HTML
+                console.error('Login failed:', text);
+                alert('❌ Login failed');
             }
         } catch (err) {
             console.error('Login error:', err);
-            alert('Login failed: ' + err);
+            alert('Login error: ' + (err as Error).message);
         }
     };
 
