@@ -2,38 +2,30 @@
 'use client';
 
 import { useState } from 'react';
+import { useCsrf } from '../../../context/CsrfContext';
 
 
 export default function OwnerLoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const { token, headerName } = useCsrf();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            // CSRF 토큰 먼저 가져오기
-            const csrfRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/csrf`, {
-                credentials: 'include',
-            });
-
-            if (!csrfRes.ok) throw new Error('CSRF fetch failed');
-            console.log(csrfRes)
-            const csrf = await csrfRes.json();
-            console.log("csrf complete")
             // 로그인 요청
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/owner`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    [csrf.headerName]: csrf.token,
+                    'Content-Type': 'application/json',
+                    [headerName]: token,
                 },
-                body: new URLSearchParams({
-                    ownerEmail: email,
-                    ownerPassword: password,
-                    'remember-me': rememberMe ? 'on' : '',
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
                 }),
             });
             console.log(response)
@@ -73,7 +65,7 @@ export default function OwnerLoginPage() {
                                         type="text"
                                         className="form-control"
                                         id="email"
-                                        name="ownerEmail"
+                                        name="email"
                                         placeholder="Enter your email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -83,14 +75,14 @@ export default function OwnerLoginPage() {
                                 <div className="mb-3 form-password-toggle">
                                     <div className="d-flex justify-content-between">
                                         <label className="form-label" htmlFor="password">Password</label>
-                                        <a href="/page/owner/forgot/password"><small>Forgot Password?</small></a>
+                                        <a href="/auth/owner/forget/password"><small>Forgot Password?</small></a>
                                     </div>
                                     <div className="input-group input-group-merge">
                                         <input
                                             type="password"
                                             id="password"
                                             className="form-control"
-                                            name="ownerPassword"
+                                            name="password"
                                             placeholder="••••••••••"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
@@ -122,11 +114,11 @@ export default function OwnerLoginPage() {
 
                             <p className="text-center">
                                 <span>New on our platform?</span>
-                                <a href="/page/owner/register"><span> Create an account</span></a>
+                                <a href="/auth/owner/register"><span> Create an account</span></a>
                             </p>
                             <p className="text-center">
                                 <span>Are you not owner of a restaurant?</span>
-                                <a href="/page/employee/login"><span> Employee Login</span></a>
+                                <a href="/auth/employee/login"><span> Employee Login</span></a>
                             </p>
                         </div>
                     </div>

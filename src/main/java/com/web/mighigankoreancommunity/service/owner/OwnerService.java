@@ -3,6 +3,7 @@ package com.web.mighigankoreancommunity.service.owner;
 
 import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.OwnerDTO;
+import com.web.mighigankoreancommunity.dto.auth.RegisterRequest;
 import com.web.mighigankoreancommunity.entity.Employee;
 import com.web.mighigankoreancommunity.entity.Invitation;
 import com.web.mighigankoreancommunity.entity.Owner;
@@ -43,13 +44,15 @@ public class OwnerService {
 
 
 //    Register Method
-    public Long saveOwner(Owner owner) {
-        String rawPassword = owner.getPassword();
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-        owner.setPassword(encodedPassword);
-        owner.setMemberRole(MemberRole.OWNER);
-        ownerRepository.save(owner);
-        return owner.getId();
+    public Long saveOwner(RegisterRequest registerRequest) {
+        Owner owner = Owner.builder()
+                .email(registerRequest.getEmail())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .ownerName(registerRequest.getName())
+                .memberRole(MemberRole.OWNER)
+                .build();
+        Owner savedOwner = ownerRepository.save(owner);
+        return savedOwner.getId();
     }
 
 //    check Email

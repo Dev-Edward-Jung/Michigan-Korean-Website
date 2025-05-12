@@ -57,7 +57,13 @@ public class Owner implements UserDetails {
     @JsonManagedReference
     private List<Restaurant> restaurantList = new ArrayList<>();
 
+    public Owner( String ownerName, String email, String password, MemberRole memberRole) {
+        this.ownerName = ownerName;
+        this.email = email;
+        this.password = password;
+        this.memberRole = memberRole;
 
+    }
 
     // memberEmail
     @Override
