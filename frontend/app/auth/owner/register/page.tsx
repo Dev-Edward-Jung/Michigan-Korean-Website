@@ -1,10 +1,10 @@
 'use client';
-
 import { useState } from 'react';
+import { useCsrf } from '../../../context/CsrfContext';
 
 export default function OwnerRegisterPage() {
     const [form, setForm] = useState({
-        username: '',
+        name: '',
         email: '',
         password: '',
         passwordConfirm: '',
@@ -12,7 +12,7 @@ export default function OwnerRegisterPage() {
     });
     const [emailMessage, setEmailMessage] = useState('');
     const [error, setError] = useState('');
-
+    const { token, headerName } = useCsrf();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
         setForm((prev) => ({
@@ -28,13 +28,16 @@ export default function OwnerRegisterPage() {
         }
 
         try {
-            const res = await fetch('/api/owner/check-email', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/owner/checkEmail`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                    [headerName]: token,
+                },
                 body: JSON.stringify({ email: form.email }),
+                credentials: 'include',
             });
             const data = await res.json();
-            setEmailMessage(data.used ? "You can't use this email" : 'You can use this email');
+            setEmailMessage(data.used ? "You can't use this email" : "You can use this email");
         } catch {
             setEmailMessage('Error checking email');
         }
@@ -43,7 +46,7 @@ export default function OwnerRegisterPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!form.username || !form.email || !form.password || !form.passwordConfirm) {
+        if (!form.name || !form.email || !form.password || !form.passwordConfirm) {
             setError('Please input everything');
             return;
         }
@@ -63,18 +66,27 @@ export default function OwnerRegisterPage() {
             return;
         }
 
-        // 실제 요청
-        const res = await fetch('/api/owner/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form),
-        });
+        try{
 
-        if (res.ok) {
-            alert('Registration successful!');
-        } else {
-            const data = await res.json();
-            setError(data.message || 'Registration failed');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register/owner`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [headerName]: token,
+                },
+                body: JSON.stringify(form),
+            });
+
+            if (res.ok) {
+                alert('Registration successful!');
+                window.location.href = "/auth/owner/login"
+            } else {
+                const data = await res.json();
+                setError(data.message || 'Registration failed');
+            }
+        } catch (err: any) {
+            setError('Registration error: ' + err.message);
         }
     };
 
@@ -95,14 +107,14 @@ export default function OwnerRegisterPage() {
 
                             <form className="mb-3" onSubmit={handleSubmit}>
                                 <div className="mb-3">
-                                    <label htmlFor="username" className="form-label">Username</label>
+                                    <label htmlFor="name" className="form-label">Username</label>
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="username"
-                                        name="username"
+                                        id="name"
+                                        name="name"
                                         placeholder="Enter your username"
-                                        value={form.username}
+                                        value={form.name}
                                         onChange={handleChange}
                                         autoFocus
                                     />
@@ -120,7 +132,7 @@ export default function OwnerRegisterPage() {
                                         onChange={handleChange}
                                         onBlur={checkEmail}
                                     />
-                                    <span className="form-text">{emailMessage}</span>
+                                    <span className="form-text text-danger">{emailMessage}</span>
                                 </div>
 
                                 <div className="mb-3 form-password-toggle">

@@ -39,15 +39,6 @@ public class OwnerController {
     public String RegisterPage() {return "user/owner-register";}
 
 
-
-//    Save Info
-    @PostMapping("/register")
-    public String registerMember(Owner owner) {
-        System.out.println(owner.getOwnerName());
-        ownerService.saveOwner(owner);
-        return "user/owner-login";
-    }
-
     @GetMapping("/forgot/password")
     public String forgotPasswordPage() {return "/user/owner-forgot-password";}
 
