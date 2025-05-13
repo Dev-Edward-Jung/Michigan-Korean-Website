@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,24 +35,37 @@ public class RestaurantRestController {
 
     @Operation(summary = "Create a new restaurant", description = "Creates a new restaurant for the currently logged-in owner.")
     @PostMapping("/save")
-    public void saveRestaurant(
+    public ResponseEntity<?> saveRestaurant(
             @RequestBody @Parameter(description = "Restaurant data to save") RestaurantDTO dto
     ) {
-        System.out.println("Restaurant data to save: " + dto.toString());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
-            Owner owner = customUserDetails.getOwner(); // 또는 getUsername() 등
-            restaurantService.saveService(dto, owner);
-        } else {
-            throw new RuntimeException("Unauthorized or invalid token.");
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Unauthorized");
         }
+        String email = authentication.getName(); // JwtTokenProvider에서 저장한 이메일
+        String role = authentication.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+        if ("OWNER".equals(role)) {
+            Owner owner = ownerRepository.findOwnerByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Owner not found"));
+            restaurantService.saveService(dto, owner);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else if ("EMPLOYEE".equals(role)) {
+            Employee employee = employeeRepository.findEmployeeByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Employee not found"));
+        } else {
+            throw new RuntimeException("Invalid role");
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Operation(summary = "Get list of restaurants", description = "Returns a list of restaurants owned by the user (owner) or assigned to them (employee).")
     @GetMapping("/list")
     @ResponseBody
-    public List<RestaurantDTO> restaurantList() {
+    public List<RestaurantDTO> restaurantList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -58,10 +73,6 @@ public class RestaurantRestController {
         }
 
         String email = authentication.getName(); // JwtTokenProvider에서 저장한 이메일
-        System.out.println("When you get list of restaurant Email : " + email);
-        System.out.println("When you get list of restaurant credential : " + authentication.getCredentials());
-        System.out.println("When you get list of restaurant authorities : " + authentication.getAuthorities());
-        System.out.println("When you get list of restaurant details : " + authentication.getDetails());
         String role = authentication.getAuthorities().stream()
                 .findFirst()
                 .map(GrantedAuthority::getAuthority)

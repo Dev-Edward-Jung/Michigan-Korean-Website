@@ -70,8 +70,8 @@ public class SecurityConfig {
                 .authenticationProvider(ownerAuthProvider())
                 .authenticationProvider(employeeAuthProvider())
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrf(csrf -> csrf.disable()
+//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sess ->
