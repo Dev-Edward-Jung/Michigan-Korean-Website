@@ -60,6 +60,11 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token).getBody().get("role");
     }
 
+//    public Long getId(String token){
+//        return Jwts.parserBuilder().setSigningKey(key).build()
+//                .parseClaimsJws(token).getBody().get("id");
+//    }
+
 
 
 
