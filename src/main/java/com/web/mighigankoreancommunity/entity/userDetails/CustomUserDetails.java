@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.lang.reflect.Member;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -30,8 +31,9 @@ public class CustomUserDetails implements UserDetails {
     public MemberRole getCurrentMemberRole() {
         if (restaurantEmployee != null) {
             return restaurantEmployee.getMemberRole();
+        } else{
+            return MemberRole.OWNER;
         }
-        return null;
     }
 
 
@@ -53,7 +55,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); // 필요 시 역할 추가 가능
+        MemberRole role = getCurrentMemberRole();
+        return List.of(new SimpleGrantedAuthority( role.name()));
     }
 
     @Override
