@@ -1,13 +1,16 @@
 package com.web.mighigankoreancommunity.jwt;
 
+import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.service.employee.EmployeeUserDetailsService;
 import com.web.mighigankoreancommunity.service.owner.OwnerUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -23,15 +26,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final EmployeeUserDetailsService employeeUserDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NotNull HttpServletRequest request,
+                                    @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
 
         String token = jwtTokenProvider.resolveToken(request);
-
+//        System.out.println("Inside JwtAuthFilter, token is  : :" +  token);
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String email = jwtTokenProvider.getEmail(token);
-            String role = jwtTokenProvider.getRole(token); // JWT에서 꺼낸 사용자 역할
+            MemberRole role = jwtTokenProvider.getRole(token); // JWT에서 꺼낸 사용자 역할
+            System.out.println("Inside JwtAuthFilter, role is  : :" +  role);
+            System.out.println("Inside JwtAuthFilter, Email is  : :" +  email);
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             UserDetails userDetails = null;
 

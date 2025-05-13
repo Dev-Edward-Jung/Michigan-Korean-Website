@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.filter;
 
 
+import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.jwt.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,9 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = jwtTokenProvider.resolveToken(request);
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String email = jwtTokenProvider.getEmail(token);
-            String role = jwtTokenProvider.getRole(token);
+            MemberRole role = jwtTokenProvider.getRole(token);
 
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(String.valueOf(role)));
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }

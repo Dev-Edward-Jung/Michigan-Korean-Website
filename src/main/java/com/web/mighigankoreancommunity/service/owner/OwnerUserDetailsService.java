@@ -25,4 +25,9 @@ public class OwnerUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Owner not found."));
         return new CustomUserDetails(owner);
     }
+
+
+    public boolean existsByEmail(String email) {
+        return ownerRepository.existsByEmail(email);
+    }
 }
