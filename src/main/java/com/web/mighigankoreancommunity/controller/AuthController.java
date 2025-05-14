@@ -11,12 +11,15 @@ import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.jwt.JwtTokenProvider;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -43,7 +46,13 @@ public class AuthController {
 
 
     @PostMapping("/login/owner")
-    public ResponseEntity<JwtResponse> loginOwner(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> loginOwner(@RequestBody LoginRequest request) {
+        if (request.getEmail() == null || request.getEmail().isBlank()
+                || request.getPassword() == null || request.getPassword().isBlank()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Email and password must not be empty"));
+        }
         // 1) 인증을 시도하고, 성공 시 Authentication 객체를 얻는다
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

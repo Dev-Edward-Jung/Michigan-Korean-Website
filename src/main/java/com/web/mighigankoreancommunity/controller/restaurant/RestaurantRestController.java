@@ -40,32 +40,33 @@ public class RestaurantRestController {
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        String email = authentication.getName(); // JwtTokenProvider에서 저장한 이메일
+        String email = authentication.getName();
         String role = authentication.getAuthorities().stream()
                 .findFirst()
                 .map(GrantedAuthority::getAuthority)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
+
+
         if ("OWNER".equals(role)) {
             Owner owner = ownerRepository.findOwnerByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Owner not found"));
             restaurantService.saveService(dto, owner);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else if ("EMPLOYEE".equals(role)) {
+            // have your service return the saved entity or DTO
+            return ResponseEntity.ok(ResponseEntity.status(HttpStatus.OK).build());
+        } else  {
             Employee employee = employeeRepository.findEmployeeByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Employee not found"));
-        } else {
-            throw new RuntimeException("Invalid role");
+            // analogous for employee…
         }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @Operation(summary = "Get list of restaurants", description = "Returns a list of restaurants owned by the user (owner) or assigned to them (employee).")
     @GetMapping("/list")
     @ResponseBody
-    public List<RestaurantDTO> restaurantList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public List<RestaurantDTO> restaurantList() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -77,11 +78,11 @@ public class RestaurantRestController {
                 .findFirst()
                 .map(GrantedAuthority::getAuthority)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
-        System.out.println("When you get list of restaurant role : " + role);
         if ("OWNER".equals(role)) {
             Owner owner = ownerRepository.findOwnerByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Owner not found"));
-            return restaurantService.restaurantListService(owner);
+            List<RestaurantDTO> restaurantDTOList = restaurantService.restaurantListService(owner);
+            return restaurantDTOList;
         } else if ("EMPLOYEE".equals(role)) {
             Employee employee = employeeRepository.findEmployeeByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Employee not found"));

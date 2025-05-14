@@ -26,6 +26,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final EmployeeUserDetailsService employeeUserDetailsService;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest req) {
+        String path = req.getServletPath();
+        return path.startsWith("/auth/login")
+                || path.startsWith("/auth/register")
+                || path.equals("/csrf");
+    }
+
+    @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request,
                                     @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
