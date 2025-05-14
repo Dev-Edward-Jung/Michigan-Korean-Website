@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @ToString
 @Data
 public class RestaurantDTO {
-    private long id;
+    private Long id;
     private String restaurantName;
     private String restaurantCity;
     private Long ownerId;

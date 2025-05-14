@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,87 +37,107 @@ public class SecurityConfig {
 
     @Bean
     public DaoAuthenticationProvider ownerAuthProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(ownerUserDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
+        DaoAuthenticationProvider p = new DaoAuthenticationProvider();
+        p.setUserDetailsService(ownerUserDetailsService);
+        p.setPasswordEncoder(passwordEncoder());
+        return p;
     }
 
     @Bean
     public DaoAuthenticationProvider employeeAuthProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(employeeUserDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
+        DaoAuthenticationProvider p = new DaoAuthenticationProvider();
+        p.setUserDetailsService(employeeUserDetailsService);
+        p.setPasswordEncoder(passwordEncoder());
+        return p;
     }
 
-    // AuthenticationManager 빈에 두 프로바이더를 등록
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder builder =
+        AuthenticationManagerBuilder authBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
-        builder
+
+        authBuilder
                 .authenticationProvider(ownerAuthProvider())
                 .authenticationProvider(employeeAuthProvider());
-        return builder.build();
+
+        return authBuilder.build();
     }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 위에서 등록한 프로바이더를 사용하도록 설정
-                .authenticationProvider(ownerAuthProvider())
-                .authenticationProvider(employeeAuthProvider())
+                // 1) Disable CSRF entirely (since you’re using JWTs + stateless)
+                .csrf(csrf -> csrf.disable())
+
+                // 2) CORS if you need it
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable()
-//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                )
-                .cors(Customizer.withDefaults())
-                .sessionManagement(sess ->
-                        sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+
+                // 3) Stateless session (no HTTP session)
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // 5) Public endpoints first
                 .authorizeHttpRequests(auth -> auth
+                        // allow login & registration
+                        .requestMatchers("/auth/login/**", "/auth/register/**").permitAll()
+                        // (optionally) if you still expose /csrf for your client
+                        .requestMatchers("/csrf").permitAll()
+
+                        // everything under /api/restaurant/** now needs JWT auth
                         .requestMatchers(
-                                "/auth/login/**",
-                                "/auth/login/employee",
-                                "/auth/register/owner",
-                                "/auth/register/employee",
-                                "/csrf", "/error"
-                        ).permitAll()
-                        .requestMatchers("/api/restaurant/**").authenticated()
+                                "/api/restaurant/**",
+                                "/api/inventory/**",
+                                "/api/category/**"
+                        ).authenticated()
+
+                        // any other request also requires auth
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                )
+
+                // 6) Insert your JWT filter before the username/password filter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // 7) On auth-failure return 401 JSON
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, e) -> {
                             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             res.setContentType("application/json");
-                            res.getWriter().write("{\"error\": \"Unauthorized\"}");
+                            res.getWriter().write("{\"error\":\"Unauthorized\"}");
                         })
-                );
+                )
+        ;
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * CORS 정책:
+     * - 허용할 오리진: http://localhost:3000
+     * - 자격증명 포함(쿠키/헤더)
+     * - CSRF 헤더(X-XSRF-TOKEN)와 Authorization 헤더 허용
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));   // your Next.js origin
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // allow both the CSRF header and the Bearer token header
-        config.setAllowedHeaders(List.of("Content-Type", "X-XSRF-TOKEN", "Authorization"));
-        config.setAllowCredentials(true);
+        CorsConfiguration cfg = new CorsConfiguration();
+        cfg.setAllowedOrigins(List.of("http://localhost:3000"));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        cfg.setAllowedHeaders(List.of(
+                "Content-Type",
+                "X-XSRF-TOKEN",
+                "Authorization"
+        ));
+        cfg.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
+        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
+        src.registerCorsConfiguration("/**", cfg);
+        return src;
     }
+
 }
