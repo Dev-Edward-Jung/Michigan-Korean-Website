@@ -37,6 +37,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NotNull HttpServletRequest request,
                                     @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
+        System.out.println(request.getMethod());
+        // 🔥 OPTIONS 요청은 바로 통과
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+
 
         String token = jwtTokenProvider.resolveToken(request);
 //        System.out.println("Inside JwtAuthFilter, token is  : :" +  token);

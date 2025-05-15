@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -72,28 +73,20 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 // 2) CORS if you need it
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 // 3) Stateless session (no HTTP session)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // 5) Public endpoints first
                 .authorizeHttpRequests(auth -> auth
-                        // allow login & registration
-                        .requestMatchers("/auth/login/**", "/auth/register/**").permitAll()
-                        // (optionally) if you still expose /csrf for your client
-                        .requestMatchers("/csrf").permitAll()
-
-                        // everything under /api/restaurant/** now needs JWT auth
-                        .requestMatchers(
-                                "/api/restaurant/**",
-                                "/api/inventory/**",
-                                "/api/category/**"
-                        ).authenticated()
-
-                        // any other request also requires auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // 🔥 이 줄 추가!
+                        .requestMatchers("/auth/login/**", "/auth/register/**", "/csrf").permitAll()
+                        .requestMatchers("/api/restaurant/**", "/api/inventory/**", "/api/category/**").authenticated()
                         .anyRequest().authenticated()
                 )
+
+                        // any other request also requires auth
 
                 // 6) Insert your JWT filter before the username/password filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
