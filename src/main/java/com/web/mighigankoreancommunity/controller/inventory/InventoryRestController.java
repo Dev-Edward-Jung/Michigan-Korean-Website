@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -38,20 +39,13 @@ public class InventoryRestController {
     @Operation(summary = "Create inventory item", description = "Adds a new inventory item to the restaurant.")
     @PostMapping("/save")
     public ResponseEntity<?> saveInventory(
-            @RequestBody @Parameter(description = "Inventory item data") InventoryDTO dto
+            @RequestBody @Parameter(description = "Inventory item data") InventoryDTO dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        String email = authentication.getName();
-        String role = authentication.getAuthorities().stream()
-                .findFirst()
-                .map(GrantedAuthority::getAuthority)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-        Long inventoryId = inventoryService.saveInventory(dto, email);
+        System.out.println(userDetails.getOwner().getEmail());
+        Long inventoryId = inventoryService.saveInventory(dto, userDetails);
         // Note: conversion from InventoryDTO to CategoryDTO handled internally
-
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse());
     }
 
     @Operation(summary = "Update inventory item", description = "Updates an existing inventory item.")
