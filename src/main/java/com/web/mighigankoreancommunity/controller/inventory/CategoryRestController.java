@@ -29,6 +29,7 @@ public class CategoryRestController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Parameter(description = "Restaurant ID") @RequestParam Long restaurantId
     ) {
+        System.out.println("유저네임?? : " + userDetails.getUsername());
         List<CategoryDTO> categoryListDTOList = categoryService.findCategoriesByRestaurant(restaurantId, userDetails);
         return new ResponseEntity<>(categoryListDTOList, HttpStatus.OK);
     }
