@@ -82,7 +82,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // 🔥 이 줄 추가!
                         .requestMatchers("/auth/login/**", "/auth/register/**", "/csrf").permitAll()
-                        .requestMatchers("/api/restaurant/**", "/api/inventory/**", "/api/category/**").authenticated()
+                        .requestMatchers(
+                                "/api/restaurant/**", "/api/inventory/**", "/api/category/**",
+                                "/api/employee/**", "/api/announcement/**"
+                                ).authenticated()
                         .anyRequest().authenticated()
                 )
 
