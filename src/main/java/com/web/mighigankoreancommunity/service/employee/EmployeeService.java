@@ -112,7 +112,7 @@ public class EmployeeService {
         }
 
         // ✅ 6. 이메일 전송
-        String invitationLink = "http://127.0.0.1:10000/page/employee/invited?token=" + token + "&restaurantId=" + restaurant.getId();;
+        String invitationLink = "http://localhost:3000/auth/employee/register?token=" + token + "&restaurantId=" + restaurant.getId();;
 //        server
 //        String invitationLink = "https://www.restoflowing.com/page/employee/invited?token=" + token + "&restaurantId=" + restaurant.getId();
         sendInvitationEmailToUser(employee, restaurant.getName(), invitationLink);
@@ -172,7 +172,7 @@ public class EmployeeService {
         if (employeeOpt.isPresent()) {
             Employee employee = employeeOpt.get();
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://127.0.0.1:10000/page/employee/reset/password?token=" + token + "&email=" + email;
+            String resetLink = "http://localhost:3000/page/employee/reset/password?token=" + token + "&email=" + email;
 //            String resetLink = "https://www.restoflowing.com/page/employee/reset/password?token=" + token + "&email=" + email;
 
             LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
