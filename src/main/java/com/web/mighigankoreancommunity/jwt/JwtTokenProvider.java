@@ -4,28 +4,30 @@ import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.service.employee.EmployeeUserDetailsService;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
 import com.web.mighigankoreancommunity.service.owner.OwnerUserDetailsService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
+
 
     @Value("${jwt.expiration}")
     private long expiration;
@@ -34,9 +36,12 @@ public class JwtTokenProvider {
     private final OwnerUserDetailsService ownerUserDetailsService;
     private final EmployeeUserDetailsService employeeUserDetailsService;
 
+
     @PostConstruct
     protected void init() {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        // plain-text secret 사용 시, UTF-8 바이트로 키 생성
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     /**
@@ -53,7 +58,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key, SignatureAlgorithm.HS256)  // Key 객체 사용
                 .compact();
     }
 
@@ -77,11 +82,23 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token) {
         try {
-            getClaims(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(key)                     // ← key 객체로 검증
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            log.warn("만료된 JWT 토큰: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("지원하지 않는 JWT 토큰", e);
+        } catch (MalformedJwtException e) {
+            log.error("유효하지 않은 JWT 토큰 형식", e);
+        } catch (SignatureException e) {
+            log.error("잘못된 JWT 서명", e);
+        } catch (IllegalArgumentException e) {
+            log.error("JWT 토큰이 비어 있거나 잘못된 인수", e);
         }
+        return false;
     }
 
     /**
@@ -89,10 +106,14 @@ public class JwtTokenProvider {
      */
     public String resolveToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
+        if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
+            String token = header.substring(7).trim();
+            if (StringUtils.hasText(token)) {
+                System.out.println("들어온 JWT: " + token);
+                return token;
+            }
         }
-        return null;
+        return null;  // 없거나 빈 토큰은 null 처리
     }
 
     /**
@@ -113,11 +134,13 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         String email = getEmail(token);
         UserDetails userDetails;
+
         if (ownerUserDetailsService.existsByEmail(email)) {
             userDetails = ownerUserDetailsService.loadUserByUsername(email);
         } else {
-            userDetails = ownerUserDetailsService.loadUserByUsername(email);
+            userDetails = employeeUserDetailsService.loadUserByUsername(email);  // 수정: 직원 서비스 사용
         }
+
         return new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,

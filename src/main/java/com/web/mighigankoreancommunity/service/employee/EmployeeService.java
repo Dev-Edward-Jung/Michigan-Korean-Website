@@ -144,6 +144,9 @@ public class EmployeeService {
         // 3. 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(rawPassword);
         employee.setPassword(encodedPassword);
+        System.out.println("encodedPassword");
+        System.out.println(invitation.getRestaurant().getId());
+
 
         // ✅ 4. 해당 레스토랑과 직원 간의 관계 승인 처리
         Long restaurantId = invitation.getRestaurant().getId(); // 초대된 레스토랑 ID

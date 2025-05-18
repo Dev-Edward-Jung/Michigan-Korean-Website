@@ -81,10 +81,13 @@ public class SecurityConfig {
                 // 5) Public endpoints first
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // 🔥 이 줄 추가!
-                        .requestMatchers("/auth/login/**", "/auth/register/**", "/csrf").permitAll()
+                        .requestMatchers("/auth/login/**", "/auth/register/**",
+                                "/api/employee/forgot/**", "/api/employee/reset/**", "/api/employee/forgot/**", "/api/employee/register"
+                        ).permitAll()
                         .requestMatchers(
                                 "/api/restaurant/**", "/api/inventory/**", "/api/category/**",
-                                "/api/employee/**", "/api/announcement/**"
+                                "/api/employee/schedule/**","/api/employee/list","/api/employee/invite","/api/employee/schedule/save",
+                                "/api/announcement/**"
                                 ).authenticated()
                         .anyRequest().authenticated()
                 )

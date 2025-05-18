@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,19 +27,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
+        try {
+            String token = jwtTokenProvider.resolveToken(request);
 
-        String token = jwtTokenProvider.resolveToken(request);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            String email = jwtTokenProvider.getEmail(token);
-            MemberRole role = jwtTokenProvider.getRole(token);
+            // 1) 토큰이 없거나 유효하지 않으면 401
+            if (token == null || !jwtTokenProvider.validateToken(token)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or missing JWT");
+                return;
+            }
 
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(String.valueOf(role)));
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, null, authorities);
+            // 2) 토큰 유효 → Authentication 세팅
+            Authentication auth = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
-        }
 
-        filterChain.doFilter(request, response);
+            // 3) 다음 필터/컨트롤러 호출
+            filterChain.doFilter(request, response);
+
+        } catch (Exception ex) {
+            // 토큰 파싱 중 예외 발생 시에도 401
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+        }
     }
 }
