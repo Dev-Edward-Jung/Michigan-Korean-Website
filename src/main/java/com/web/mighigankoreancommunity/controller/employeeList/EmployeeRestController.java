@@ -2,6 +2,7 @@ package com.web.mighigankoreancommunity.controller.employeeList;
 
 
 import com.web.mighigankoreancommunity.dto.ApiResponse;
+import com.web.mighigankoreancommunity.dto.auth.PasswordRequest;
 import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
@@ -46,7 +47,9 @@ public class EmployeeRestController {
             @Parameter(description = "Restaurant ID") @RequestParam Long restaurantId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return employeeService.getAllEmployees(restaurantId, customUserDetails.getOwner());
+        System.out.println(customUserDetails.getOwner().getEmail());
+        List<EmployeeDTO> employeeDTOS = employeeService.getAllEmployees(restaurantId, customUserDetails.getOwner());
+        return employeeDTOS;
     }
 
     @Operation(summary = "Send password reset email", description = "Sends a password reset email to the given employee email.")
@@ -82,5 +85,22 @@ public class EmployeeRestController {
         employeeService.resetPassword(email, password);
         return ResponseEntity.ok("Password reset successful.");
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerEmployee(@RequestParam("token") String token,@RequestParam("restaurantId") Long restaurantId,  @RequestBody PasswordRequest passwordRequest) {
+        System.out.println(token);
+        boolean isExpired = employeeService.isInvitationExpired(token);
+        if (isExpired) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invitation expired.");
+        }
+//        save employee password
+        String password = passwordRequest.getPassword();
+        System.out.println(password);
+        employeeService.registerEmployee(token, password);
+        return ResponseEntity.ok("Employee registered successfully.");
+    }
+
+
+
 }
 
