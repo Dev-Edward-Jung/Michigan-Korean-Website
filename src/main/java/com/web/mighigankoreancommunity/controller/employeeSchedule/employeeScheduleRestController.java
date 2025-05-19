@@ -2,6 +2,8 @@ package com.web.mighigankoreancommunity.controller.employeeSchedule;
 
 
 import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
+import com.web.mighigankoreancommunity.dto.schedule.RestaurantScheduleRequest;
+import com.web.mighigankoreancommunity.dto.schedule.RestaurantScheduleResponse;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.employee.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +26,7 @@ public class employeeScheduleRestController {
 
     @Operation(summary = "Get all employee schedules", description = "Returns a list of employee schedules grouped by shift type (e.g., morning, evening) for the specified restaurant.")
     @GetMapping("/list")
-    public Map<String, List<EmployeeDTO>> getAllSchedule(
+    public RestaurantScheduleResponse getAllSchedule(
             @Parameter(description = "Restaurant ID") @RequestParam Long restaurantId,
             @AuthenticationPrincipal CustomUserDetails user
     ) {
@@ -35,9 +37,9 @@ public class employeeScheduleRestController {
     @PostMapping("/save")
     public void saveSchedule(
             @Parameter(description = "Restaurant ID") @RequestParam Long restaurantId,
-            @RequestBody @Parameter(description = "List of employee schedule info (ID, role, shifts, etc.)") List<EmployeeDTO> employeeDTOList,
+            @RequestBody @Parameter(description = "List of employee schedule info (ID, role, shifts, etc.)")RestaurantScheduleRequest request,
             @AuthenticationPrincipal CustomUserDetails user
     ) {
-        scheduleService.scheduleSave(restaurantId, employeeDTOList, user.getOwner());
+        scheduleService.scheduleSave(restaurantId, request, user.getOwner());
     }
 }
