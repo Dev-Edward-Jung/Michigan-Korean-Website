@@ -3,9 +3,12 @@ package com.web.mighigankoreancommunity.service.employee;
 
 import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
+import com.web.mighigankoreancommunity.dto.schedule.RestaurantScheduleRequest;
+import com.web.mighigankoreancommunity.dto.schedule.RestaurantScheduleResponse;
 import com.web.mighigankoreancommunity.dto.schedule.ScheduleDTO;
 import com.web.mighigankoreancommunity.entity.*;
 import com.web.mighigankoreancommunity.error.RestaurantEmployeeNotFoundException;
+import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.error.UnauthorizedRestaurantAccessException;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
@@ -15,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,13 +28,14 @@ import java.util.Map;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
-    private final EmployeeRepository employeeRepository;
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
     private final RestaurantRepository restaurantRepository;
 
 
     @Transactional
-    public Map<String, List<EmployeeDTO>> findAllScheduleByRestaurantId(Long restaurantId, Owner owner) {
+    public RestaurantScheduleResponse findAllScheduleByRestaurantId(Long restaurantId, Owner owner) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(RestaurantNotFoundException::new);
+
 
         List<RestaurantEmployee> restaurantEmployees = restaurantEmployeeRepository
                 .findRestaurantEmployeesByRestaurant_IdAndApprovedTrue(restaurantId)
@@ -42,6 +47,8 @@ public class ScheduleService {
         for (RestaurantEmployee re : restaurantEmployees) {
             Employee employee = re.getEmployee();
             MemberRole role = re.getMemberRole();
+            LocalDate startDate = re.getRestaurant().getStartShiftDate();
+            LocalDate endDate = re.getRestaurant().getEndShiftDate();
 
             EmployeeDTO employeeDTO = new EmployeeDTO();
             employeeDTO.setId(employee.getId());
@@ -56,8 +63,8 @@ public class ScheduleService {
                 s.setRestaurantId(restaurantId);
                 s.setEmployeeId(employee.getId());
                 s.setName(employee.getName());
-                s.setShiftStartDate(schedule.getStartShiftDate());
-                s.setShiftEndDate(schedule.getEndShiftDate());
+                s.setShiftStartDate(startDate);
+                s.setShiftEndDate(endDate);
                 return s;
             }).toList();
 
@@ -75,21 +82,27 @@ public class ScheduleService {
         result.put("kitchenList", kitchenList);
         result.put("serverList", serverList);
 
-        return result;
+        return RestaurantScheduleResponse.builder()
+                .startDate(restaurant.getStartShiftDate())
+                .endDate(restaurant.getEndShiftDate())
+                .employees(result)
+                .build();
     }
 
 
 
 
     @Transactional
-    public void scheduleSave(Long restaurantId, List<EmployeeDTO> employeeDTOList, Owner owner) {
+    public void scheduleSave(Long restaurantId, RestaurantScheduleRequest request, Owner owner) {
         // 1. 레스토랑 권한 체크
         Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner)
                 .orElseThrow(() -> new UnauthorizedRestaurantAccessException("레스토랑 권한 없음"));
-
         List<Schedule> schedulesToSave = new ArrayList<>();
+        restaurant.setStartShiftDate(request.getStartDate());
+        restaurant.setEndShiftDate(request.getEndDate());
+        restaurantRepository.save(restaurant);
 
-        for (EmployeeDTO employeeDTO : employeeDTOList) {
+        for (EmployeeDTO employeeDTO : request.getEmployees()) {
             Long employeeId = employeeDTO.getId();
 
             // 2. RestaurantEmployee 조회
@@ -109,8 +122,6 @@ public class ScheduleService {
                     Schedule schedule = Schedule.builder()
                             .restaurantEmployee(restaurantEmployee)
                             .shift(dto.getShift())
-                            .startShiftDate(dto.getShiftStartDate())
-                            .endShiftDate(dto.getShiftEndDate())
                             .build();
                     schedulesToSave.add(schedule);
                 }
@@ -122,8 +133,6 @@ public class ScheduleService {
                     ScheduleDTO dto = incomingSchedules.get(i);
 
                     schedule.setShift(dto.getShift());
-                    schedule.setStartShiftDate(dto.getShiftStartDate());
-                    schedule.setEndShiftDate(dto.getShiftEndDate());
                     schedulesToSave.add(schedule);
                 }
             }

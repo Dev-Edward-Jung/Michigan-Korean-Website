@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.service.employee;
 
 import com.web.mighigankoreancommunity.domain.InvitationStatus;
+import com.web.mighigankoreancommunity.domain.Shift;
 import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
 import com.web.mighigankoreancommunity.entity.*;
 import com.web.mighigankoreancommunity.error.EmployeeNotFoundException;
@@ -11,6 +12,7 @@ import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.InvitationRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
+import com.web.mighigankoreancommunity.repository.employee.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,6 +36,7 @@ public class EmployeeService {
     private final InvitationRepository invitationRepository;
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
     private final PasswordTokenRepository passwordTokenRepository;
+    private final ScheduleRepository scheduleRepository;
 
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
@@ -144,8 +148,6 @@ public class EmployeeService {
         // 3. 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(rawPassword);
         employee.setPassword(encodedPassword);
-        System.out.println("encodedPassword");
-        System.out.println(invitation.getRestaurant().getId());
 
 
         // ✅ 4. 해당 레스토랑과 직원 간의 관계 승인 처리
@@ -155,6 +157,8 @@ public class EmployeeService {
                 .orElseThrow(() -> new RuntimeException("RestaurantEmployee relation not found"));
 
         restaurantEmployee.setApproved(true); // 승인 처리
+//        2주치 스케줄 넣어줌
+        createInitialScheduleForEmployee(restaurantEmployee);
 
         // 5. 초대 상태 변경
         invitation.setStatus(InvitationStatus.ACCEPTED);
@@ -163,6 +167,9 @@ public class EmployeeService {
         employeeRepository.save(employee);
         invitationRepository.save(invitation);
         restaurantEmployeeRepository.save(restaurantEmployee);
+
+
+
 
         log.info("✅ complete Employee: email={}, employeeId={}", employee.getEmail(), employee.getId());
         return employee.getId();
@@ -244,6 +251,22 @@ public class EmployeeService {
                         emp.getRestaurant().getId()
                         )
                 ).collect(Collectors.toList());
+    }
+
+
+
+    public void createInitialScheduleForEmployee(RestaurantEmployee restaurantEmployee) {
+        List<Schedule> schedules = new ArrayList<>();
+
+        for (int i = 0; i < 14; i++) {
+            Schedule offSchedule = Schedule.builder()
+                    .restaurantEmployee(restaurantEmployee)
+                    .shift(Shift.OFF)
+                    .build();
+            schedules.add(offSchedule);
+        }
+
+        scheduleRepository.saveAll(schedules);
     }
 }
 

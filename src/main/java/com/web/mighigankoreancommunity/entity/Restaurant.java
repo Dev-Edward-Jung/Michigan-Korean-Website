@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,11 @@ public class Restaurant {
     @Column(nullable = false)
     private String name;
 
-    private String address;
-
+    @Column(nullable = false)
     private String city;
+
+    private LocalDate startShiftDate;
+    private LocalDate endShiftDate;
 
     // Save create created time automatically
     @CreationTimestamp

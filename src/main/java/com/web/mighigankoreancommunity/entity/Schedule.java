@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +29,10 @@ public class Schedule {
 
     private String dayOfWeek; // ex: "Monday"
 
+//    private LocalDate date;
+
     @Enumerated(EnumType.STRING)
     private Shift shift;
-
-    private LocalDate startShiftDate;
-    private LocalDate endShiftDate;
 
 
     // Save create created time automatically
