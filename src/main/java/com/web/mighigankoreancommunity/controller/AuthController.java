@@ -81,9 +81,12 @@ public class AuthController {
                         request.getEmail(), request.getPassword()
                 )
         );
+        System.out.println("When you employee login : Email : " + request.getEmail());
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         MemberRole actualRole = user.getCurrentMemberRole();
+        System.out.println("When you employee : Role : " + actualRole);
         String token = jwtTokenProvider.createToken(user.getUsername(), actualRole);
+        System.out.println("When you employee : Token : " + token);
         return ResponseEntity.ok(new JwtResponse(token, actualRole));
     }
 

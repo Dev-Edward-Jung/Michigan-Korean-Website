@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.management.RuntimeErrorException;
 import java.io.IOException;
 
 @Component
@@ -59,8 +60,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if ("OWNER".equals(role)) {
                 userDetails = ownerUserDetailsService.loadUserByUsername(email);
-            } else if ("EMPLOYEE".equals(role)) {
+            } else if (MemberRole.EMPLOYEE.equals(role) || MemberRole.KITCHEN.equals(role)
+                    || MemberRole.MANAGER.equals(role) || MemberRole.SERVER.equals(role)) {
                 userDetails = employeeUserDetailsService.loadUserByUsername(email);
+            } else{
+                throw new RuntimeException("Invalid role or not exist");
             }
 
             if (userDetails != null) {

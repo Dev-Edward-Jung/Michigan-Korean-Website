@@ -83,7 +83,7 @@ public class RestaurantRestController {
                     .orElseThrow(() -> new RuntimeException("Owner not found"));
             List<RestaurantDTO> restaurantDTOList = restaurantService.restaurantListService(owner);
             return restaurantDTOList;
-        } else if ("EMPLOYEE".equals(role)) {
+        } else if ("EMPLOYEE".equals(role) || "KITCHEN".equals(role) || "MANAGER".equals(role) || "SERVER".equals(role)) {
             Employee employee = employeeRepository.findEmployeeByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Employee not found"));
             return restaurantService.restaurantListForEmployee(employee);
