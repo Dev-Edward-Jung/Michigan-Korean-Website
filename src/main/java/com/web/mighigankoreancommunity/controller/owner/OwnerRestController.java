@@ -4,6 +4,7 @@ package com.web.mighigankoreancommunity.controller.owner;
 import com.web.mighigankoreancommunity.dto.OwnerDTO;
 import com.web.mighigankoreancommunity.dto.auth.PasswordRequest;
 import com.web.mighigankoreancommunity.entity.Owner;
+import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class OwnerRestController {
 
     private final OwnerService ownerService;
+    private final EmployeeService employeeService;
     private final AuthenticationManager authenticationManager;
 
     public String emailToLowerCase(String email) {

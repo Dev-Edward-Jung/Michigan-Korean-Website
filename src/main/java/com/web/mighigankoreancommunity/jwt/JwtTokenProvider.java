@@ -137,8 +137,10 @@ public class JwtTokenProvider {
 
         if (ownerUserDetailsService.existsByEmail(email)) {
             userDetails = ownerUserDetailsService.loadUserByUsername(email);
-        } else {
+        } else if(employeeUserDetailsService.existsByEmail(email)) {
             userDetails = employeeUserDetailsService.loadUserByUsername(email);  // 수정: 직원 서비스 사용
+        } else {
+            throw new RuntimeException("No user found with email: " + email);
         }
 
         return new UsernamePasswordAuthenticationToken(
