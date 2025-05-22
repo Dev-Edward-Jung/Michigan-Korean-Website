@@ -47,9 +47,10 @@ public class JwtTokenProvider {
     /**
      * 토큰 생성
      */
-    public String createToken(String userEmail, MemberRole role) {
+    public String createToken(String userEmail, MemberRole role, Long id) {
         Claims claims = Jwts.claims().setSubject(userEmail);
         claims.put("role", role.name());
+        claims.put("id", id); // 🔥 추가
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + expiration);
@@ -58,7 +59,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(key, SignatureAlgorithm.HS256)  // Key 객체 사용
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -76,6 +77,22 @@ public class JwtTokenProvider {
         String role = (String) getClaims(token).get("role");
         return MemberRole.valueOf(role);
     }
+
+
+    /**
+     * 토큰에서 id 추출
+     */
+    public Long getId(String token) {
+        Object idClaim = getClaims(token).get("id");
+        System.out.println(idClaim);
+        if (idClaim instanceof Number) {
+            return ((Number) idClaim).longValue(); // Long으로 안전하게 변환
+        }
+        throw new IllegalArgumentException("Invalid or missing ID in token");
+    }
+
+
+
 
     /**
      * 토큰 유효성 검증

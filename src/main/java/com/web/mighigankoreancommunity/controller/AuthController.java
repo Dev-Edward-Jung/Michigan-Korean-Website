@@ -47,47 +47,63 @@ public class AuthController {
 
     @PostMapping("/login/owner")
     public ResponseEntity<?> loginOwner(@RequestBody LoginRequest request) {
+        Long id = null;
         if (request.getEmail() == null || request.getEmail().isBlank()
                 || request.getPassword() == null || request.getPassword().isBlank()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "Email and password must not be empty"));
         }
-        // 1) 인증을 시도하고, 성공 시 Authentication 객체를 얻는다
+
+        // 1) 인증
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(), request.getPassword()
                 )
         );
 
-        // 2) 반환된 객체의 getName() 혹은 getPrincipal()에서 실제 사용자 정보를 꺼낸다
-        String email = authentication.getName();
-        // 또는
-        // CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        // String email = user.getUsername();
+        // 2) 사용자 정보 추출
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        if(user.isOwner()){
+            id = user.getOwner().getId();
+        } else if(user.isEmployee()){
+            id = user.getEmployee().getId();
+        } else {
+            throw new RuntimeException("Invalid user");
+        }
+        MemberRole role = user.getCurrentMemberRole();
+        String email = user.getUsername();
 
-        System.out.println("When you login : Email : " + email);  // 여기선 요청한 email이 찍혀야 한다
+        // 3) 토큰 생성
+        String token = jwtTokenProvider.createToken(email, role, id);
 
-        // 3) 토큰 발급 등 나머지 로직
-        MemberRole role = ((CustomUserDetails)authentication.getPrincipal()).getCurrentMemberRole();
-        String token = jwtTokenProvider.createToken(email, role);
-        return ResponseEntity.ok(new JwtResponse(token, role));
+        return ResponseEntity.ok(new JwtResponse(token, role, id));
     }
 
     @PostMapping("/login/employee")
     public ResponseEntity<JwtResponse> loginEmployee(@RequestBody LoginRequest request) {
+        Long id = null;
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(), request.getPassword()
                 )
         );
-        System.out.println("When you employee login : Email : " + request.getEmail());
+
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        MemberRole actualRole = user.getCurrentMemberRole();
-        System.out.println("When you employee : Role : " + actualRole);
-        String token = jwtTokenProvider.createToken(user.getUsername(), actualRole);
-        System.out.println("When you employee : Token : " + token);
-        return ResponseEntity.ok(new JwtResponse(token, actualRole));
+        if(user.isOwner()){
+            id = user.getOwner().getId();
+        } else if(user.isEmployee()){
+            id = user.getEmployee().getId();
+        } else {
+            throw new RuntimeException("Invalid user");
+        }
+        MemberRole role = user.getCurrentMemberRole();
+        String email = user.getUsername();
+
+        // 3) 토큰 생성
+        String token = jwtTokenProvider.createToken(email, role, id);
+
+        return ResponseEntity.ok(new JwtResponse(token, role, id));
     }
 
 

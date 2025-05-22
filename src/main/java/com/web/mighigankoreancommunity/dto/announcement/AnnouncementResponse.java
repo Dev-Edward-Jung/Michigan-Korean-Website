@@ -2,6 +2,7 @@ package com.web.mighigankoreancommunity.dto.announcement;
 
 
 import com.web.mighigankoreancommunity.domain.ContentType;
+import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.entity.Announcement;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class AnnouncementResponse {
     private String content;
     private ContentType type;
     private Long writerId;
+    private MemberRole writerRole;
     private String writerName;
     private String restaurantName;
     private String createdAt;
@@ -35,17 +37,18 @@ public class AnnouncementResponse {
         res.setRestaurantName(announcement.getRestaurant().getName());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         res.setCreatedAt(announcement.getCreatedAt().format(formatter));
-
         if (announcement.getOwner() != null) {
-            res.setWriterId(announcement.getOwner().getId()); //  owner id 설정
-            res.setWriterName(announcement.getOwner().getOwnerName());
-        } else if (announcement.getRestaurantEmployee() != null) {
-            res.setWriterId(announcement.getRestaurantEmployee().getId()); //  employee id 설정
-            res.setWriterName(announcement.getRestaurantEmployee().getEmployee().getName());
+            res.setWriterId(announcement.getOwner().getId());
+            res.setWriterRole(MemberRole.OWNER);
+            res.setWriterName(announcement.getOwner().getEmail());
+        } else if(announcement.getRestaurantEmployee() != null) {
+            res.setWriterId(announcement.getRestaurantEmployee().getId());
+            res.setWriterRole(announcement.getRestaurantEmployee().getMemberRole());
+            res.setWriterName(announcement.getRestaurantEmployee().getEmployee().getEmail());
         } else {
-            res.setWriterId(null); // 없는 경우 null 처리
-            res.setWriterName("Not Found");
+            throw new RuntimeException("User is not logged in");
         }
+
 
         return res;
     }

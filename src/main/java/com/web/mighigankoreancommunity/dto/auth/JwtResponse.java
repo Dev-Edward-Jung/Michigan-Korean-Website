@@ -14,9 +14,10 @@ public class JwtResponse {
     private Long id;
     private MemberRole role;
 
-    public JwtResponse(String token, MemberRole role) {
+    public JwtResponse(String token, MemberRole role, Long id) {
         this.token = token;
         this.role = role;
+        this.id = id;
     }
     public JwtResponse(String token) {
         this.token = token;

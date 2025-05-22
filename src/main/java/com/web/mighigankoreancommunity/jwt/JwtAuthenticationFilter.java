@@ -30,8 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest req) {
         String path = req.getServletPath();
         return path.startsWith("/auth/login")
-                || path.startsWith("/auth/register")
-                || path.equals("/csrf");
+                || path.startsWith("/auth/register");
     }
 
     @Override
@@ -51,14 +50,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String email = jwtTokenProvider.getEmail(token);
             MemberRole role = jwtTokenProvider.getRole(token); // JWT에서 꺼낸 사용자 역할
+            Long id = jwtTokenProvider.getId(token);
             System.out.println("Inside JwtAuthFilter, role is  : :" +  role);
             System.out.println("Inside JwtAuthFilter, Email is  : :" +  email);
+            System.out.println("Inside JwtAuthFilter, id is  : :" +  id);
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             UserDetails userDetails = null;
 
-            if ("OWNER".equals(role)) {
+            if (MemberRole.OWNER.equals(role)) {
                 userDetails = ownerUserDetailsService.loadUserByUsername(email);
             } else if (MemberRole.EMPLOYEE.equals(role) || MemberRole.KITCHEN.equals(role)
                     || MemberRole.MANAGER.equals(role) || MemberRole.SERVER.equals(role)) {
