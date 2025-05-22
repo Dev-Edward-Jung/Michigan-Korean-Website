@@ -65,6 +65,9 @@ public class AnnouncementRestController {
         return ResponseEntity.ok(id);
     }
 
+
+
+
     @Operation(summary = "Update announcement", description = "Updates an existing announcement.")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateAnnouncement(
@@ -76,6 +79,10 @@ public class AnnouncementRestController {
         AnnouncementResponse updated = announcementService.updateAnnouncement(id, request, restaurantId, userDetails);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
+
+
+
+
 
     @Operation(summary = "Delete announcement", description = "Deletes a specific announcement.")
     @DeleteMapping("/delete/{id}")
