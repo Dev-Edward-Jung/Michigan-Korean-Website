@@ -35,6 +35,7 @@ public class EmployeeRestController {
             @RequestBody EmployeeDTO employeeDTO,
             @AuthenticationPrincipal CustomUserDetails user
     ) {
+        System.out.println("hourly Wage : " + employeeDTO.getHourlyWage());
         String invitationLink = employeeService.sendInvitationEmail(employeeDTO, user.getOwner().getId());
         return ResponseEntity.ok(
                 ApiResponse.success(invitationLink, "Invitation sent successfully")

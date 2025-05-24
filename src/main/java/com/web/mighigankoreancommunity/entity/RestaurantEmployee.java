@@ -24,11 +24,15 @@ public class RestaurantEmployee {
 
     @ManyToOne(fetch = FetchType.LAZY)
             @JsonBackReference
-    Restaurant restaurant;
+    private Restaurant restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
             @JsonBackReference
-    Employee employee;
+    private Employee employee;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Payroll payroll;
 
 //    consider if employee has different role in different restaurant
     @Enumerated(EnumType.STRING)

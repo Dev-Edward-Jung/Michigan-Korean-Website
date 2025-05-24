@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,12 +29,10 @@ public class Payroll {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer amount;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal hourlyWage;
 
     private LocalDate payDate;
-
-    private LocalDate payStartDate;
-    private LocalDate payEndDate;
 
     // Save create created time automatically
     @CreationTimestamp
@@ -43,8 +42,12 @@ public class Payroll {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
+    @OneToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    private Employee employee;
+    private RestaurantEmployee restaurantEmployee;
+
+    public Payroll(BigDecimal hourlyWage, RestaurantEmployee restaurantEmployee) {
+        this.hourlyWage = hourlyWage;
+        this.restaurantEmployee = restaurantEmployee;
+    }
 }

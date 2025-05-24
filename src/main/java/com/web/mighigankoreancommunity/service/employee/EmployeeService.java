@@ -8,6 +8,7 @@ import com.web.mighigankoreancommunity.error.EmployeeNotFoundException;
 import com.web.mighigankoreancommunity.error.InvitationNotFoundException;
 import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.repository.PasswordTokenRepository;
+import com.web.mighigankoreancommunity.repository.PayrollRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.InvitationRepository;
@@ -37,6 +38,7 @@ public class EmployeeService {
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
     private final PasswordTokenRepository passwordTokenRepository;
     private final ScheduleRepository scheduleRepository;
+    private final PayrollRepository payrollRepository;
 
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
@@ -83,6 +85,7 @@ public class EmployeeService {
                 .orElseGet(() -> new Employee(name, email, null));
         employee.setName(name);  // 이름 최신화
 
+
         // ✅ 3. 초대 생성 또는 재설정
         String token = UUID.randomUUID().toString();
         Invitation invitation = employee.getInvitation();
@@ -112,6 +115,8 @@ public class EmployeeService {
             rel.setRestaurant(restaurant);
             rel.setMemberRole(dto.getMemberRole());
             rel.setApproved(false);
+            Payroll payroll = new Payroll(dto.getHourlyWage(), rel);
+            payrollRepository.save(payroll);
             restaurantEmployeeRepository.save(rel);
         }
 
