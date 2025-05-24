@@ -81,8 +81,14 @@ public class AuthController {
     }
 
     @PostMapping("/login/employee")
-    public ResponseEntity<JwtResponse> loginEmployee(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> loginEmployee(@RequestBody LoginRequest request) {
         Long id = null;
+        if (request.getEmail() == null || request.getEmail().isBlank()
+                || request.getPassword() == null || request.getPassword().isBlank()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Email and password must not be empty"));
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(), request.getPassword()

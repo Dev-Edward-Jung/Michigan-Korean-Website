@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.repository.employee;
 
 import com.web.mighigankoreancommunity.domain.MemberRole;
+import com.web.mighigankoreancommunity.entity.Employee;
 import com.web.mighigankoreancommunity.entity.RestaurantEmployee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,8 @@ public interface RestaurantEmployeeRepository  extends JpaRepository<RestaurantE
     Optional<RestaurantEmployee> findByIdAndRestaurantId(Long employeeId, Long restaurantId);
 
     Optional<RestaurantEmployee> findByEmployee_Email(String email);
+
+    List<RestaurantEmployee> findRestaurantEmployeesByRestaurant_Id(Long restaurantId);
 
 
 }

@@ -66,27 +66,18 @@ public class RestaurantRestController {
     @Operation(summary = "Get list of restaurants", description = "Returns a list of restaurants owned by the user (owner) or assigned to them (employee).")
     @GetMapping("/list")
     @ResponseBody
-    public List<RestaurantDTO> restaurantList() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Unauthorized");
-        }
-
-        String email = authentication.getName(); // JwtTokenProvider에서 저장한 이메일
-        String role = authentication.getAuthorities().stream()
-                .findFirst()
-                .map(GrantedAuthority::getAuthority)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-        if ("OWNER".equals(role)) {
-            Owner owner = ownerRepository.findOwnerByEmail(email)
+    public ResponseEntity<?> restaurantList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<RestaurantDTO> restaurantDTOList = null;
+        if (customUserDetails.isOwner()) {
+            Owner owner = ownerRepository.findOwnerByEmail(customUserDetails.getOwner().getEmail())
                     .orElseThrow(() -> new RuntimeException("Owner not found"));
-            List<RestaurantDTO> restaurantDTOList = restaurantService.restaurantListService(owner);
-            return restaurantDTOList;
-        } else if ("EMPLOYEE".equals(role) || "KITCHEN".equals(role) || "MANAGER".equals(role) || "SERVER".equals(role)) {
-            Employee employee = employeeRepository.findEmployeeByEmail(email)
+            restaurantDTOList = restaurantService.restaurantListService(owner);
+            return new ResponseEntity<>(restaurantDTOList, HttpStatus.OK);
+        } else if (customUserDetails.isEmployee()) {
+            Employee employee = employeeRepository.findEmployeeByEmail(customUserDetails.getEmployee().getEmail())
                     .orElseThrow(() -> new RuntimeException("Employee not found"));
-            return restaurantService.restaurantListForEmployee(employee);
+            restaurantDTOList = restaurantService.restaurantListForEmployee(employee);
+            return new ResponseEntity<>(restaurantDTOList, HttpStatus.OK);
         } else {
             throw new RuntimeException("Invalid role");
         }

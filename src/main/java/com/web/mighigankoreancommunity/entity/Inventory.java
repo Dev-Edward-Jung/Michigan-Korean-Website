@@ -30,6 +30,8 @@ public class Inventory {
     @Enumerated(EnumType.STRING)
     private InventoryUnit unit; // ex: "boxes", "bags"
 
+    private boolean needNow;
+
     // Save create created time automatically
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -35,21 +35,30 @@ public class RestaurantService {
 
     // ✅ 로그인한 사용자의 레스토랑 목록 반환
     public List<RestaurantDTO> restaurantListService(Owner owner) {
+        validateOwner(owner);
+
+        List<Restaurant> restaurantList = restaurantRepository.findRestaurantsByOwner(owner)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
+
+        return restaurantList.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // 🔹 Owner 유효성 검사 메서드
+    private void validateOwner(Owner owner) {
         if (owner == null) {
             throw new UnauthorizedRestaurantAccessException("You are not authorized to access this service");
         }
-        List<Restaurant> restaurantList = restaurantRepository.findRestaurantsByOwner(owner)
-                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
-        List<RestaurantDTO> restaurantDTOList = new ArrayList<>();
-        for (Restaurant restaurant : restaurantList) {
-            RestaurantDTO restaurantDTO = new RestaurantDTO();
-            restaurantDTO.setId(restaurant.getId());
-            restaurantDTO.setRestaurantName(restaurant.getName());
-            restaurantDTO.setRestaurantCity(restaurant.getCity());
-            restaurantDTOList.add(restaurantDTO);
-        }
-        return restaurantDTOList;
+    }
 
+    // 🔹 Restaurant → RestaurantDTO 변환 메서드
+    private RestaurantDTO convertToDTO(Restaurant restaurant) {
+        return RestaurantDTO.builder()
+                .id(restaurant.getId())
+                .restaurantName(restaurant.getName())
+                .restaurantCity(restaurant.getCity())
+                .build();
     }
 
     public List<RestaurantDTO> restaurantListForEmployee(Employee employee) {

@@ -5,6 +5,7 @@ import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.dto.schedule.ScheduleDTO;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class EmployeeDTO {
     Long id;
     String name;
     String email;
+    BigDecimal hourlyWage;
     MemberRole memberRole;
     Long restaurantId;
     List<ScheduleDTO> schedules;
