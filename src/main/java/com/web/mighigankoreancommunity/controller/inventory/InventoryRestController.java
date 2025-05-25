@@ -5,6 +5,7 @@ import com.web.mighigankoreancommunity.domain.InventoryUnit;
 import com.web.mighigankoreancommunity.dto.ApiResponse;
 import com.web.mighigankoreancommunity.dto.category.CategoryDTO;
 import com.web.mighigankoreancommunity.dto.inventory.InventoryDTO;
+import com.web.mighigankoreancommunity.entity.Inventory;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.service.inventory.CategoryService;
 import com.web.mighigankoreancommunity.service.inventory.InventoryService;
@@ -38,27 +39,27 @@ public class InventoryRestController {
 
     @Operation(summary = "Create inventory item", description = "Adds a new inventory item to the restaurant.")
     @PostMapping("/save")
-    public ResponseEntity<?> saveInventory(
+    public ResponseEntity<ApiResponse<InventoryDTO>> saveInventory(
             @RequestBody @Parameter(description = "Inventory item data") InventoryDTO dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        System.out.println(userDetails.getOwner().getEmail());
-        Long inventoryId = inventoryService.saveInventory(dto, userDetails);
-        // Note: conversion from InventoryDTO to CategoryDTO handled internally
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse());
+        InventoryDTO saved = inventoryService.saveInventory(dto, userDetails);
+        return ResponseEntity.ok(
+                ApiResponse.success(saved, "Update Successfully"));
     }
 
     @Operation(summary = "Update inventory item", description = "Updates an existing inventory item.")
     @PutMapping("/update")
-    public ResponseEntity<ApiResponse<Long>> updateInventory(
+    public ResponseEntity<ApiResponse<InventoryDTO>> updateInventory(
             @RequestBody @Parameter(description = "Updated inventory item data") InventoryDTO dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        Long updatedId = inventoryService.updateInventory(dto, userDetails);
+        InventoryDTO saved = inventoryService.updateInventory(dto, userDetails);
         return ResponseEntity.ok(
-                ApiResponse.success(updatedId, "Update Successfully")
-        );
+                ApiResponse.success(saved, "Update Successfully"));
     }
+
+
 
     @Operation(summary = "Delete inventory item", description = "Deletes the given inventory item.")
     @DeleteMapping("/delete")
@@ -66,9 +67,9 @@ public class InventoryRestController {
             @RequestBody @Parameter(description = "Inventory item to delete") InventoryDTO dto,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        inventoryService.deleteInventory(dto, customUserDetails);
+        Long id = inventoryService.deleteInventory(dto, customUserDetails);
         return ResponseEntity.ok(
-                ApiResponse.success(1, "Delete Successfully")
+                ApiResponse.success(id, "Delete Successfully")
         );
     }
 
@@ -87,6 +88,7 @@ public class InventoryRestController {
         return ResponseEntity.ok(result);
     }
 
+
     @Operation(summary = "Get inventory unit list", description = "Returns a list of available inventory units (e.g., PIECE, GRAM, LITER).")
     @GetMapping("/unit/list")
     public ResponseEntity<List<String>> unitList(
@@ -97,4 +99,9 @@ public class InventoryRestController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(unitList);
     }
+
+
+
+
+
 }

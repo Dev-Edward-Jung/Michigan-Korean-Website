@@ -34,19 +34,23 @@ public class CategoryRestController {
         return new ResponseEntity<>(categoryListDTOList, HttpStatus.OK);
     }
 
+
+
+
+
     @Operation(summary = "Create category", description = "Adds a new inventory category for the logged-in owner's restaurant.")
     @PostMapping("/save")
     public ResponseEntity<?> saveCategory(
             @RequestBody @Parameter(description = "Category data") CategoryDTO categoryDTO,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        boolean success = categoryService.addCategory(categoryDTO, userDetails);
-        if (success) {
-            return ResponseEntity.ok().body("Category saved successfully");
-        } else {
-            return ResponseEntity.badRequest().body("Failed to save category");
-        }
+        CategoryDTO saved = categoryService.addCategory(categoryDTO, userDetails);
+        return ResponseEntity.ok(saved);
     }
+
+
+
+
 
     @Operation(summary = "Update category", description = "Updates an existing category's name or other properties.")
     @PutMapping("/update")
@@ -54,13 +58,15 @@ public class CategoryRestController {
             @RequestBody @Parameter(description = "Updated category data") CategoryDTO categoryDTO,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        boolean success = categoryService.updateCategory(categoryDTO, userDetails);
-        if (success) {
-            return ResponseEntity.ok().body("Category updated successfully");
-        } else {
-            return ResponseEntity.badRequest().body("Failed to update category");
-        }
+        CategoryDTO saved = categoryService.updateCategory(categoryDTO, userDetails);
+        return ResponseEntity.ok(saved);
     }
+
+
+
+
+
+
 
     @Operation(summary = "Delete category", description = "Deletes an existing inventory category from the restaurant.")
     @DeleteMapping("/delete")
@@ -68,11 +74,7 @@ public class CategoryRestController {
             @RequestBody @Parameter(description = "Category to delete") CategoryDTO categoryDTO,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        boolean success = categoryService.deleteCategory(categoryDTO, userDetails);
-        if (success) {
-            return ResponseEntity.ok().body("Category deleted successfully");
-        } else {
-            return ResponseEntity.badRequest().body("Failed to delete category");
-        }
+        categoryService.deleteCategory(categoryDTO, userDetails);
+        return ResponseEntity.ok("Deleted successfully");
     }
 }

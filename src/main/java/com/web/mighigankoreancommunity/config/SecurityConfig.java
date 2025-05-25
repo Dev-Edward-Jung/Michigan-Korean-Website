@@ -41,6 +41,7 @@ public class SecurityConfig {
         DaoAuthenticationProvider p = new DaoAuthenticationProvider();
         p.setUserDetailsService(ownerUserDetailsService);
         p.setPasswordEncoder(passwordEncoder());
+        p.setHideUserNotFoundExceptions(false); // 💡 핵심 설정
         return p;
     }
 
@@ -49,6 +50,7 @@ public class SecurityConfig {
         DaoAuthenticationProvider p = new DaoAuthenticationProvider();
         p.setUserDetailsService(employeeUserDetailsService);
         p.setPasswordEncoder(passwordEncoder());
+        p.setHideUserNotFoundExceptions(false); // 💡 핵심 설정
         return p;
     }
 
@@ -82,7 +84,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // 🔥 이 줄 추가!
                         .requestMatchers("/auth/login/**", "/auth/register/**",
-                                "/api/employee/forgot/**", "/api/employee/reset/**", "/api/employee/forgot/**", "/api/employee/register"
+                                "/api/employee/forgot/**", "/api/employee/reset/**",
+                                "/api/employee/forgot/**", "/api/employee/register",
+                                "/api/owner/checkEmail"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/restaurant/**", "/api/inventory/**", "/api/category/**",
@@ -125,7 +129,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:3000"));
+        cfg.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));
         cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of(
                 "Content-Type",

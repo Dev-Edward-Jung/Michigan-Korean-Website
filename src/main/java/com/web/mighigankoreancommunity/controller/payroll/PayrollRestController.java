@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.controller.payroll;
 
 
+import com.web.mighigankoreancommunity.dto.ApiResponse;
 import com.web.mighigankoreancommunity.dto.payroll.PayrollRequest;
 import com.web.mighigankoreancommunity.dto.payroll.PayrollResponse;
 import com.web.mighigankoreancommunity.entity.Payroll;
@@ -22,23 +23,22 @@ public class PayrollRestController {
     private final PayrollService payrollService;
 
     @GetMapping("/list")
-    public ResponseEntity<?> getPayrolls(@RequestParam Long restaurantId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<ApiResponse<List<PayrollResponse>>> getPayrolls(@RequestParam Long restaurantId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if(customUserDetails.isOwner()) {
             List<PayrollResponse> payrollResponses = payrollService.getAllPayrolls(restaurantId, customUserDetails.getOwner());
-            return new ResponseEntity<>(payrollResponses, HttpStatus.OK);
+            return ResponseEntity.ok(
+                    ApiResponse.success(payrollResponses, "Update Successfully"));
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping("/save")
-    public void savePayroll(PayrollRequest request, @RequestParam("restaurantId") Long restaurantId) {
-        System.out.println("Restaurant Id: " + restaurantId);
-        System.out.println("Payroll request: " + request.getName());
+    @PutMapping("/update")
+    public ResponseEntity<ApiResponse<PayrollResponse>> updatePayroll(@RequestParam Long restaurantId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PayrollRequest payrollRequest) {
+//        PayrollResponse payrollResponse = payrollService.
+    return null;
     }
 
-    @PutMapping("/update")
-    public void updatePayroll(Payroll p) {}
 
 
     @DeleteMapping("/delete")

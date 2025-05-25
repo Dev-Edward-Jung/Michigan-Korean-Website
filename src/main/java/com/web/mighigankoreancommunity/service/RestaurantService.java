@@ -25,12 +25,13 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
     // ✅ 레스토랑 저장
-    public void saveService(RestaurantDTO restaurantDTO, Owner owner) {
+    public RestaurantDTO saveService(RestaurantDTO restaurantDTO, Owner owner) {
         String restaurantName = restaurantDTO.getRestaurantName();
         String restaurantCity = restaurantDTO.getRestaurantCity();
 
         Restaurant restaurant = Restaurant.create(restaurantName, restaurantCity, owner);
-        restaurantRepository.save(restaurant);
+        Restaurant saved = restaurantRepository.save(restaurant);
+        return RestaurantDTO.from(saved);
     }
 
     // ✅ 로그인한 사용자의 레스토랑 목록 반환

@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.web.mighigankoreancommunity.domain.InventoryUnit;
+import com.web.mighigankoreancommunity.dto.inventory.InventoryDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -49,5 +50,15 @@ public class Inventory {
     @JoinColumn(name = "category_id")
     @JsonBackReference
     private Category category;
+
+
+    public static Inventory from (InventoryDTO inventoryDTO) {
+        return Inventory.builder()
+                .id(inventoryDTO.getId())
+                .name(inventoryDTO.getName())
+                .quantity(inventoryDTO.getQuantity())
+                .unit(inventoryDTO.getUnit())
+                .build();
+    }
 
 }

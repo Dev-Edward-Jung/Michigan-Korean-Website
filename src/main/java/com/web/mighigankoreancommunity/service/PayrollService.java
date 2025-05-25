@@ -1,10 +1,12 @@
 package com.web.mighigankoreancommunity.service;
 
+import com.web.mighigankoreancommunity.dto.payroll.PayrollRequest;
 import com.web.mighigankoreancommunity.dto.payroll.PayrollResponse;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Payroll;
 import com.web.mighigankoreancommunity.entity.Restaurant;
 import com.web.mighigankoreancommunity.entity.RestaurantEmployee;
+import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.repository.PayrollRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -27,9 +30,10 @@ public class PayrollService {
         Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, owner)
                 .orElseThrow(RuntimeException::new);
         List<PayrollResponse> payrollResponses = new ArrayList<>();
-        System.out.println("Restaurant: ");
 
-        List<RestaurantEmployee> restaurantEmployeeList =  restaurantEmployeeRepository.findRestaurantEmployeesByRestaurant_Id(restaurantId);
+        List<RestaurantEmployee> restaurantEmployeeList = restaurantEmployeeRepository
+                .findRestaurantEmployeesByRestaurant_IdAndApprovedTrue(restaurant.getId())
+                .orElse(Collections.emptyList());
         for (RestaurantEmployee restaurantEmployee : restaurantEmployeeList) {
             Payroll payroll = payrollRepository.findPayrollByRestaurantEmployee(restaurantEmployee)
                     .orElseThrow(RuntimeException::new);
@@ -44,6 +48,12 @@ public class PayrollService {
         }
 
         return payrollResponses;
+    }
+
+
+
+    public PayrollResponse updatePayroll(Long restaurantId, CustomUserDetails customUserDetails, PayrollRequest payrollRequest) {
+        return null;
     }
 
 }
