@@ -55,25 +55,30 @@ public class CategoryService {
     }
 
     @Transactional
-    public boolean addCategory(CategoryDTO categoryDTO, CustomUserDetails loginUser) {
+    public CategoryDTO addCategory(CategoryDTO categoryDTO, CustomUserDetails loginUser) {
+        // 1. 레스토랑 존재 확인
         Restaurant restaurant = restaurantRepository.findById(categoryDTO.getRestaurantId())
                 .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
 
+        // 2. 권한 확인
         if (!hasPermission(restaurant, loginUser)) {
             throw new RuntimeException("Unauthorized to add category");
         }
 
-        Category category = Category.builder()
-                .name(categoryDTO.getName())
-                .restaurant(restaurant)
-                .build();
+        // 3. DTO → Entity 변환
+        Category category = Category.from(categoryDTO); // DTO에서 id, name만 설정됨
+        category.setRestaurant(restaurant); // restaurant는 따로 직접 연결해야 함
 
-        categoryRepository.save(category);
-        return true;
+        // 4. 저장
+        Category saved = categoryRepository.save(category);
+
+        // 5. Entity → DTO 변환 후 반환
+        return CategoryDTO.from(saved);
     }
 
     @Transactional
-    public boolean updateCategory(CategoryDTO categoryDTO, CustomUserDetails loginUser) {
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO, CustomUserDetails loginUser) {
+        // 1. 레스토랑 조회 및 권한 확인
         Restaurant restaurant = restaurantRepository.findById(categoryDTO.getRestaurantId())
                 .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
 
@@ -81,18 +86,22 @@ public class CategoryService {
             throw new RuntimeException("Unauthorized to update category");
         }
 
-        Category category = Category.builder()
-                .id(categoryDTO.getId())
-                .name(categoryDTO.getName())
-                .restaurant(restaurant)
-                .build();
+        // 2. 기존 카테고리 조회
+        Category existing = categoryRepository.findById(categoryDTO.getId())
+                .orElseThrow(() -> new RuntimeException("Category not found."));
 
-        categoryRepository.save(category);
-        return true;
+        // 3. 내용 업데이트
+        existing.setName(categoryDTO.getName());
+
+        // 4. 저장
+        Category saved = categoryRepository.save(existing);
+
+        // 5. DTO로 변환하여 반환
+        return CategoryDTO.from(saved);
     }
 
     @Transactional
-    public boolean deleteCategory(CategoryDTO categoryDTO, CustomUserDetails loginUser) {
+    public void deleteCategory(CategoryDTO categoryDTO, CustomUserDetails loginUser) {
         Restaurant restaurant = restaurantRepository.findById(categoryDTO.getRestaurantId())
                 .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
 
@@ -100,13 +109,9 @@ public class CategoryService {
             throw new RuntimeException("Unauthorized to delete category");
         }
 
-        Category category = Category.builder()
-                .id(categoryDTO.getId())
-                .name(categoryDTO.getName())
-                .restaurant(restaurant)
-                .build();
+        Category category = categoryRepository.findById(categoryDTO.getId())
+                .orElseThrow(() -> new RuntimeException("Category not found."));
 
         categoryRepository.delete(category);
-        return true;
     }
 }

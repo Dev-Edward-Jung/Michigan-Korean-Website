@@ -116,7 +116,8 @@ public class EmployeeService {
             rel.setMemberRole(dto.getMemberRole());
             rel.setApproved(false);
             Payroll payroll = new Payroll(dto.getHourlyWage(), rel);
-            payrollRepository.save(payroll);
+            payroll = payrollRepository.save(payroll);
+            rel.setPayroll(payroll);
             restaurantEmployeeRepository.save(rel);
         }
 

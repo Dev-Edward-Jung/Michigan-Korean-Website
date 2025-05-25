@@ -3,6 +3,7 @@ package com.web.mighigankoreancommunity.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.web.mighigankoreancommunity.dto.category.CategoryDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,5 +32,18 @@ public class Category {
     @JoinColumn(name = "restaurant_id")
     @JsonBackReference
     private Restaurant restaurant;
+
+    // DTO → Entity
+    public static Category from(CategoryDTO dto) {
+        return Category.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .restaurant(
+                        dto.getRestaurantId() != null ?
+                                Restaurant.builder().id(dto.getRestaurantId()).build() :
+                                null
+                )
+                .build();
+    }
 
 }

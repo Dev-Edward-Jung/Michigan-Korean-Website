@@ -62,7 +62,7 @@ public class InventoryService {
 
 
     @Transactional
-    public Long saveInventory(InventoryDTO dto, CustomUserDetails loginUser) {
+    public InventoryDTO saveInventory(InventoryDTO dto, CustomUserDetails loginUser) {
         Restaurant restaurant = restaurantRepository.findById(dto.getRestaurantId())
                 .orElseThrow(() -> new UnauthorizedRestaurantAccessException("Restaurant not found"));
 
@@ -78,21 +78,29 @@ public class InventoryService {
             throw new DuplicateInventoryException("You already have this item in your inventory.");
         }
 
-        Inventory inventory = Inventory.builder()
-                .name(dto.getName())
-                .quantity(dto.getQuantity())
-                .unit(dto.getUnit())
-                .restaurant(restaurant)
-                .category(category)
-                .build();
+        Inventory inventory = Inventory.from(dto);
+        inventory.setRestaurant(restaurant);
+        inventory.setCategory(category);
+        try{
+            Inventory saved = inventoryRepository.save(inventory);
+            InventoryDTO inventoryDTO = InventoryDTO.fromEntity(saved);
+            inventoryDTO.setRestaurantId(restaurant.getId());
+            inventoryDTO.setCategoryId(category.getId());
+            inventoryDTO.setCategoryName(category.getName());
+            inventoryDTO.setUnit(dto.getUnit());
 
-        return inventoryRepository.save(inventory).getId();
+            return inventoryDTO;
+        } catch (Exception e){
+            throw new RuntimeException("Save inventory failed");
+        }
+
+
     }
 
 
 
     @Transactional
-    public Long updateInventory(InventoryDTO dto, CustomUserDetails loginUser) {
+    public InventoryDTO updateInventory(InventoryDTO dto, CustomUserDetails loginUser) {
         Inventory inventory = inventoryRepository.findById(dto.getId())
                 .orElseThrow(InventoryNotFoundException::new);
 
@@ -110,18 +118,21 @@ public class InventoryService {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(CategoryNotFoundException::new);
 
+
+
         inventory.setName(dto.getName());
         inventory.setQuantity(dto.getQuantity());
         inventory.setUnit(dto.getUnit());
         inventory.setCategory(category);
 
-        return inventoryRepository.save(inventory).getId();
+        Inventory savedEntity = inventoryRepository.save(inventory);
+        return InventoryDTO.fromEntity(savedEntity);
     }
 
 
 
     @Transactional
-    public void deleteInventory(InventoryDTO dto, CustomUserDetails loginUser) {
+    public Long deleteInventory(InventoryDTO dto, CustomUserDetails loginUser) {
         Restaurant restaurant = restaurantRepository.findById(dto.getRestaurantId())
                 .orElseThrow(UnauthorizedRestaurantAccessException::new);
 
@@ -137,5 +148,6 @@ public class InventoryService {
         }
 
         inventoryRepository.delete(inventory);
+        return inventory.getId();
     }
 }

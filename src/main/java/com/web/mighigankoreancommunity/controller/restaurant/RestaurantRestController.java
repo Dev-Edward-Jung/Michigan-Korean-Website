@@ -52,9 +52,9 @@ public class RestaurantRestController {
         if ("OWNER".equals(role)) {
             Owner owner = ownerRepository.findOwnerByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Owner not found"));
-            restaurantService.saveService(dto, owner);
+            RestaurantDTO saved = restaurantService.saveService(dto, owner);
             // have your service return the saved entity or DTO
-            return ResponseEntity.ok(ResponseEntity.status(HttpStatus.OK).build());
+            return ResponseEntity.ok(saved);
         } else  {
             Employee employee = employeeRepository.findEmployeeByEmail(email)
                     .orElseThrow(() -> new RuntimeException("Employee not found"));
