@@ -46,7 +46,8 @@ public class InventoryService {
                 inventory.getUnit(),
                 inventory.getCategory().getId(),
                 inventory.getCategory().getName(),
-                inventory.getRestaurant().getId()
+                inventory.getRestaurant().getId(),
+                inventory.isNeedNow()
         )).collect(Collectors.toList());
     }
 
@@ -124,9 +125,15 @@ public class InventoryService {
         inventory.setQuantity(dto.getQuantity());
         inventory.setUnit(dto.getUnit());
         inventory.setCategory(category);
+        inventory.setNeedNow(dto.isNeedNow());
 
         Inventory savedEntity = inventoryRepository.save(inventory);
-        return InventoryDTO.fromEntity(savedEntity);
+        InventoryDTO inventoryDTO = InventoryDTO.fromEntity(savedEntity);
+        inventoryDTO.setRestaurantId(restaurant.getId());
+        inventoryDTO.setCategoryId(category.getId());
+        inventoryDTO.setCategoryName(category.getName());
+
+        return inventoryDTO;
     }
 
 

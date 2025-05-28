@@ -1,5 +1,7 @@
 package com.web.mighigankoreancommunity.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.web.mighigankoreancommunity.dto.payroll.PayrollRequest;
+import com.web.mighigankoreancommunity.dto.payroll.PayrollResponse;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -32,6 +34,8 @@ public class Payroll {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal hourlyWage;
 
+    private BigDecimal totalWage;
+
     private LocalDate payDate;
 
     // Save create created time automatically
@@ -49,5 +53,19 @@ public class Payroll {
     public Payroll(BigDecimal hourlyWage, RestaurantEmployee restaurantEmployee) {
         this.hourlyWage = hourlyWage;
         this.restaurantEmployee = restaurantEmployee;
+    }
+
+    public Payroll of(PayrollRequest payrollRequest) {
+        return Payroll.builder()
+                .hourlyWage(payrollRequest.getHourlyWage())
+                .totalWage(payrollRequest.getTotalWage())
+                .build();
+    }
+
+    public Payroll of(PayrollResponse payrollResponse) {
+        return Payroll.builder()
+                .totalWage(payrollResponse.getTotalWage())
+                .hourlyWage(payrollResponse.getHourlyWage())
+                .build();
     }
 }

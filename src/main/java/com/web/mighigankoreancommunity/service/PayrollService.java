@@ -37,11 +37,11 @@ public class PayrollService {
         for (RestaurantEmployee restaurantEmployee : restaurantEmployeeList) {
             Payroll payroll = payrollRepository.findPayrollByRestaurantEmployee(restaurantEmployee)
                     .orElseThrow(RuntimeException::new);
-            System.out.println("Employee: ");
             PayrollResponse payrollResponse = PayrollResponse.builder()
                     .hourlyWage(payroll.getHourlyWage())
                     .name(restaurantEmployee.getEmployee().getName())
-                    .id(restaurantEmployee.getId())
+                    .id(payroll.getId())
+                    .totalWage(payroll.getTotalWage())
                     .build();
             payrollResponses.add(payrollResponse);
 
@@ -53,7 +53,28 @@ public class PayrollService {
 
 
     public PayrollResponse updatePayroll(Long restaurantId, CustomUserDetails customUserDetails, PayrollRequest payrollRequest) {
-        return null;
+        if (!customUserDetails.isOwner()) {
+            throw new RuntimeException("Invalid user");
+        }
+
+        // 1. 레스토랑 유효성 검사
+        Restaurant restaurant = restaurantRepository.findRestaurantByIdAndOwner(restaurantId, customUserDetails.getOwner())
+                .orElseThrow(() -> new RuntimeException("Restaurant not found or access denied"));
+
+        // 2. 기존 Payroll 찾기 (업데이트니까)
+        Payroll payroll = payrollRepository.findById(payrollRequest.getId())
+                .orElseThrow(() -> new RuntimeException("Payroll record not found"));
+
+        // 3. 필드 업데이트
+        payroll.setHourlyWage(payrollRequest.getHourlyWage());
+        payroll.setTotalWage(payrollRequest.getTotalWage());
+
+        // 4. 저장
+        Payroll updated = payrollRepository.save(payroll);
+        PayrollResponse payrollResponse = PayrollResponse.of(updated);
+        payrollResponse.setName(payrollRequest.getName());
+        // 5. 응답 반환
+        return payrollResponse;
     }
 
 }
