@@ -34,9 +34,13 @@ public class PayrollRestController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ApiResponse<PayrollResponse>> updatePayroll(@RequestParam Long restaurantId, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PayrollRequest payrollRequest) {
+    public ResponseEntity<ApiResponse<PayrollResponse>> updatePayroll(
+            @RequestParam Long restaurantId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody PayrollRequest payrollRequest) {
 //        PayrollResponse payrollResponse = payrollService.
-    return null;
+         PayrollResponse payrollResponse = payrollService.updatePayroll(restaurantId, customUserDetails, payrollRequest);
+         return ResponseEntity.ok(ApiResponse.success(payrollResponse, "Update Successfully"));
     }
 
 

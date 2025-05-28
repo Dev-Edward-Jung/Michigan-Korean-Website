@@ -31,7 +31,7 @@ public class Inventory {
     @Enumerated(EnumType.STRING)
     private InventoryUnit unit; // ex: "boxes", "bags"
 
-    private boolean needNow;
+    private boolean needNow = false;
 
     // Save create created time automatically
     @CreationTimestamp
@@ -58,6 +58,7 @@ public class Inventory {
                 .name(inventoryDTO.getName())
                 .quantity(inventoryDTO.getQuantity())
                 .unit(inventoryDTO.getUnit())
+                .needNow(inventoryDTO.isNeedNow())
                 .build();
     }
 
