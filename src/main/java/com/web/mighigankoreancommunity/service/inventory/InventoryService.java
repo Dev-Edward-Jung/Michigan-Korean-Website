@@ -12,6 +12,8 @@ import com.web.mighigankoreancommunity.repository.inevntory.InventoryRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,19 +29,19 @@ public class InventoryService {
 
     // Get Inventory List
 
-    public List<InventoryDTO> getInventoriesByRestaurant(Long restaurantId, CustomUserDetails loginUser) {
+    public Page<InventoryDTO> getPagedInventoriesByRestaurant(Long restaurantId, CustomUserDetails loginUser, Pageable pageable) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found."));
+        System.out.println("지금 들어온 아이디는 " + restaurantId);
 
-        // 로그인은 되어 있어야 하며, 모든 직원이나 사장님이 리스트를 볼 수 있음
         if (!(loginUser.isOwner() || loginUser.isEmployee())) {
             throw new UnauthorizedRestaurantAccessException("Login required");
         }
 
-        List<Inventory> inventories = inventoryRepository.findByRestaurantsId(restaurantId)
-                .orElseThrow(() -> new RuntimeException("Inventory not found."));
+        Page<Inventory> page = inventoryRepository.findByRestaurantIdPaged(restaurantId, pageable);
+        System.out.println("????"  + page.getContent().get(0).getName());
 
-        return inventories.stream().map(inventory -> new InventoryDTO(
+        return page.map(inventory -> new InventoryDTO(
                 inventory.getId(),
                 inventory.getName(),
                 inventory.getQuantity(),
@@ -48,17 +50,7 @@ public class InventoryService {
                 inventory.getCategory().getName(),
                 inventory.getRestaurant().getId(),
                 inventory.isNeedNow()
-        )).collect(Collectors.toList());
-    }
-
-    private boolean hasPermission(Restaurant restaurant, CustomUserDetails loginUser) {
-        if (loginUser.isOwner()) {
-            return restaurant.getOwner().getId().equals(loginUser.getOwner().getId());
-        } else if (loginUser.isEmployee()) {
-            return loginUser.getRestaurantEmployee() != null &&
-                    loginUser.getRestaurantEmployee().getRestaurant().getId().equals(restaurant.getId());
-        }
-        return false;
+        ));
     }
 
 
@@ -156,5 +148,16 @@ public class InventoryService {
 
         inventoryRepository.delete(inventory);
         return inventory.getId();
+    }
+
+
+    private boolean hasPermission(Restaurant restaurant, CustomUserDetails loginUser) {
+        if (loginUser.isOwner()) {
+            return restaurant.getOwner().getId().equals(loginUser.getOwner().getId());
+        } else if (loginUser.isEmployee()) {
+            return loginUser.getRestaurantEmployee() != null &&
+                    loginUser.getRestaurantEmployee().getRestaurant().getId().equals(restaurant.getId());
+        }
+        return false;
     }
 }

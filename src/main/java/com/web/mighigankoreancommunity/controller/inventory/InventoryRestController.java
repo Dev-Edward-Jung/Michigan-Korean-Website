@@ -13,6 +13,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -73,19 +77,23 @@ public class InventoryRestController {
         );
     }
 
-    @Operation(summary = "Get inventory and category lists", description = "Returns all inventory items and their categories for a given restaurant.")
-    @GetMapping("/list")
-    public ResponseEntity<Map<String, Object>> inventoryList(
-            @Parameter(description = "Restaurant ID") @RequestParam Long restaurantId,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    @Operation(summary = "Get paged inventory list", description = "Returns inventories in order of needNow DESC.")
+    @GetMapping("/list/paged")
+    @ResponseBody
+    public ResponseEntity<ApiResponse<Map<String, Object>>> inventoryListPaged(
+            @RequestParam Long restaurantId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PageableDefault(size = 10, sort = "needNow", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        List<InventoryDTO> inventoryList = inventoryService.getInventoriesByRestaurant(restaurantId, customUserDetails);
-        List<CategoryDTO> categoryList = categoryService.findCategoriesByRestaurant(restaurantId, customUserDetails);
-
+        System.out.println("인벤토리 들어와쎠유");
+        Page<InventoryDTO> page = inventoryService.getPagedInventoriesByRestaurant(restaurantId, customUserDetails, pageable);
+        System.out.println("서비스 끝났셔유");
         Map<String, Object> result = new HashMap<>();
-        result.put("categoryList", categoryList);
-        result.put("inventoryList", inventoryList);
-        return ResponseEntity.ok(result);
+        result.put("content", page.getContent());
+        result.put("last", page.isLast());
+        result.put("page", page.getNumber());
+        result.put("totalPages", page.getTotalPages());
+        return ResponseEntity.ok(ApiResponse.success(result, "Update Successfully"));
     }
 
 
@@ -99,6 +107,8 @@ public class InventoryRestController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(unitList);
     }
+
+
 
 
 
