@@ -50,6 +50,15 @@ public class AuthController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateJwt(@AuthenticationPrincipal CustomUserDetails user) {
+        if (user != null) {
+            return ResponseEntity.ok().build(); // 인증됨
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
 
     @PostMapping("/login/owner")
     public ResponseEntity<?> loginOwner(@RequestBody LoginRequest request) {
@@ -128,7 +137,6 @@ public class AuthController {
 
     @PostMapping("/register/owner")
     public String registerOwner(@RequestBody RegisterRequest registerRequest) {
-        System.out.println(registerRequest.getEmail());
         ownerService.saveOwner(registerRequest);
         return "user/owner-login";
     }
