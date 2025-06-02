@@ -85,9 +85,9 @@ public class OwnerService {
         if (ownerOpt.isPresent()) {
             Owner owner = ownerOpt.get();
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://127.0.0.1:10000/page/owner/reset/password?token=" + token + "&email=" + email;
-//            String resetLink = "https://www.restoflowing.com/page/owner/reset/password?token=" + token + "&email=" + email;
-
+            String resetLink = "http://localhost:3000/auth/reset/?token=" + token;
+//            String resetLink = "https://www.restoflowing.com/auth/reset?token=" + token + "&email=" + email;
+            System.out.println("owner : " + owner.getEmail());
             LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
 
             // 1. 해당 owner의 토큰 존재 여부 확인
@@ -107,7 +107,9 @@ public class OwnerService {
                         .expiresAt(expiresAt)
                         .build();
             }
-
+            owner.setPasswordToken(passwordToken);
+            System.out.println("Owner Email is : " + passwordToken.getOwner().getEmail());
+            ownerRepository.save(owner);
             passwordTokenRepository.save(passwordToken);
 
             // 4. 이메일 전송
@@ -119,13 +121,27 @@ public class OwnerService {
     }
 
 
-    public void resetPassword(String email, String password) {
-        Owner owner = ownerRepository.findOwnerByEmail(email).orElseThrow(() -> new RuntimeException("Owner not found"));
+    public void resetPassword(String token, String password) {
+        Owner owner = ownerRepository.findOwnerByPasswordToken_Token(token).orElseThrow(() -> new RuntimeException("Owner not found"));
+        PasswordToken passwordToken = passwordTokenRepository.findByOwner(owner).orElseThrow(RuntimeException::new);
         String newPassword = passwordEncoder.encode(password);
+
+        passwordToken.setUsed(true);
         owner.setPassword(newPassword);
+
+
+        passwordTokenRepository.save(passwordToken);
         ownerRepository.save(owner);
     }
 
+
+    public boolean existsByEmail(String email) {
+        return ownerRepository.existsByEmail(email);
+    }
+
+    public boolean existsOwnerByPasswordToken(String token) {
+        return ownerRepository.existsByPasswordToken_Token(token);
+    }
 
 
 

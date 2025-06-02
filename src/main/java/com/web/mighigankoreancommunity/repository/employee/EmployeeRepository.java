@@ -26,4 +26,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findByPasswordToken_Token(String token);
 
     public boolean existsByEmail(String email);
+
+    public boolean existsByPasswordToken_Token(String token);
+
+    public Optional<Employee> findEmployeeByPasswordToken_Token(String token);
 }

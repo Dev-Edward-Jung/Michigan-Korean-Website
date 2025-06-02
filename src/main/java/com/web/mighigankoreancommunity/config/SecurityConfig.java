@@ -84,7 +84,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // 🔥 이 줄 추가!
                         .requestMatchers("/auth/login/**", "/auth/register/**",
-                                "/api/employee/forgot/**", "/api/employee/reset/**",
+                                "/auth/forget/password", "/auth/reset/password",
                                 "/api/employee/forgot/**", "/api/employee/register",
                                 "/api/owner/checkEmail"
                         ).permitAll()
