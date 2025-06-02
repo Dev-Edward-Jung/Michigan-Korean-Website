@@ -8,4 +8,5 @@ import lombok.Setter;
 @Setter
 public class PasswordRequest {
     private String password;
+    private String token;
 }

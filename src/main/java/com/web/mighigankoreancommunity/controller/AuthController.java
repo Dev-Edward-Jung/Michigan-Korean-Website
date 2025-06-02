@@ -2,16 +2,19 @@ package com.web.mighigankoreancommunity.controller;
 
 
 import com.web.mighigankoreancommunity.domain.MemberRole;
-import com.web.mighigankoreancommunity.dto.auth.JwtResponse;
-import com.web.mighigankoreancommunity.dto.auth.LoginRequest;
-import com.web.mighigankoreancommunity.dto.auth.RegisterRequest;
-import com.web.mighigankoreancommunity.dto.auth.UserInfoDto;
+import com.web.mighigankoreancommunity.dto.ApiResponse;
+import com.web.mighigankoreancommunity.dto.auth.*;
 import com.web.mighigankoreancommunity.entity.Owner;
+import com.web.mighigankoreancommunity.entity.PasswordToken;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
 import com.web.mighigankoreancommunity.jwt.JwtTokenProvider;
+import com.web.mighigankoreancommunity.service.PasswordTokenService;
+import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import com.web.mighigankoreancommunity.service.employee.EmployeeUserDetailsService;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
 import com.web.mighigankoreancommunity.service.owner.OwnerUserDetailsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +26,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -36,6 +41,12 @@ public class AuthController {
     private final OwnerUserDetailsService ownerUserDetailsService;
     private final EmployeeUserDetailsService employeeUserDetailsService;
 
+    private final EmployeeService employeeService;
+    private final PasswordTokenService passwordTokenService;
+
+    public String emailToLowerCase(String email) {
+        return email.trim().toLowerCase();
+    }
 
     // 1) @AuthenticationPrincipal 사용하기
     @GetMapping("/me")
@@ -135,9 +146,71 @@ public class AuthController {
     }
 
 
-    @PostMapping("/register/owner")
-    public String registerOwner(@RequestBody RegisterRequest registerRequest) {
-        ownerService.saveOwner(registerRequest);
-        return "user/owner-login";
+    @Operation(summary = "Send password reset email", description = "Sends a password reset email to the owner's registered email address.")
+    @PostMapping("/forget/password")
+    public ResponseEntity<?> forget(
+            @RequestBody @Parameter(description = "Owner email") String email
+    ) {
+        email = emailToLowerCase(email);
+        if (ownerService.existsByEmail(email)) {
+            ownerService.ownerForgotPasswordService(email);
+            return ResponseEntity.ok().build();
+        }
+        else if (employeeService.existsByEmail(email)) {
+            employeeService.employeeForgotPasswordService(email);
+            return ResponseEntity.ok().build();
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
+
+    @Operation(summary = "Reset owner password", description = "Resets the owner's password using the token sent to their email.")
+    @PostMapping("/reset/password")
+    public ResponseEntity<String> resetPassword(
+            @RequestBody @Parameter(description = "New password") PasswordRequest request
+    ) {
+        String password = request.getPassword();
+        String token  = request.getToken();
+
+        if (password == null || password.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Optional<PasswordToken> optionalToken = passwordTokenService.findByToken(token);
+        if (optionalToken.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        PasswordToken resetToken = optionalToken.get();
+        System.out.println("Rest TOken이 사용되었나?" + resetToken.isUsed());
+//        Already Used Token
+        if (resetToken.isUsed()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+
+//      Token is expired
+        if (resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        System.out.println("token : " + resetToken.getToken());
+        System.out.println( "어디서 문제노 : " + ownerService.existsOwnerByPasswordToken(token));
+        if(ownerService.existsOwnerByPasswordToken(token)) {
+            ownerService.resetPassword(token, password);
+            System.out.println("Owner는 지금  : " + ownerService.existsOwnerByPasswordToken(token));
+            return ResponseEntity.ok().build();
+        }
+        else if (employeeService.existsEmployeeByPasswordToken(token)) {
+            employeeService.resetPassword(token, password);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+
+
+
+
 }

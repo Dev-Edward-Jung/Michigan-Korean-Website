@@ -22,5 +22,5 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
 
     Optional<Owner> findOwnerByPasswordToken_Token(String token);
 
-
+    public boolean existsByPasswordToken_Token(String token);
 }

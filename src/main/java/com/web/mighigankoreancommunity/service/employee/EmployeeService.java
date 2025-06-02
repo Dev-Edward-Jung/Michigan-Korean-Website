@@ -188,8 +188,8 @@ public class EmployeeService {
         if (employeeOpt.isPresent()) {
             Employee employee = employeeOpt.get();
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://localhost:3000/page/employee/reset/password?token=" + token + "&email=" + email;
-//            String resetLink = "https://www.restoflowing.com/page/employee/reset/password?token=" + token + "&email=" + email;
+            String resetLink = "http://localhost:3000/auth/reset?token=" + token;
+//            String resetLink = "https://www.restoflowing.com/auth/reset?token=" + token + "&email=" + email;
 
             LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
 
@@ -202,12 +202,14 @@ public class EmployeeService {
                 passwordToken = tokenOpt.get();
                 passwordToken.setToken(token);
                 passwordToken.setExpiresAt(expiresAt);
+                passwordToken.setUsed(false);
             } else {
                 // 3. 없는 경우 새로 생성
                 passwordToken = PasswordToken.builder()
                         .token(token)
                         .employee(employee)
                         .expiresAt(expiresAt)
+                        .used(false)
                         .build();
             }
 
@@ -233,9 +235,13 @@ public class EmployeeService {
 
 
     public void resetPassword(String email, String password) {
-        Employee employee = employeeRepository.findEmployeeByEmail(email).orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
+        Employee employee = employeeRepository.findEmployeeByPasswordToken_Token(email).orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
+        PasswordToken passwordToken = passwordTokenRepository.findByEmployee(employee).orElseThrow(RuntimeException::new);
+        passwordToken.setUsed(true);
         String newPassword = passwordEncoder.encode(password);
+
         employee.setPassword(newPassword);
+        passwordTokenRepository.save(passwordToken);
         employeeRepository.save(employee);
     }
 
@@ -273,6 +279,15 @@ public class EmployeeService {
         }
 
         scheduleRepository.saveAll(schedules);
+    }
+
+    public boolean existsByEmail(String email) {
+        return employeeRepository.existsByEmail(email);
+    }
+
+
+    public boolean existsEmployeeByPasswordToken(String token) {
+        return employeeRepository.existsByPasswordToken_Token(token);
     }
 }
 
