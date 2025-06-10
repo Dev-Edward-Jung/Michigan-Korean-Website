@@ -44,6 +44,3 @@ out/
 #!.github/
 #!.github/workflows/
 #!.github/workflows/*.yml
-
-Dockerfile
-nginx/
