@@ -3,6 +3,7 @@ package com.web.mighigankoreancommunity.controller.owner;
 
 import com.web.mighigankoreancommunity.dto.OwnerDTO;
 import com.web.mighigankoreancommunity.dto.auth.PasswordRequest;
+import com.web.mighigankoreancommunity.dto.auth.RegisterRequest;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.service.employee.EmployeeService;
 import com.web.mighigankoreancommunity.service.owner.OwnerService;
@@ -33,8 +34,9 @@ public class OwnerRestController {
     @Operation(summary = "Check if email is already registered", description = "Checks whether the given email is already associated with an existing owner account.")
     @PostMapping("/checkEmail")
     public boolean checkEmail(
-            @RequestBody @Parameter(description = "Owner email") String email
-    ) {
+            @RequestBody @Parameter(description = "Owner email")RegisterRequest request
+            ) {
+        String email = request.getEmail().toLowerCase();
         return ownerService.getMemberByEmail(email);
     }
 

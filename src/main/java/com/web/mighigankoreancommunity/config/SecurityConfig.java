@@ -83,15 +83,15 @@ public class SecurityConfig {
                 // 5) Public endpoints first
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // 🔥 이 줄 추가!
-                        .requestMatchers("/auth/login/**", "/auth/register/**",
-                                "/auth/forget/password", "/auth/reset/password",
+                        .requestMatchers("/api/auth/login/**", "/api/auth/register/**",
+                                "/api/auth/forget/password", "/api/auth/reset/password",
                                 "/api/employee/forgot/**", "/api/employee/register",
-                                "/api/owner/checkEmail"
+                                "/api/auth/checkEmail"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/restaurant/**", "/api/inventory/**", "/api/category/**",
                                 "/api/employee/schedule/**","/api/employee/list","/api/employee/invite","/api/employee/schedule/save",
-                                "/api/announcement/**"
+                                "/api/announcement/**", "/api/auth/validate", "/api/auth/me"
                                 ).authenticated()
                         .anyRequest().authenticated()
                 )
@@ -129,7 +129,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));
+        cfg.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000",
+                "http://localhost", "http://projects-frontend:3000", "http://backend:3000"));
+
         cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of(
                 "Content-Type",

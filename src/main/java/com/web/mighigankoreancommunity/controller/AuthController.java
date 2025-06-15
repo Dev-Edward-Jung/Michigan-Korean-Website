@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -68,6 +68,21 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @Operation(summary = "Check if email is already registered", description = "Checks whether the given email is already associated with an existing owner account.")
+    @PostMapping("/checkEmail")
+    public boolean checkEmail(
+            @RequestBody @Parameter(description = "Owner email")EmailCheckRequest emailCheckRequest
+    ) {
+        System.out.println(emailCheckRequest.getEmail());
+        String email = emailCheckRequest.getEmail().toLowerCase();
+        return ownerService.getMemberByEmail(email);
+    }
+
+    @PostMapping("/register/owner")
+    public void registerOwner(@RequestBody RegisterRequest request){
+        ownerService.saveOwner(request);
     }
 
 

@@ -39,16 +39,15 @@ public class InventoryService {
         }
 
         Page<Inventory> page = inventoryRepository.findByRestaurantIdPaged(restaurantId, pageable);
-        System.out.println("????"  + page.getContent().get(0).getName());
 
         return page.map(inventory -> new InventoryDTO(
                 inventory.getId(),
                 inventory.getName(),
                 inventory.getQuantity(),
                 inventory.getUnit(),
-                inventory.getCategory().getId(),
-                inventory.getCategory().getName(),
-                inventory.getRestaurant().getId(),
+                inventory.getCategory() != null ? inventory.getCategory().getId() : null,
+                inventory.getCategory() != null ? inventory.getCategory().getName() : null,
+                inventory.getRestaurant() != null ? inventory.getRestaurant().getId() : null,
                 inventory.isNeedNow()
         ));
     }
