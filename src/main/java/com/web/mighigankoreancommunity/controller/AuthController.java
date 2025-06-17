@@ -132,13 +132,13 @@ public class AuthController {
         }
 
         try {
-            // 🔍 Owner 이메일인지 먼저 체크
+            // 🔍 Employee email Checking
             if (!employeeUserDetailsService.existsByEmail(request.getEmail())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("error", "invalid email or password"));
             }
 
-            // ✅ Owner만 인증 시도
+            // ✅ Employee authentication
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(), request.getPassword()
