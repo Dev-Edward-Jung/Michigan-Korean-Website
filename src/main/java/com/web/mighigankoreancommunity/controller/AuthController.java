@@ -137,17 +137,18 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("error", "invalid email or password"));
             }
-
             // ✅ Employee authentication
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(), request.getPassword()
                     )
             );
-
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+
+
             Long id = user.getEmployee().getId();
             String token = jwtTokenProvider.createToken(user.getUsername(), user.getCurrentMemberRole(), id);
+
 
             return ResponseEntity.ok(new JwtResponse(token, user.getCurrentMemberRole(), id));
 

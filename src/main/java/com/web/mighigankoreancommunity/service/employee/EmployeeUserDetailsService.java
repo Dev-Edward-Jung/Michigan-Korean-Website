@@ -25,6 +25,8 @@ public class EmployeeUserDetailsService implements UserDetailsService {
         Employee employee = employeeRepository.findByEmailWithRestaurants(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Employee not found."));
 
+        System.out.println("Employee 호출됨!");
+
         // ✅ 현재 로그인 시점에서 사용할 restaurantEmployee 하나 선택
         RestaurantEmployee selectedRel = employee.getRestaurantEmployeeList()
                 .stream()
