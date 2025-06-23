@@ -30,8 +30,7 @@ public class Announcement {
 
     private String title;
 
-    @Lob
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Enumerated(EnumType.STRING)
