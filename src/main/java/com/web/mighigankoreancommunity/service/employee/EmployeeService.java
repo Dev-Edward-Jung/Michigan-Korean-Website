@@ -188,8 +188,8 @@ public class EmployeeService {
         if (employeeOpt.isPresent()) {
             Employee employee = employeeOpt.get();
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://localhost:3000/auth/reset?token=" + token;
-//            String resetLink = "https://www.restoflowing.com/auth/reset?token=" + token + "&email=" + email;
+//            String resetLink = "http://localhost:3000/auth/reset?token=" + token;
+            String resetLink = "https://www.restoflowing.com/auth/reset?token=" + token + "&email=" + email;
 
             LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
 

@@ -85,8 +85,8 @@ public class OwnerService {
         if (ownerOpt.isPresent()) {
             Owner owner = ownerOpt.get();
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://localhost:3000/auth/reset/?token=" + token;
-//            String resetLink = "https://www.restoflowing.com/auth/reset?token=" + token + "&email=" + email;
+//            String resetLink = "http://localhost:3000/auth/reset/?token=" + token;
+            String resetLink = "https://www.restoflowing.com/auth/reset?token=" + token + "&email=" + email;
             System.out.println("owner : " + owner.getEmail());
             LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
 
