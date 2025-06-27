@@ -91,7 +91,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/restaurant/**", "/api/inventory/**", "/api/category/**",
                                 "/api/employee/schedule/**","/api/employee/list","/api/employee/invite","/api/employee/schedule/save",
-                                "/api/announcement/**", "/api/auth/validate", "/api/auth/me"
+                                "/api/announcement/**", "/api/auth/validate", "/api/auth/me", "/api/chat/**"
                                 ).authenticated()
                         .anyRequest().authenticated()
                 )

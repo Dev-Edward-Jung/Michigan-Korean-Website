@@ -39,6 +39,10 @@ public class ChatMessage {
 
     private Long senderId;
 
+    private boolean isDeleted = false;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    private LocalDateTime deletedAt;
 }

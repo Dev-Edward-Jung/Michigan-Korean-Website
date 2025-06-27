@@ -25,6 +25,9 @@ public class EmployeeDTO {
     LocalDate shiftStartDate;
     LocalDate shiftEndDate;
 
+    String message;
+
+
     public EmployeeDTO (Long id, String name, String email, MemberRole memberRole, Long restaurantId) {
         this.id = id;
         this.name = name;
