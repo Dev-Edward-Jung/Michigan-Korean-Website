@@ -6,6 +6,7 @@ import com.web.mighigankoreancommunity.entity.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
 
     Optional<Restaurant> findRestaurantByIdAndOwner(Long id, Owner loginUser);
+
 
 
 }

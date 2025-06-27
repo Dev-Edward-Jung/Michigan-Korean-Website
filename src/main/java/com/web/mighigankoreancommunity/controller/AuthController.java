@@ -101,6 +101,7 @@ public class AuthController {
                         .body(Map.of("error", "Invalid email or password"));
             }
 
+
             // ✅ Owner만 인증 시도
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -110,8 +111,9 @@ public class AuthController {
 
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
             Long id = user.getOwner().getId();
-            String token = jwtTokenProvider.createToken(user.getUsername(), user.getCurrentMemberRole(), id);
 
+            String token = jwtTokenProvider.createToken(user.getUsername(), user.getCurrentMemberRole(), id);
+            System.out.println("Token 체크 : " + token);
             return ResponseEntity.ok(new JwtResponse(token, user.getCurrentMemberRole(), id));
 
         } catch (BadCredentialsException e) {
