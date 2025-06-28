@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.entity.chat;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.web.mighigankoreancommunity.domain.MemberRole;
 import com.web.mighigankoreancommunity.domain.MessageType;
 import jakarta.persistence.*;
@@ -22,22 +23,19 @@ public class ChatMessage {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private ChatRoom room;
 
     @Column(columnDefinition = "TEXT")
     private String message;
 
+    private Long senderId;
+    private String senderEmail;
+
     @Enumerated(EnumType.STRING)
     private MessageType ChatType;
 
     private String mediaURL;
-
-    @Enumerated(EnumType.STRING)
-    private MemberRole senderRole;
-
-    private String senderName;
-
-    private Long senderId;
 
     private boolean isDeleted = false;
 
@@ -45,4 +43,8 @@ public class ChatMessage {
     private LocalDateTime createdAt;
 
     private LocalDateTime deletedAt;
+
+    public ChatMessage(String message) {
+        this.message = message;
+    }
 }
