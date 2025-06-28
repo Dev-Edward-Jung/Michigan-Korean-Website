@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.web.mighigankoreancommunity.entity.chat.ChatRoom;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -67,6 +68,10 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Announcement> announcements = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ChatRoom> chatRooms;
 
 
 

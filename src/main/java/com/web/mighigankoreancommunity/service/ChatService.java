@@ -1,18 +1,30 @@
 package com.web.mighigankoreancommunity.service;
 
 
+import com.web.mighigankoreancommunity.dto.chat.ChatRoomDto;
 import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
+import com.web.mighigankoreancommunity.dto.employee.RestaurantEmployeeResponse;
 import com.web.mighigankoreancommunity.entity.Employee;
 import com.web.mighigankoreancommunity.entity.Owner;
 import com.web.mighigankoreancommunity.entity.Restaurant;
+import com.web.mighigankoreancommunity.entity.RestaurantEmployee;
 import com.web.mighigankoreancommunity.entity.chat.ChatMessage;
+import com.web.mighigankoreancommunity.entity.chat.ChatParticipant;
+import com.web.mighigankoreancommunity.entity.chat.ChatRoom;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
+import com.web.mighigankoreancommunity.repository.chat.ChatMessageRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
+import com.web.mighigankoreancommunity.repository.chat.ChatRoomRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
 import com.web.mighigankoreancommunity.repository.owner.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -22,28 +34,63 @@ public class ChatService {
     private final OwnerRepository ownerRepository;
     private final RestaurantRepository restaurantRepository;
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     public ChatMessage send(ChatMessage message) {
         return message;
     }
 
-    public EmployeeDTO ChatEmployeeService(
+    public List<ChatRoomDto> ChatEmployeeService(
             Long restaurantId,
             CustomUserDetails customUserDetails
     ) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+
+        Long userId;
         boolean isExist = false;
+
         if (customUserDetails.getEmployee() != null) {
-            String employeeEmail = customUserDetails.getEmployee().getEmail();
-            isExist = restaurantEmployeeRepository.existsByEmployee_EmailAndRestaurant_Id(employeeEmail, restaurantId);
+            Employee employee = customUserDetails.getEmployee();
+            isExist = restaurantEmployeeRepository.existsByEmployee_EmailAndRestaurant_Id(employee.getEmail(), restaurantId);
+            userId = employee.getId();
         } else if (customUserDetails.getOwner() != null) {
-            isExist = ownerRepository.existsByEmail(customUserDetails.getOwner().getEmail());
+            Owner owner = customUserDetails.getOwner();
+            isExist = ownerRepository.existsByEmail(owner.getEmail());
+            userId = owner.getId();
         } else {
-            throw new RuntimeException("It is not owner or employee");
+            throw new RuntimeException("User is neither owner nor employee");
         }
 
+        if (!isExist) {
+            return Collections.emptyList();
+        }
 
-        return new EmployeeDTO();
+        List<ChatRoom> allChatRooms = chatRoomRepository.findChatRoomsByRestaurant_Id(restaurantId);
+
+        List<ChatRoomDto> result = new ArrayList<>();
+
+        for (ChatRoom room : allChatRooms) {
+            boolean isParticipant = room.getChatParticipants().stream()
+                    .anyMatch(p -> Objects.equals(p.getUserId(), userId));
+
+            if (isParticipant) {
+                ChatMessage lastMessage = chatMessageRepository
+                        .findTopByRoom_IdOrderByCreatedAtDesc(room.getId())
+                        .orElse(new ChatMessage("No messages"));
+
+                ChatRoomDto dto = new ChatRoomDto();
+                dto.setId(room.getId());
+                dto.setName(room.getName());
+                dto.setLastMessage(lastMessage.getMessage());
+
+                result.add(dto);
+            }
+        }
+
+        return result;
     }
-
 }
+
+
