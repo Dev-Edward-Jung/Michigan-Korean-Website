@@ -24,11 +24,11 @@ public interface RestaurantEmployeeRepository  extends JpaRepository<RestaurantE
 
     Optional<RestaurantEmployee> findByEmployeeIdAndRestaurantId(Long employeeId, Long restaurantId);
 
-    Optional<RestaurantEmployee> findByIdAndRestaurantId(Long employeeId, Long restaurantId);
-
     Optional<RestaurantEmployee> findByEmployee_Email(String email);
 
     List<RestaurantEmployee> findRestaurantEmployeesByRestaurant_Id(Long restaurantId);
+
+    Optional<RestaurantEmployee> findRestaurantEmployeeByEmployee_IdAndRestaurant_Id(Long employeeId, Long restaurantId);
 
 
 }

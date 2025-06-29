@@ -3,6 +3,7 @@ package com.web.mighigankoreancommunity.dto.chat;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter @Setter
@@ -14,4 +15,5 @@ public class ChatRoomDto {
     private String name;
     private String lastMessage;
     private List<ChatParticipantsDto> chatParticipants;
+    private String hours;
 }
