@@ -8,7 +8,6 @@ import lombok.*;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
 public class ChatParticipantsDto {
     private Long userId;
     private String name;

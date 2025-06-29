@@ -84,12 +84,82 @@ public class ChatService {
                 dto.setId(room.getId());
                 dto.setName(room.getName());
                 dto.setLastMessage(lastMessage.getMessage());
-
                 result.add(dto);
             }
         }
 
         return result;
+    }
+
+
+    public List<EmployeeDTO> getEmployeesForChat(Long restaurantId, CustomUserDetails customUserDetails) {
+
+        List<RestaurantEmployee> restaurantEmployees = restaurantEmployeeRepository
+                .findRestaurantEmployeesByRestaurant_IdAndApprovedTrue(restaurantId)
+                .orElseThrow(() -> new RuntimeException("직원이 없습니다."));
+
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RuntimeException("레스토랑이 없습니다."));
+
+        Owner owner = restaurant.getOwner();
+
+        Long currentUserId;
+        boolean isOwner = false;
+
+        if (customUserDetails.getOwner() != null) {
+            currentUserId = customUserDetails.getOwner().getId();
+            isOwner = true;
+        } else if (customUserDetails.getEmployee() != null) {
+            currentUserId = customUserDetails.getEmployee().getId();
+            RestaurantEmployee restaurantEmployee = restaurantEmployeeRepository.findRestaurantEmployeeByEmployee_IdAndRestaurant_Id(currentUserId, restaurantId)
+                    .orElseThrow(RuntimeException::new);
+
+//          RestaurantEmployeeId for a restaurant
+            currentUserId = restaurantEmployee.getEmployee().getId();
+
+        } else {
+            throw new RuntimeException("로그인 정보가 올바르지 않습니다.");
+        }
+
+        List<EmployeeDTO> chatMembers = new ArrayList<>();
+
+        if (isOwner) {
+            // 오너 → 모든 직원 추가
+            for (RestaurantEmployee re : restaurantEmployees) {
+                chatMembers.add(new EmployeeDTO(
+                        re.getEmployee().getId(),
+                        re.getEmployee().getName(),
+                        re.getEmployee().getEmail(),
+                        re.getMemberRole(),
+                        restaurantId
+                ));
+            }
+
+        } else {
+            // 직원 → 오너 추가
+                chatMembers.add(new EmployeeDTO(
+                        owner.getId(),
+                        owner.getOwnerName(),
+                        owner.getEmail(),
+                        owner.getMemberRole(),
+                        restaurantId
+                ));
+
+            // 직원 → 다른 직원 추가 (자기 제외)
+            for (RestaurantEmployee re : restaurantEmployees) {
+                if (!re.getEmployee().getId().equals(currentUserId)) {
+                    chatMembers.add(new EmployeeDTO(
+                            re.getEmployee().getId(),
+                            re.getEmployee().getName(),
+                            re.getEmployee().getEmail(),
+                            re.getMemberRole(),
+                            restaurantId
+                    ));
+                }
+            }
+        }
+
+        return chatMembers;
     }
 }
 
