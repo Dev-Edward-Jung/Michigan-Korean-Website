@@ -86,7 +86,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login/**", "/api/auth/register/**",
                                 "/api/auth/forget/password", "/api/auth/reset/password",
                                 "/api/employee/forgot/**", "/api/employee/register",
-                                "/api/auth/checkEmail"
+                                "/api/auth/checkEmail", "/api/ws/chat/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/restaurant/**", "/api/inventory/**", "/api/category/**",
