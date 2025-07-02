@@ -2,6 +2,8 @@ package com.web.mighigankoreancommunity.controller.chat;
 
 
 import com.web.mighigankoreancommunity.dto.ApiResponse;
+import com.web.mighigankoreancommunity.dto.chat.ChatRequest;
+import com.web.mighigankoreancommunity.dto.chat.ChatResponse;
 import com.web.mighigankoreancommunity.dto.chat.ChatRoomDto;
 import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
 import com.web.mighigankoreancommunity.dto.payroll.PayrollResponse;
@@ -12,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +30,20 @@ import java.util.List;
 @RequestMapping("/api/chat")
 public class ChatRestController {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
 
-    @MessageMapping("/chat.send")
-    @SendTo("/chatroom/{roomId}")
-    public ChatMessage send(@DestinationVariable ChatMessage message) {
-        return null;
+    @MessageMapping("/send") // 👈 프론트의 /app/chat/send 와 매핑
+    public void receiveMessage(@Payload ChatRequest message) {
+        Long roomId = message.getRoomId();
+
+        // DB 저장, sender 검증 등 추가 처리 가능
+
+        // 수신자들에게 메시지 전달
+        messagingTemplate.convertAndSend(
+                "/topic/chat/room/" + roomId, // 👈 프론트가 구독하고 있는 경로
+                message
+        );
     }
 
     @GetMapping("/list")
