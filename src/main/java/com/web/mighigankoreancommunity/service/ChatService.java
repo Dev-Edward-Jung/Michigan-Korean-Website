@@ -1,6 +1,7 @@
 package com.web.mighigankoreancommunity.service;
 
 
+import com.web.mighigankoreancommunity.dto.chat.ChatResponse;
 import com.web.mighigankoreancommunity.dto.chat.ChatRoomDto;
 import com.web.mighigankoreancommunity.dto.employee.EmployeeDTO;
 import com.web.mighigankoreancommunity.dto.employee.RestaurantEmployeeResponse;
@@ -12,13 +13,16 @@ import com.web.mighigankoreancommunity.entity.chat.ChatMessage;
 import com.web.mighigankoreancommunity.entity.chat.ChatParticipant;
 import com.web.mighigankoreancommunity.entity.chat.ChatRoom;
 import com.web.mighigankoreancommunity.entity.userDetails.CustomUserDetails;
+import com.web.mighigankoreancommunity.error.RestaurantNotFoundException;
 import com.web.mighigankoreancommunity.repository.chat.ChatMessageRepository;
 import com.web.mighigankoreancommunity.repository.RestaurantRepository;
+import com.web.mighigankoreancommunity.repository.chat.ChatParticipantRepository;
 import com.web.mighigankoreancommunity.repository.chat.ChatRoomRepository;
 import com.web.mighigankoreancommunity.repository.employee.EmployeeRepository;
 import com.web.mighigankoreancommunity.repository.employee.RestaurantEmployeeRepository;
 import com.web.mighigankoreancommunity.repository.owner.OwnerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,7 +39,43 @@ public class ChatService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantEmployeeRepository restaurantEmployeeRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatParticipantRepository chatParticipantRepository;
     private final ChatMessageRepository chatMessageRepository;
+
+
+
+    public void openChat(Long restaurantId, Long restaurantEmployeeId, CustomUserDetails customUserDetails) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(RestaurantNotFoundException::new);
+        RestaurantEmployee restaurantEmployee = restaurantEmployeeRepository.findById(restaurantEmployeeId).orElseThrow(RuntimeException::new);
+
+        if (customUserDetails.isOwner()){
+        } else if(customUserDetails.isEmployee()){
+
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
+    }
+
+
+    public List<ChatResponse> getAllChats(Long roomId) {
+        List<ChatResponse> chats = new ArrayList<>();
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
+        if (chatRoom == null) {
+            return Collections.emptyList();
+        } else {
+            chatRoom.getChatMessages().forEach(message -> {
+                ChatResponse chatResponse = new ChatResponse();
+                chatResponse.setMessageId(message.getId());
+                chatResponse.setRoomId(roomId);
+                chatResponse.setSenderId(message.getSenderId());
+                chatResponse.setMessage(message.getMessage());
+                chats.add(chatResponse);
+            });
+        }
+        return chats;
+    }
+
+
 
     public ChatMessage send(ChatMessage message) {
         return message;
