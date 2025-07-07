@@ -46,6 +46,13 @@ public class ChatRestController {
         );
     }
 
+    @GetMapping("/room/{roomId}/messages")
+    public ResponseEntity<ApiResponse<List<ChatMessage>>> fetchMessages(){
+
+        return null;
+    }
+
+
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<List<ChatRoomDto>>> fetchEmployee(
             @RequestParam Long restaurantId,
@@ -63,4 +70,6 @@ public class ChatRestController {
         List<EmployeeDTO> employeeDTOList = chatService.getEmployeesForChat(restaurantId, customUserDetails);
         return ResponseEntity.ok(ApiResponse.success(employeeDTOList, "Fetch Successfully"));
     }
+
+
 }
