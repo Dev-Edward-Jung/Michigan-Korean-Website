@@ -1,48 +1,59 @@
-📦 Restoflowing
+# 📦 Restoflowing
 
-All-in-One Mobile Platform for Restaurant Operations
+**All-in-One Mobile Platform for Restaurant Operations**  
 Inventory, staff scheduling, payroll, and announcements — all in one place.
 
+---
+
+## 🧩 Overview
+
+**Restoflowing** is a mobile-first web platform designed to automate restaurant operations for small-to-medium restaurant owners in the U.S., especially those who are not tech-savvy or fluent in English.
+
+- 👥 **Target Audience**: Korean-American restaurant owners in their 40s–50s
+- 🎯 **Goal**: Digitize and automate paper-based restaurant workflows
+- 🛠 **Stack**:
+	- Frontend: **Next.js** (Client-side rendering)
+	- Backend: **Spring Boot**, **MariaDB**, **JPA**, **Spring Security**
+	- Deployment: **Docker**, **AWS Lightsail**, **Nginx**
+	- CI/CD: **GitHub Actions** (SSH-based)
+
+---
+
+## 🔑 Features
+
+### ✅ Inventory Management
+- Role-based item management (Server / Kitchen)
+- Modal-based UI for adding/editing/deleting items
+- Real-time updates (no page reload)
+
+### ✅ Restaurant & Role Management
+- Multi-restaurant support per owner
+- Roles: **Owner**, **Manager**, **Server**, **Kitchen**
+- Owner-only signup, others join by invitation
+
+### ✅ Payroll System
+- Calculate total pay using hourly wage + tips
+- View payroll per employee
+
+### ✅ Scheduling System
+- Owner assigns 2-week AM/PM shifts
+- Staff can view their own schedules
+
+### ✅ Announcement Board
+- Owner/Manager posts messages to staff
+- Real-time WebSocket delivery
 
 
-🧩 Project Overview
+---
 
-Restoflowing is a mobile-first platform designed to automate daily restaurant operations for small to mid-sized restaurant owners in the U.S., particularly those in their 40s–50s who may not be tech-savvy or fluent in English.
-	•	👥 Target Audience: Restaurant owners in the U.S. (especially Korean-American owners)
-	•	🎯 Goal: Replace manual and paper-based management with a simple and automated solution
-	•	🛠 Stack:
-	•	Frontend: Next.js (Client-side Rendering)
-	•	Backend: Spring Boot, MariaDB, JPA, Spring Security
-	•	Deployment: AWS Lightsail + Docker + Nginx
-	•	CI/CD: GitHub Actions with SSH deployment
+## 🚀 Deployment
 
+- **Domain**: [https://restoflowing.com](https://restoflowing.com) (Not available now)
+- **Hosting**: AWS Lightsail ($12 plan)
+- **Database**: MariaDB (manual install, non-Bitnami)
+- **HTTPS**: Let’s Encrypt + Nginx reverse proxy
+- **CI/CD**: GitHub Actions + SSH deploy to Lightsail instance
 
+---
 
-🔑 Core Features
-	1.	Inventory Management
-	•	Add, update, and delete inventory items with a clean modal UI
-	•	Role-based access (Server/Kitchen roles manage different items)
-	•	Real-time UI updates (no full-page reload)
-	2.	Restaurant Dashboard
-	•	Owners can manage multiple restaurants
-	•	Each restaurant has independent inventory and staff
-	3.	Role-based Access Control
-	•	Owner, Manager, Server, and Kitchen roles
-	•	Only Owners can sign up directly (others require invitation)
-	4.	Payroll System
-	•	Hourly wage + tip calculation
-	•	Automatic payroll view for each employee
-	5.	Announcement Board
-	•	Owners and managers can post announcements
-	•	Real-time updates via WebSocket
-	6.	Scheduling System
-	•	Owners assign 2-week shifts (AM/PM) to staff
-	•	Mobile-optimized UI for easy use
-
-
-🚀 Deployment
-	•	Domain: restoflowing.com
-	•	Hosting: AWS Lightsail ($12 Plan: 2GB RAM, 2vCPU)
-	•	SSL: HTTPS with Let’s Encrypt
-	•	Database: MariaDB (non-Bitnami)
-	•	CI/CD: GitHub Actions → Docker Build → SSH Deploy
+## 📁 Project Structure
