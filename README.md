@@ -15,7 +15,6 @@ Inventory, staff scheduling, payroll, and announcements — all in one place.
 	- Frontend: **Next.js** (Client-side rendering)
 	- Backend: **Spring Boot**, **MariaDB**, **JPA**, **Spring Security**
 	- Deployment: **Docker**, **AWS Lightsail**, **Nginx**
-	- CI/CD: **GitHub Actions** (SSH-based)
 
 ---
 
