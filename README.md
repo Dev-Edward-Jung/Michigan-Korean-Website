@@ -52,8 +52,6 @@ Inventory, staff scheduling, payroll, and announcements — all in one place.
 - **Hosting**: AWS Lightsail ($12 plan)
 - **Database**: MariaDB (manual install, non-Bitnami)
 - **HTTPS**: Let’s Encrypt + Nginx reverse proxy
-- **CI/CD**: GitHub Actions + SSH deploy to Lightsail instance
 
 ---
 
-## 📁 Project Structure
